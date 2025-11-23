@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@plugin './hero.ts';
+
+@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
+
+html {
+  @apply min-h-screen min-w-screen bg-background text-foreground;
+}
