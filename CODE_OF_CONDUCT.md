@@ -43,8 +43,8 @@ This Code of Conduct applies to all spaces associated with the project, includin
 
 If you experience or witness unacceptable behavior, we encourage you to report it promptly. Reports may be made via:
 
-- **Email Contact:** [add-contact-email]
-- **Anonymous Reporting Form:** [add-link-to-form]
+- **Email Contact:** [murilo7456@gmail.com]
+<!-- - **Anonymous Reporting Form:** [yet-to-be-added] -->
 
 All reports will be handled discreetly, confidentially, and with urgency. The maintainers are committed to investigating and addressing all complaints in a fair and timely manner. Consequences for violations of the Code of Conduct may include warnings, temporary or permanent suspension or expulsion from the project or community, removal of content, and/or other actions as deemed appropriate.
 
