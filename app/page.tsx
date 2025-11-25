@@ -1,20 +1,9 @@
-"use client";
+import Home from "@/components/pages";
 
-import { Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/react";
-
-export default function Home() {
-  const disclosure = useDisclosure();
-
+export default function Page() {
   return (
     <>
-      <Button onPress={disclosure.onOpen}>Click me</Button>
-      <Modal isOpen={disclosure.isOpen} onOpenChange={disclosure.onOpenChange}>
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalBody>Modal Title</ModalBody>
-          <ModalHeader>Modal Title</ModalHeader>
-        </ModalContent>
-      </Modal>
+      <Home />
     </>
   );
 }
