@@ -1,6 +1,11 @@
-import {selectTheme} from "@/lib/heroui";
-import {Select as HerouiSelect, SelectProps as HerouiSelectProps, SelectItem} from "@heroui/react";
-import {SelectMultiple, SelectMultipleProps} from "./select-multiple";
+import { selectTheme } from "@/lib/heroui";
+import {
+  Select as HerouiSelect,
+  SelectProps as HerouiSelectProps,
+  SelectItem,
+} from "@heroui/react";
+import { SelectMultiple, SelectMultipleProps } from "./select-multiple";
+import { useForm } from "./form";
 
 export interface SelectOption {
   label: string;
@@ -14,13 +19,21 @@ export type SelectProps = {
   children?: HerouiSelectProps["children"];
 } & Omit<HerouiSelectProps, "items" | "children">;
 
-export const Select: React.FC<SelectProps> = ({children, ...props}) => {
+export const Select: React.FC<SelectProps> = ({ children, ...props }) => {
+  const { initialData } = useForm();
+
   if (props.multiple === true) {
-    return <SelectMultiple {...(selectTheme as SelectMultipleProps)} {...props} />;
+    return (
+      <SelectMultiple {...(selectTheme as SelectMultipleProps)} {...props} />
+    );
   }
 
   return (
-    <HerouiSelect {...(selectTheme as SelectProps)} {...props}>
+    <HerouiSelect
+      {...(selectTheme as SelectProps)}
+      defaultSelectedKeys={initialData?.[props.name as string]}
+      {...props}
+    >
       {children
         ? children
         : props.items.map((item) => (
