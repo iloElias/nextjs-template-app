@@ -11,10 +11,13 @@ export interface DatePickerMultipleProps extends HerouiDatePickerProps {
 }
 
 export const DatePicker: React.FC<DatePickerMultipleProps> = ({timeField = false, ...props}) => {
+
+
   return (
     <HerouiDatePicker
       hideTimeZone
       showMonthAndYearPickers
+      // defaultValue={} // TODO: figure out the type of value that comes here
       {...(timeField ? {defaultValue: now(getLocalTimeZone())} : {})}
       {...(inputTheme as DatePickerMultipleProps)}
       {...props}
