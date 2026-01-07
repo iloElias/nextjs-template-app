@@ -1,0 +1,16 @@
+services:
+  nextjs-template:
+    container_name: nextjs-template
+    build:
+      context: ./nextjs-template
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./nextjs-template:/web
+    networks:
+      - default-network
+
+networks:
+  default-network:
+    driver: bridge

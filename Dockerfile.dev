@@ -1,0 +1,11 @@
+FROM node:23-slim AS builder
+
+EXPOSE 3030
+
+WORKDIR /web
+
+COPY . .
+
+RUN npm install
+
+CMD [ "npm", "run", "dev" ]
