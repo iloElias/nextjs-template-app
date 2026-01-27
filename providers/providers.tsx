@@ -1,16 +1,20 @@
 "use client";
 
 import {HeroUIProvider} from "@heroui/react";
-import {I18nProvider, useLocale} from "@react-aria/i18n";
+import {I18nProvider} from "@react-aria/i18n";
+import {I18nProviderClient} from "@/locales/client";
 
-export const Providers: React.FC<{children: React.ReactNode}> = ({children}) => {
-  const {locale} = useLocale();
+export const Providers: React.FC<{
+  children: React.ReactNode;
+  locale: string;
+}> = ({children, locale}) => {
+  const providerLocale = locale;
 
   return (
-    <>
-      <I18nProvider locale={locale}>
+    <I18nProviderClient locale={providerLocale}>
+      <I18nProvider locale={providerLocale}>
         <HeroUIProvider
-          locale={locale}
+          locale={providerLocale}
           {...{
             skipFramerMotionAnimations: false,
             disableAnimation: false,
@@ -20,6 +24,6 @@ export const Providers: React.FC<{children: React.ReactNode}> = ({children}) => 
           {children}
         </HeroUIProvider>
       </I18nProvider>
-    </>
+    </I18nProviderClient>
   );
 };

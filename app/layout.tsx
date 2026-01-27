@@ -1,13 +1,7 @@
-import type {Metadata} from "next";
 import "./globals.css";
-import {Providers} from "@/providers/providers";
-import {Html} from "@/components/document/html";
-import {Body} from "@/components/document/body";
-
-export const metadata: Metadata = {
-  title: "Murilo's Next.js Template App",
-  description: "This is a template app for Next.js",
-};
+import { Body } from "@/components/document/body";
+import { Html } from "@/components/document/html";
+import { DEFAULT_LOCALE } from "@/service/i18n";
 
 export default function RootLayout({
   children,
@@ -15,9 +9,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Html>
+    <Html lang={DEFAULT_LOCALE}>
       <Body>
-        <Providers>{children}</Providers>
+        {children}
       </Body>
     </Html>
   );

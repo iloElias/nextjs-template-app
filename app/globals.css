@@ -5,5 +5,5 @@
 @custom-variant dark (&:is(.dark *));
 
 html {
-  @apply min-h-screen min-w-screen bg-background text-foreground;
+  @apply min-h-screen bg-background text-foreground;
 }
