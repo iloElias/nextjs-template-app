@@ -1,8 +1,8 @@
 import { Section } from "@/components/layout/section";
-import { useI18n } from "@/locales/client";
+import { getI18n } from "@/locales/server";
 
-export default function Page() {
-  const t = useI18n();
+export default async function NotFound() {
+  const t = await getI18n();
 
   return (
     <Section className="flex flex-col gap-2 max-w-md">
