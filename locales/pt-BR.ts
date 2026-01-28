@@ -1,8 +1,50 @@
 export default {
-  "not-found": {
-    title: "Página não encontrada",
-    description: "Desculpe, a página que você está procurando não existe.",
+  "mdx-editor": {
+    mode: {
+      "rich-text": "Modo de Texto Rico",
+      diff: "Modo de Diferença",
+      source: "Modo Código Fonte",
+    },
+    buttons: {
+      undo: "Desfazer",
+      redo: "Refazer",
+      blocktype: "Tipo de Bloco",
+      bold: "Negrito",
+      italic: "Itálico",
+      underline: "Sublinhado",
+      strikethrough: "Tachado",
+      code: "Código Inline",
+      createlink: "Criar Link",
+      insertimage: "Inserir Imagem",
+      inserttable: "Inserir Tabela",
+      insertthematicbreak: "Inserir Linha Horizontal",
+      bulletlist: "Lista com Marcadores",
+      numberedlist: "Lista Numerada",
+      checklist: "Lista de Tarefas",
+      "rich-text": "Modo de Texto Rico",
+      diff: "Modo de Diferença",
+      source: "Modo Código Fonte",
+    },
+    "block-types": {
+      paragraph: "Parágrafo",
+      h1: "Título 1",
+      h2: "Título 2",
+      h3: "Título 3",
+      h4: "Título 4",
+      h5: "Título 5",
+      h6: "Título 6",
+      quote: "Citação",
+      list: "Lista",
+    },
   },
-  "home.title": "Bem-vindo",
-  "home.subtitle": "Modelo Next.js com internacionalização.",
+  page: {
+    "not-found": {
+      title: "Página não encontrada",
+      description: "Desculpe, a página que você está procurando não existe.",
+    },
+    home: {
+      title: "Bem-vindo",
+      subtitle: "Modelo Next.js com internacionalização.",
+    },
+  },
 } as const;

@@ -1,0 +1,455 @@
+"use client";
+
+import {
+  usePublisher,
+  useCellValue,
+  insertImage$,
+  insertTable$,
+  insertThematicBreak$,
+  activeEditor$,
+  applyFormat$,
+  currentFormat$,
+  applyListType$,
+  currentListType$,
+  viewMode$,
+  insertMarkdown$,
+  currentBlockType$,
+  applyBlockType$,
+} from "@mdxeditor/editor";
+import { UNDO_COMMAND, REDO_COMMAND } from "lexical";
+import {
+  AlignVerticalSpacing,
+  Card,
+  Checklist,
+  Code,
+  CodeSquare,
+  DocumentAdd,
+  Gallery,
+  Link,
+  List,
+  ListArrowDownMinimalistic,
+  Notes,
+  TextBold,
+  TextCross,
+  TextItalic,
+  TextUnderline,
+  UndoLeftRound,
+  UndoRightRound,
+} from "@solar-icons/react";
+import { MdxButton } from "./mdx-button";
+import { useState } from "react";
+import { Dialogue } from "../dialogue";
+import { Button, useDisclosure, Select, SelectItem } from "@heroui/react";
+import { ModalBody, ModalFooter, ModalHeader } from "../modal";
+import { NumberInput } from "../form/number-input";
+import { Input } from "../form/input";
+import { useScopedI18n } from "@/locales/client";
+
+type BlockType =
+  | "paragraph"
+  | "h1"
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6"
+  | "quote";
+
+export const HeroBlockTypeSelect = () => {
+  const tmdxbutton = useScopedI18n("mdx-editor.buttons");
+  const btt = useScopedI18n("mdx-editor.block-types");
+
+  const currentBlockType = useCellValue(currentBlockType$);
+  const applyBlockType = usePublisher(applyBlockType$);
+
+  const blockTypes = [
+    { key: "paragraph", label: btt("paragraph") },
+    { key: "h1", label: btt("h1") },
+    { key: "h2", label: btt("h2") },
+    { key: "h3", label: btt("h3") },
+    { key: "h4", label: btt("h4") },
+    { key: "h5", label: btt("h5") },
+    { key: "h6", label: btt("h6") },
+    { key: "quote", label: btt("quote") },
+    { key: "list", label: btt("list") },
+  ];
+
+  return (
+    <Select
+      aria-label={tmdxbutton("blocktype")}
+      size="sm"
+      className="max-w-32"
+      placeholder={tmdxbutton("blocktype")}
+      disabledKeys={["list"]}
+      selectedKeys={new Set([currentBlockType || "paragraph"])}
+      onSelectionChange={(keys) => {
+        const selected = Array.from(keys)[0] as string;
+        applyBlockType(selected as BlockType);
+        console.log(selected);
+      }}
+    >
+      {blockTypes.map((type) => (
+        <SelectItem key={type.key}>{type.label}</SelectItem>
+      ))}
+    </Select>
+  );
+};
+
+export const HeroUndo = () => {
+  const editor = useCellValue(activeEditor$);
+
+  return (
+    <MdxButton
+      onPress={() => editor?.dispatchCommand(UNDO_COMMAND, undefined)}
+      role="undo"
+    >
+      <UndoLeftRound />
+    </MdxButton>
+  );
+};
+
+export const HeroRedo = () => {
+  const editor = useCellValue(activeEditor$);
+
+  return (
+    <MdxButton
+      onPress={() => editor?.dispatchCommand(REDO_COMMAND, undefined)}
+      role="redo"
+    >
+      <UndoRightRound />
+    </MdxButton>
+  );
+};
+
+export const HeroBold = () => {
+  const applyFormat = usePublisher(applyFormat$);
+  const currentFormat = useCellValue(currentFormat$);
+  const isBold = (currentFormat & 1) !== 0;
+
+  return (
+    <MdxButton active={isBold} onPress={() => applyFormat("bold")} role="bold">
+      <TextBold />
+    </MdxButton>
+  );
+};
+
+export const HeroItalic = () => {
+  const applyFormat = usePublisher(applyFormat$);
+  const currentFormat = useCellValue(currentFormat$);
+  const isItalic = (currentFormat & 2) !== 0;
+
+  return (
+    <MdxButton
+      active={isItalic}
+      onPress={() => applyFormat("italic")}
+      role="italic"
+    >
+      <TextItalic />
+    </MdxButton>
+  );
+};
+
+export const HeroUnderline = () => {
+  const applyFormat = usePublisher(applyFormat$);
+  const currentFormat = useCellValue(currentFormat$);
+  const isUnderline = (currentFormat & 8) !== 0;
+
+  return (
+    <MdxButton
+      active={isUnderline}
+      onPress={() => applyFormat("underline")}
+      role="underline"
+    >
+      <TextUnderline />
+    </MdxButton>
+  );
+};
+
+export const HeroStrikethrough = () => {
+  const applyFormat = usePublisher(applyFormat$);
+  const currentFormat = useCellValue(currentFormat$);
+  const isStrikethrough = (currentFormat & 4) !== 0;
+
+  return (
+    <MdxButton
+      active={isStrikethrough}
+      onPress={() => applyFormat("strikethrough")}
+      role="strikethrough"
+    >
+      <TextCross />
+    </MdxButton>
+  );
+};
+
+export const HeroCode = () => {
+  const applyFormat = usePublisher(applyFormat$);
+  const currentFormat = useCellValue(currentFormat$);
+  const isCode = (currentFormat & 16) !== 0;
+
+  return (
+    <MdxButton active={isCode} onPress={() => applyFormat("code")} role="code">
+      <Code />
+    </MdxButton>
+  );
+};
+
+export const HeroCreateLink = () => {
+  const insertLink = usePublisher(insertMarkdown$);
+
+  const disclosure = useDisclosure();
+
+  const [src, setSrc] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [altText, setAltText] = useState<string>("");
+
+  return (
+    <>
+      <Dialogue disclosure={disclosure} size="sm" placement="center">
+        <ModalHeader>Inserir link</ModalHeader>
+        <ModalBody>
+          <Input
+            label="URL"
+            value={src}
+            onValueChange={setSrc}
+            placeholder="https://example.com/image.jpg"
+          />
+          <Input
+            label="Titulo do Link"
+            value={title}
+            onValueChange={setTitle}
+            placeholder="Título do Link"
+          />
+          <Input
+            label="Texto alternativo"
+            value={altText}
+            onValueChange={setAltText}
+            placeholder="Texto ancora"
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="primary"
+            className="flex-1 rounded-xl!"
+            onPress={() => {
+              disclosure.onClose();
+              insertLink(`[${title}](${src}${altText ? ` "${altText}"` : ""})`);
+            }}
+          >
+            Confirm
+          </Button>
+          <Button className="flex-1 rounded-xl!" onPress={disclosure.onClose}>
+            Close
+          </Button>
+        </ModalFooter>
+      </Dialogue>
+      <MdxButton onPress={disclosure.onOpen} role="createlink">
+        <Link />
+      </MdxButton>
+    </>
+  );
+};
+
+export const HeroBulletList = () => {
+  const applyListType = usePublisher(applyListType$);
+  const currentListType = useCellValue(currentListType$);
+  const isBullet = currentListType === "bullet";
+
+  return (
+    <MdxButton
+      active={isBullet}
+      onPress={() => applyListType(isBullet ? "" : "bullet")}
+      role="bulletlist"
+    >
+      <List />
+    </MdxButton>
+  );
+};
+
+export const HeroNumberedList = () => {
+  const applyListType = usePublisher(applyListType$);
+  const currentListType = useCellValue(currentListType$);
+  const isNumbered = currentListType === "number";
+
+  return (
+    <MdxButton
+      active={isNumbered}
+      onPress={() => applyListType(isNumbered ? "" : "number")}
+      role="numberedlist"
+    >
+      <ListArrowDownMinimalistic />
+    </MdxButton>
+  );
+};
+
+export const HeroCheckList = () => {
+  const applyListType = usePublisher(applyListType$);
+  const currentListType = useCellValue(currentListType$);
+  const isCheck = currentListType === "check";
+
+  return (
+    <MdxButton
+      active={isCheck}
+      onPress={() => applyListType(isCheck ? "" : "check")}
+      role="checklist"
+    >
+      <Checklist />
+    </MdxButton>
+  );
+};
+
+export const HeroInsertImage = () => {
+  const insertImage = usePublisher(insertImage$);
+
+  const disclosure = useDisclosure();
+
+  const [title, setTitle] = useState<string>("");
+  const [src, setSrc] = useState<string>("");
+  const [altText, setAltText] = useState<string>("");
+
+  return (
+    <>
+      <Dialogue disclosure={disclosure} size="sm" placement="center">
+        <ModalHeader>Inserir imagem</ModalHeader>
+        <ModalBody>
+          <Input
+            label="URL da imagem"
+            value={src}
+            onValueChange={setSrc}
+            placeholder="https://example.com/image.jpg"
+          />
+          <Input
+            label="Texto alternativo"
+            value={altText}
+            onValueChange={setAltText}
+            placeholder="Descrição da imagem"
+          />
+          <Input
+            label="Título"
+            value={title}
+            onValueChange={setTitle}
+            placeholder="Título da imagem"
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="primary"
+            className="flex-1 rounded-xl!"
+            onPress={() => {
+              disclosure.onClose();
+              insertImage({ src, altText, title });
+            }}
+          >
+            Confirm
+          </Button>
+          <Button className="flex-1 rounded-xl!" onPress={disclosure.onClose}>
+            Close
+          </Button>
+        </ModalFooter>
+      </Dialogue>
+      <MdxButton onPress={disclosure.onOpen} role="insertimage">
+        <Gallery />
+      </MdxButton>
+    </>
+  );
+};
+
+export const HeroInsertTable = () => {
+  const insertTable = usePublisher(insertTable$);
+
+  const disclosure = useDisclosure();
+
+  const [rows, setRows] = useState<number>(3);
+  const [columns, setColumns] = useState<number>(3);
+
+  return (
+    <>
+      <Dialogue disclosure={disclosure} size="sm" placement="center">
+        <ModalHeader>Tamanho da tabela</ModalHeader>
+        <ModalBody>
+          <NumberInput label="Linhas" value={rows} onValueChange={setRows} />
+          <NumberInput
+            label="Colunas"
+            value={columns}
+            onValueChange={setColumns}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="primary"
+            className="flex-1 rounded-xl!"
+            onPress={() => {
+              disclosure.onClose();
+              insertTable({ rows, columns });
+            }}
+          >
+            Confirm
+          </Button>
+          <Button className="flex-1 rounded-xl!" onPress={disclosure.onClose}>
+            Close
+          </Button>
+        </ModalFooter>
+      </Dialogue>
+      <MdxButton onPress={disclosure.onOpen} role="inserttable">
+        <Card />
+      </MdxButton>
+    </>
+  );
+};
+
+export const HeroInsertThematicBreak = () => {
+  const insertBreak = usePublisher(insertThematicBreak$);
+
+  return (
+    <MdxButton onPress={() => insertBreak()} role="insertthematicbreak">
+      <AlignVerticalSpacing />
+    </MdxButton>
+  );
+};
+
+export const HeroRichTextMode = () => {
+  const viewMode = useCellValue(viewMode$);
+  const setViewMode = usePublisher(viewMode$);
+  const isActive = viewMode === "rich-text";
+
+  return (
+    <MdxButton
+      active={isActive}
+      onPress={() => setViewMode("rich-text")}
+      role="rich-text"
+    >
+      <DocumentAdd />
+    </MdxButton>
+  );
+};
+
+export const HeroDiffMode = () => {
+  const viewMode = useCellValue(viewMode$);
+  const setViewMode = usePublisher(viewMode$);
+  const isActive = viewMode === "diff";
+
+  return (
+    <MdxButton
+      active={isActive}
+      onPress={() => setViewMode("diff")}
+      role="diff"
+    >
+      <Notes />
+    </MdxButton>
+  );
+};
+
+export const HeroSourceMode = () => {
+  const viewMode = useCellValue(viewMode$);
+  const setViewMode = usePublisher(viewMode$);
+  const isActive = viewMode === "source";
+
+  return (
+    <MdxButton
+      active={isActive}
+      onPress={() => setViewMode("source")}
+      role="source"
+    >
+      <CodeSquare />
+    </MdxButton>
+  );
+};

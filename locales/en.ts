@@ -1,8 +1,50 @@
 export default {
-  "not-found": {
-    title: "Page not found",
-    description: "Sorry, the page you are looking for does not exist.",
+  "mdx-editor": {
+    mode: {
+      "rich-text": "Rich Text Mode",
+      diff: "Diff Mode",
+      source: "Source Code Mode",
+    },
+    buttons: {
+      undo: "Undo",
+      redo: "Redo",
+      bold: "Bold",
+      blocktype: "Block Type",
+      italic: "Italic",
+      underline: "Underline",
+      strikethrough: "Strikethrough",
+      code: "Inline Code",
+      createlink: "Create Link",
+      insertimage: "Insert Image",
+      inserttable: "Insert Table",
+      insertthematicbreak: "Insert Horizontal Line",
+      bulletlist: "Bullet List",
+      numberedlist: "Numbered List",
+      checklist: "Checklist",
+      "rich-text": "Rich Text Mode",
+      diff: "Diff Mode",
+      source: "Source Code Mode",
+    },
+    "block-types": {
+      paragraph: "Paragraph",
+      h1: "Heading 1",
+      h2: "Heading 2",
+      h3: "Heading 3",
+      h4: "Heading 4",
+      h5: "Heading 5",
+      h6: "Heading 6",
+      quote: "Quote",
+      list: "List",
+    },
   },
-  "home.title": "Welcome",
-  "home.subtitle": "Next.js template with internationalization.",
+  page: {
+    "not-found": {
+      title: "Page not found",
+      description: "Sorry, the page you are looking for does not exist.",
+    },
+    home: {
+      title: "Welcome",
+      subtitle: "Next.js template with internationalization.",
+    },
+  },
 } as const;

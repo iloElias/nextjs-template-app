@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin '@tailwindcss/typography';
 @plugin '../lib/heroui.ts';
 
 @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
@@ -6,4 +7,149 @@
 
 html {
   @apply min-h-screen bg-background text-foreground;
+}
+
+svg.solar-icons {
+  color: inherit;
+}
+
+svg.solar-icons path {
+  color: inherit;
+  stroke-width: inherit;
+}
+
+.mdxeditor.disabled > .mdxeditor-toolbar {
+  @apply hidden;
+}
+
+.mdxeditor-toolbar {
+  @apply bg-transparent! border border-default rounded-xl!;
+}
+
+.prose * {
+  @apply m-0;
+}
+
+.prose > * {
+  @apply my-3!;
+}
+
+.prose > :first-child {
+  @apply mt-0!;
+}
+
+.prose > :last-child {
+  @apply mb-0!;
+}
+
+.prose > ul > * {
+  @apply my-0!;
+}
+
+.prose table > :is(caption, thead, tbody) {
+  @apply border-b-default border-b-1;
+}
+
+.prose :is(h1, h2, h3, h4, h5, h6, p, a, ul, li, blockquote, strong) {
+  @apply text-inherit;
+}
+
+.prose > :is(hr) {
+  @apply border-default-200 duration-200 border-t!;
+}
+
+.prose :is(code) {
+  @apply max-w-max;
+}
+
+.prose :is(code) span {
+  @apply bg-default-200 p-1 rounded-md;
+}
+
+.prose
+  :where(code):not(
+    :where([class~="not-prose"], [class~="not-prose"] *)
+  ):before {
+  content: " ";
+  @apply inline-block w-0 h-0;
+}
+.prose
+  :where(code):not(
+    :where([class~="not-prose"], [class~="not-prose"] *)
+  )::after {
+  content: " ";
+  @apply inline-block w-0 h-0;
+}
+
+.editor-header * svg {
+  @apply fill-default-500;
+}
+
+.editor-header * button {
+  @apply bg-default-100;
+}
+
+.editor-header * button:hover {
+  @apply bg-default-200/80!;
+}
+
+.editor-header * button:focus {
+  @apply bg-default-200/80!;
+}
+
+.editor-header *[aria-checked="true"] {
+  @apply bg-default-200!;
+}
+
+.mdxeditor-source-editor,
+.cm-editor {
+  @apply dark:invert;
+}
+
+.mdxeditor * hr {
+  @apply my-2! border-t-2;
+}
+
+.editor-content * table {
+  @apply mx-2 my-2 max-w-[calc(100%-1rem)];
+}
+
+.editor-content * table thead tr th {
+  @apply py-0;
+}
+
+.editor-content * table *,
+.editor-content * table {
+  @apply border-default-400!;
+}
+
+/* .editor-content * div[data-editor-block-type="image"] {
+  @apply hidden;
+} */
+
+div[data-lexical-decorator="true"] > div {
+  @apply p-0!;
+}
+
+.editor-readonly * div[data-lexical-decorator="true"] > div > :first-child {
+  @apply hidden p-0!;
+}
+
+.editor-readonly * img {
+  @apply pointer-events-none;
+}
+
+.mdxeditor-popup-container {
+  @apply border-none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  :is(.no-print, .no-print *) {
+    display: none;
+  }
 }
