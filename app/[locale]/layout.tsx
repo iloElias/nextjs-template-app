@@ -1,6 +1,7 @@
 import type {Metadata} from "next";
 import {Providers} from "@/providers/providers";
 import {getStaticParams} from "@/locales/server";
+import {setStaticParamsLocale} from "next-international/server";
 
 export const metadata: Metadata = {
   title: "Murilo's Next.js Template App",
@@ -17,6 +18,7 @@ export default async function LocaleLayout({
   params: Promise<{locale: string}>;
 }>) {
   const {locale} = await params;
+  setStaticParamsLocale(locale);
 
   return <Providers locale={locale}>{children}</Providers>;
 }

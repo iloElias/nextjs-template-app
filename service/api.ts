@@ -2,7 +2,7 @@ import {
   AUTH_BROWSER_AGENT_KEY,
   AUTH_TOKEN_KEY,
   AUTHENTICATED_KEY,
-} from "@/app/middleware";
+} from "@/proxy";
 import axios from "axios";
 import { getApiUrl } from "@/service/env";
 import { cookieOptions, cookies } from "@/service/cookie";

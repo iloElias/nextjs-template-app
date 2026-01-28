@@ -1,13 +1,10 @@
-import { Section } from "@/components/layout/section";
-import { getI18n } from "@/locales/server";
-
-export default async function NotFound() {
-  const t = await getI18n();
-
+export default function NotFound() {
   return (
-    <Section className="flex flex-col gap-2 max-w-md">
-      <h1 className="font-semibold text-xl">{t("not-found.title")}</h1>
-      <p className="text-default-500 text-sm">{t("not-found.description")}</p>
-    </Section>
+    <section className="flex flex-col gap-2 mx-auto px-4 py-8 max-w-md container">
+      <h1 className="font-semibold text-xl">Page Not Found</h1>
+      <p className="text-default-500 text-sm">
+        The page you are looking for does not exist.
+      </p>
+    </section>
   );
 }
