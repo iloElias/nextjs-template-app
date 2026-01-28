@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MDXEditorComponent } from "@/components/markdown/mdx-editor";
 import { Checkbox } from "@heroui/react";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 const INITIAL_MARKDOWN = `# Welcome to MDX Editor
 
@@ -73,6 +74,7 @@ export default function Page() {
         >
           Manter editável
         </Checkbox>
+        <ThemeToggle />
       </div>
       <MDXEditorComponent
         readOnly={!isEditable}

@@ -3,6 +3,7 @@
 import {HeroUIProvider} from "@heroui/react";
 import {I18nProvider} from "@react-aria/i18n";
 import {I18nProviderClient} from "@/locales/client";
+import {ThemeProvider} from "next-themes";
 
 export const Providers: React.FC<{
   children: React.ReactNode;
@@ -13,16 +14,18 @@ export const Providers: React.FC<{
   return (
     <I18nProviderClient locale={providerLocale}>
       <I18nProvider locale={providerLocale}>
-        <HeroUIProvider
-          locale={providerLocale}
-          {...{
-            skipFramerMotionAnimations: false,
-            disableAnimation: false,
-          }}
-          labelPlacement="outside"
-        >
-          {children}
-        </HeroUIProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <HeroUIProvider
+            locale={providerLocale}
+            {...{
+              skipFramerMotionAnimations: false,
+              disableAnimation: false,
+            }}
+            labelPlacement="outside"
+          >
+            {children}
+          </HeroUIProvider>
+        </ThemeProvider>
       </I18nProvider>
     </I18nProviderClient>
   );

@@ -23,7 +23,7 @@ import {
 import { useScopedI18n } from "@/locales/client";
 
 const Separator: React.FC = () => {
-  return <div className="bg-default-600 mx-1 w-px h-6" />;
+  return <div className="bg-default mx-1 w-px h-6" />;
 };
 
 export const MdxToolbar: React.FC = () => {

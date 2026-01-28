@@ -23,7 +23,7 @@ svg.solar-icons path {
 }
 
 .mdxeditor-toolbar {
-  @apply bg-transparent! border border-default rounded-xl!;
+  @apply bg-background! border border-default rounded-xl!;
 }
 
 .prose * {

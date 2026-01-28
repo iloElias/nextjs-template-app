@@ -6,7 +6,7 @@ export const Html: React.FC<React.HTMLAttributes<HTMLHtmlElement>> = ({children,
   const {locale} = useLocale();
 
   return (
-    <html lang={lang ?? locale} {...props}>
+    <html lang={lang ?? locale} suppressHydrationWarning {...props}>
       {children}
     </html>
   );
