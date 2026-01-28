@@ -25,7 +25,7 @@ export const MdxButton: React.FC<MdxButtonProps> = ({
         size="sm"
         isIconOnly
         className={cn(
-          "h-8 bg-default-100 hover:bg-default-200 text-default-600! duration-75!",
+          "h-8 bg-default-100 hover:bg-default-200 text-default-800! duration-75!",
           active && "bg-primary-200!",
         )}
         {...props}

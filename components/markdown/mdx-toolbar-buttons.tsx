@@ -14,9 +14,17 @@ import {
   viewMode$,
   insertMarkdown$,
   currentBlockType$,
-  applyBlockType$,
+  convertSelectionToNode$,
 } from "@mdxeditor/editor";
-import { UNDO_COMMAND, REDO_COMMAND } from "lexical";
+import {
+  UNDO_COMMAND,
+  REDO_COMMAND,
+  CAN_UNDO_COMMAND,
+  CAN_REDO_COMMAND,
+  COMMAND_PRIORITY_CRITICAL,
+  $createParagraphNode,
+} from "lexical";
+import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import {
   AlignVerticalSpacing,
   Card,
@@ -37,7 +45,7 @@ import {
   UndoRightRound,
 } from "@solar-icons/react";
 import { MdxButton } from "./mdx-button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialogue } from "../dialogue";
 import { Button, useDisclosure, Select, SelectItem } from "@heroui/react";
 import { ModalBody, ModalFooter, ModalHeader } from "../modal";
@@ -60,7 +68,7 @@ export const HeroBlockTypeSelect = () => {
   const btt = useScopedI18n("mdx-editor.block-types");
 
   const currentBlockType = useCellValue(currentBlockType$);
-  const applyBlockType = usePublisher(applyBlockType$);
+  const convertSelectionToNode = usePublisher(convertSelectionToNode$);
 
   const blockTypes = [
     { key: "paragraph", label: btt("paragraph") },
@@ -84,8 +92,21 @@ export const HeroBlockTypeSelect = () => {
       selectedKeys={new Set([currentBlockType || "paragraph"])}
       onSelectionChange={(keys) => {
         const selected = Array.from(keys)[0] as string;
-        applyBlockType(selected as BlockType);
-        console.log(selected);
+        
+        switch (selected) {
+          case "quote":
+            convertSelectionToNode(() => $createQuoteNode());
+            break;
+          case "paragraph":
+            convertSelectionToNode(() => $createParagraphNode());
+            break;
+          case "":
+            break;
+          default:
+            if (selected.startsWith("h")) {
+              convertSelectionToNode(() => $createHeadingNode(selected as BlockType));
+            }
+        }
       }}
     >
       {blockTypes.map((type) => (
@@ -97,10 +118,25 @@ export const HeroBlockTypeSelect = () => {
 
 export const HeroUndo = () => {
   const editor = useCellValue(activeEditor$);
+  const [canUndo, setCanUndo] = useState(false);
+
+  useEffect(() => {
+    if (editor) {
+      return editor.registerCommand(
+        CAN_UNDO_COMMAND,
+        (payload) => {
+          setCanUndo(payload);
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL
+      );
+    }
+  }, [editor]);
 
   return (
     <MdxButton
       onPress={() => editor?.dispatchCommand(UNDO_COMMAND, undefined)}
+      isDisabled={!canUndo}
       role="undo"
     >
       <UndoLeftRound />
@@ -110,10 +146,25 @@ export const HeroUndo = () => {
 
 export const HeroRedo = () => {
   const editor = useCellValue(activeEditor$);
+  const [canRedo, setCanRedo] = useState(false);
+
+  useEffect(() => {
+    if (editor) {
+      return editor.registerCommand(
+        CAN_REDO_COMMAND,
+        (payload) => {
+          setCanRedo(payload);
+          return false;
+        },
+        COMMAND_PRIORITY_CRITICAL
+      );
+    }
+  }, [editor]);
 
   return (
     <MdxButton
       onPress={() => editor?.dispatchCommand(REDO_COMMAND, undefined)}
+      isDisabled={!canRedo}
       role="redo"
     >
       <UndoRightRound />
