@@ -53,16 +53,6 @@ import { NumberInput } from "../form/number-input";
 import { Input } from "../form/input";
 import { useScopedI18n } from "@/locales/client";
 
-type BlockType =
-  | "paragraph"
-  | "h1"
-  | "h2"
-  | "h3"
-  | "h4"
-  | "h5"
-  | "h6"
-  | "quote";
-
 export const HeroBlockTypeSelect = () => {
   const tmdxbutton = useScopedI18n("mdx-editor.buttons");
   const btt = useScopedI18n("mdx-editor.block-types");
@@ -104,7 +94,7 @@ export const HeroBlockTypeSelect = () => {
             break;
           default:
             if (selected.startsWith("h")) {
-              convertSelectionToNode(() => $createHeadingNode(selected as BlockType));
+              convertSelectionToNode(() => $createHeadingNode(selected as "h1" | "h2" | "h3" | "h4" | "h5" | "h6"));
             }
         }
       }}
