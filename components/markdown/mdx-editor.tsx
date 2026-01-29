@@ -13,7 +13,6 @@ import {
   linkDialogPlugin,
   imagePlugin,
   codeBlockPlugin,
-  codeMirrorPlugin,
   tablePlugin,
   diffSourcePlugin,
 } from "@mdxeditor/editor";
@@ -22,6 +21,7 @@ import { MdxToolbar } from "./mdx-toolbar";
 import { cn } from "@heroui/react";
 import { MdxEditorProvider } from "./mdx-editor-context";
 import { MdxLinkPreview } from "./mdx-link-preview";
+import { createMonacoCodeEditorDescriptor } from "./monaco-code-editor";
 
 interface MDXEditorComponentProps {
   markdown?: string;
@@ -70,45 +70,15 @@ export function MDXEditorComponent({
             markdownShortcutPlugin(),
             linkPlugin(),
             linkDialogPlugin({
-              // Don't render the default dialog - we handle it in the toolbar
               LinkDialog: () => <></>,
             }),
             imagePlugin(),
             tablePlugin(),
-            codeBlockPlugin({ defaultCodeBlockLanguage: "javascript" }),
-            codeMirrorPlugin({
-              codeBlockLanguages: {
-                js: "JavaScript",
-                javascript: "JavaScript",
-                ts: "TypeScript",
-                typescript: "TypeScript",
-                tsx: "TypeScript (React)",
-                jsx: "JavaScript (React)",
-                python: "Python",
-                java: "Java",
-                csharp: "C#",
-                cpp: "C++",
-                c: "C",
-                go: "Go",
-                rust: "Rust",
-                php: "PHP",
-                ruby: "Ruby",
-                swift: "Swift",
-                kotlin: "Kotlin",
-                html: "HTML",
-                css: "CSS",
-                scss: "SCSS",
-                json: "JSON",
-                yaml: "YAML",
-                xml: "XML",
-                markdown: "Markdown",
-                sql: "SQL",
-                bash: "Bash",
-                shell: "Shell",
-                powershell: "PowerShell",
-                dockerfile: "Dockerfile",
-                plaintext: "Plain Text",
-              },
+            codeBlockPlugin({
+              defaultCodeBlockLanguage: "javascript",
+              codeBlockEditorDescriptors: [
+                createMonacoCodeEditorDescriptor(readOnly),
+              ],
             }),
             toolbarPlugin({
               toolbarContents: () => !readOnly && <MdxToolbar />,

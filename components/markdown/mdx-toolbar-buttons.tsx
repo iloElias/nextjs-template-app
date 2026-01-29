@@ -54,6 +54,7 @@ import { Input } from "../form/input";
 import { useScopedI18n } from "@/locales/client";
 import { MdxLinkForm } from "./mdx-link-form";
 import { useMdxEditor } from "./mdx-editor-context";
+import { MdxCodeBlockForm } from "./mdx-code-block-form";
 
 export const HeroBlockTypeSelect = () => {
   const tmdxbutton = useScopedI18n("mdx-editor.buttons");
@@ -461,6 +462,29 @@ export const HeroInsertThematicBreak = () => {
     <MdxButton onPress={() => insertBreak()} role="insertthematicbreak">
       <AlignVerticalSpacing />
     </MdxButton>
+  );
+};
+
+export const HeroInsertCodeBlock = () => {
+  const disclosure = useDisclosure();
+
+  return (
+    <>
+      <Modal 
+        isOpen={disclosure.isOpen}
+        onClose={disclosure.onClose}
+        size="md" 
+        placement="center"
+      >
+        <ModalContent>
+          <ModalHeader>Insert Code Block</ModalHeader>
+          <MdxCodeBlockForm onClose={disclosure.onClose} />
+        </ModalContent>
+      </Modal>
+      <MdxButton onPress={disclosure.onOpen} role="insertcodeblock">
+        <CodeSquare />
+      </MdxButton>
+    </>
   );
 };
 
