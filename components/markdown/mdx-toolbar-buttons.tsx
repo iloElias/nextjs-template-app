@@ -12,9 +12,9 @@ import {
   applyListType$,
   currentListType$,
   viewMode$,
-  insertMarkdown$,
   currentBlockType$,
   convertSelectionToNode$,
+  cancelLinkEdit$,
 } from "@mdxeditor/editor";
 import {
   UNDO_COMMAND,
@@ -45,13 +45,15 @@ import {
   UndoRightRound,
 } from "@solar-icons/react";
 import { MdxButton } from "./mdx-button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dialogue } from "../dialogue";
 import { Button, useDisclosure, Select, SelectItem } from "@heroui/react";
-import { ModalBody, ModalFooter, ModalHeader } from "../modal";
+import { Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from "../modal";
 import { NumberInput } from "../form/number-input";
 import { Input } from "../form/input";
 import { useScopedI18n } from "@/locales/client";
+import { MdxLinkForm } from "./mdx-link-form";
+import { useMdxEditor } from "./mdx-editor-context";
 
 export const HeroBlockTypeSelect = () => {
   const tmdxbutton = useScopedI18n("mdx-editor.buttons");
@@ -82,7 +84,7 @@ export const HeroBlockTypeSelect = () => {
       selectedKeys={new Set([currentBlockType || "paragraph"])}
       onSelectionChange={(keys) => {
         const selected = Array.from(keys)[0] as string;
-        
+
         switch (selected) {
           case "quote":
             convertSelectionToNode(() => $createQuoteNode());
@@ -94,7 +96,11 @@ export const HeroBlockTypeSelect = () => {
             break;
           default:
             if (selected.startsWith("h")) {
-              convertSelectionToNode(() => $createHeadingNode(selected as "h1" | "h2" | "h3" | "h4" | "h5" | "h6"));
+              convertSelectionToNode(() =>
+                $createHeadingNode(
+                  selected as "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
+                ),
+              );
             }
         }
       }}
@@ -118,7 +124,7 @@ export const HeroUndo = () => {
           setCanUndo(payload);
           return false;
         },
-        COMMAND_PRIORITY_CRITICAL
+        COMMAND_PRIORITY_CRITICAL,
       );
     }
   }, [editor]);
@@ -146,7 +152,7 @@ export const HeroRedo = () => {
           setCanRedo(payload);
           return false;
         },
-        COMMAND_PRIORITY_CRITICAL
+        COMMAND_PRIORITY_CRITICAL,
       );
     }
   }, [editor]);
@@ -235,55 +241,66 @@ export const HeroCode = () => {
 };
 
 export const HeroCreateLink = () => {
-  const insertLink = usePublisher(insertMarkdown$);
-
+  const activeEditor = useCellValue(activeEditor$);
+  const cancelEdit = usePublisher(cancelLinkEdit$);
+  const { linkEdit, isLinkDialogOpen, openLinkDialog, closeLinkDialog, setLinkEdit } = useMdxEditor();
   const disclosure = useDisclosure();
 
-  const [src, setSrc] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [altText, setAltText] = useState<string>("");
+  // Sync context state with disclosure state
+  useEffect(() => {
+    if (isLinkDialogOpen && !disclosure.isOpen) {
+      disclosure.onOpen();
+    } else if (!isLinkDialogOpen && disclosure.isOpen) {
+      disclosure.onClose();
+    }
+  }, [isLinkDialogOpen, disclosure]);
+
+  const handleOpenDialog = useCallback(() => {
+    if (activeEditor) {
+      const selection = activeEditor.getEditorState().read(() => {
+        const selection = activeEditor._editorState._selection;
+        if (selection && selection.getTextContent) {
+          return selection.getTextContent();
+        }
+        return "";
+      });
+      setLinkEdit({ url: "", title: "", text: selection, isEditing: false });
+    }
+    openLinkDialog();
+  }, [activeEditor, openLinkDialog, setLinkEdit]);
+
+  const handleClose = useCallback((cancelled: boolean = true) => {
+    const wasEditing = linkEdit?.isEditing === true;
+    closeLinkDialog();
+    disclosure.onClose();
+    // Only call cancelEdit if we're cancelling (not submitting) an edit
+    if (cancelled && wasEditing) {
+      cancelEdit();
+    }
+  }, [linkEdit, cancelEdit, closeLinkDialog, disclosure]);
 
   return (
     <>
-      <Dialogue disclosure={disclosure} size="sm" placement="center">
-        <ModalHeader>Inserir link</ModalHeader>
-        <ModalBody>
-          <Input
-            label="URL"
-            value={src}
-            onValueChange={setSrc}
-            placeholder="https://example.com/image.jpg"
+      <Modal 
+        isOpen={disclosure.isOpen}
+        onClose={() => handleClose(true)}
+        size="sm" 
+        placement="center"
+      >
+        <ModalContent key={linkEdit ? `${linkEdit.isEditing}-${linkEdit.url}` : 'new'}>
+          <ModalHeader>
+            {linkEdit?.isEditing ? "Edit Link" : "Insert Link"}
+          </ModalHeader>
+          <MdxLinkForm
+            selectedText={linkEdit?.text || ""}
+            existingUrl={linkEdit?.url || ""}
+            existingTitle={linkEdit?.title || ""}
+            isEditing={linkEdit?.isEditing || false}
+            onClose={handleClose}
           />
-          <Input
-            label="Titulo do Link"
-            value={title}
-            onValueChange={setTitle}
-            placeholder="Título do Link"
-          />
-          <Input
-            label="Texto alternativo"
-            value={altText}
-            onValueChange={setAltText}
-            placeholder="Texto ancora"
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            color="primary"
-            className="flex-1 rounded-xl!"
-            onPress={() => {
-              disclosure.onClose();
-              insertLink(`[${title}](${src}${altText ? ` "${altText}"` : ""})`);
-            }}
-          >
-            Confirm
-          </Button>
-          <Button className="flex-1 rounded-xl!" onPress={disclosure.onClose}>
-            Close
-          </Button>
-        </ModalFooter>
-      </Dialogue>
-      <MdxButton onPress={disclosure.onOpen} role="createlink">
+        </ModalContent>
+      </Modal>
+      <MdxButton onPress={handleOpenDialog} role="createlink">
         <Link />
       </MdxButton>
     </>

@@ -5,8 +5,14 @@
 @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:where(.dark, .dark *));
 
-html {
-  @apply min-h-screen bg-background text-foreground;
+html,
+body {
+  @apply overflow-hidden!;
+}
+
+html,
+[data-overlay-container="true"] {
+  @apply max-h-screen min-h-screen bg-background text-foreground overflow-auto;
 }
 
 svg.solar-icons {

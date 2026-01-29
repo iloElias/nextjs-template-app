@@ -1,9 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { MDXEditorComponent } from "@/components/markdown/mdx-editor";
+import dynamic from "next/dynamic";
 import { Checkbox } from "@heroui/react";
 import ThemeToggle from "@/components/ui/theme-toggle";
+
+const MDXEditorComponent = dynamic(
+  () => import("@/components/markdown/mdx-editor").then(mod => ({ default: mod.MDXEditorComponent })),
+  { ssr: false }
+);
 
 const INITIAL_MARKDOWN = `# Welcome to MDX Editor
 
@@ -12,6 +17,8 @@ const INITIAL_MARKDOWN = `# Welcome to MDX Editor
 This is a **rich text editor** for *Markdown* content.
 
 **TODO**: Ainda falta configurar o seletor de tipos de bloco
+
+[Link](mesf.app "Link teste")
 
 ### Features
 
@@ -73,7 +80,7 @@ export default function MarkdownEditor() {
         >
           Manter editável
         </Checkbox>
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
       </div>
       <MDXEditorComponent
         readOnly={!isEditable}

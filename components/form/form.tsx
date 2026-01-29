@@ -1,36 +1,62 @@
 import {
   FormProps as HeroUIFormProps,
   Form as HeroUIForm,
+  cn,
 } from "@heroui/react";
+import React, { useCallback } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FormInitialData = Record<string, any>;
-export interface FormProps extends HeroUIFormProps {
+export type FormInitialData<T = Record<string, unknown>> = Partial<T>;
+
+export interface FormProps<T = Record<string, unknown>> extends Omit<
+  HeroUIFormProps,
+  "onSubmit"
+> {
   children?: React.ReactNode;
-  initialData?: FormInitialData;
-}
-import React, { useState } from "react";
-
-export interface FormContextType {
-  initialData?: FormInitialData;
+  initialData?: FormInitialData<T>;
+  onSubmit?: (event: React.FormEvent<HTMLFormElement>, data: T) => void;
 }
 
-const FormContext = React.createContext<FormContextType | undefined>(undefined);
+export interface FormContextType<T = Record<string, unknown>> {
+  initialData?: FormInitialData<T>;
+}
 
-export const Form: React.FC<FormProps> = ({ initialData, ...props }) => {
-  const [initial] = useState(initialData);
+const FormContext = React.createContext<
+  FormContextType<Record<string, unknown>> | undefined
+>(undefined);
+
+export const Form = <T,>({
+  initialData,
+  onSubmit,
+  className,
+  ...props
+}: FormProps<T>) => {
+  const handleSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+
+      if (onSubmit) {
+        onSubmit(event, data as T);
+      }
+    },
+    [onSubmit],
+  );
 
   return (
     <FormContext.Provider
       value={{
-        initialData: initial,
+        initialData,
       }}
     >
-      <HeroUIForm {...props} />
+      <HeroUIForm
+        {...props}
+        className={cn("inline-block", className)}
+        onSubmit={handleSubmit}
+      />
     </FormContext.Provider>
   );
 };
 
-export const useForm = () => {
-  return React.useContext(FormContext) ?? {};
+export const useForm = <T = Record<string, unknown>,>(): FormContextType<T> => {
+  return (React.useContext(FormContext) as FormContextType<T>) ?? {};
 };

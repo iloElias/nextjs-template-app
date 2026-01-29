@@ -21,8 +21,9 @@ import {
   HeroBlockTypeSelect,
 } from "./mdx-toolbar-buttons";
 import { useScopedI18n } from "@/locales/client";
+import { LinkDialogMonitor } from "./mdx-link-dialog-monitor";
 
-const Separator: React.FC = () => {
+export const Separator: React.FC = () => {
   return <div className="bg-default mx-1 w-px h-6" />;
 };
 
@@ -33,6 +34,7 @@ export const MdxToolbar: React.FC = () => {
 
   return (
     <>
+      <LinkDialogMonitor />
       {viewMode === "rich-text" && (
         <>
           <ButtonGroup>
@@ -67,10 +69,9 @@ export const MdxToolbar: React.FC = () => {
           </ButtonGroup>
         </>
       )}
-
-      <span className={cn("flex-1", viewMode !== "rich-text" && 'hidden')} />
+      <span className={cn("flex-1", viewMode !== "rich-text" && "hidden")} />
       <p className="mx-2 min-w-max text-tiny">{tmode(viewMode)}</p>
-      <span className={cn("flex-1", viewMode === "rich-text" && 'hidden')} />
+      <span className={cn("flex-1", viewMode === "rich-text" && "hidden")} />
       <ButtonGroup>
         <HeroRichTextMode />
         <HeroDiffMode />
