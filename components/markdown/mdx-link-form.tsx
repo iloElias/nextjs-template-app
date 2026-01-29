@@ -1,11 +1,21 @@
-import { insertMarkdown$, usePublisher, activeEditor$, useCellValue } from "@mdxeditor/editor";
+import {
+  insertMarkdown$,
+  usePublisher,
+  activeEditor$,
+  useCellValue,
+} from "@mdxeditor/editor";
 import { Form } from "../form/form";
 import { Input } from "../form/input";
 import { Button } from "@heroui/react";
 import { ModalBody, ModalFooter } from "../modal";
 import { useCallback } from "react";
-import { TOGGLE_LINK_COMMAND, $isLinkNode } from "@lexical/link";
-import { $getSelection, $isRangeSelection, $createRangeSelection, $setSelection } from "lexical";
+import { $isLinkNode } from "@lexical/link";
+import {
+  $getSelection,
+  $isRangeSelection,
+  $createRangeSelection,
+  $setSelection,
+} from "lexical";
 
 interface MdxLinkFormProps {
   selectedText: string;
@@ -31,10 +41,13 @@ export const MdxLinkForm: React.FC<MdxLinkFormProps> = ({
   const insertLink = usePublisher(insertMarkdown$);
   const editor = useCellValue(activeEditor$);
 
-  const makeMdLink = useCallback((url: string, text?: string, title?: string): string => {
-    const displayText = text || url;
-    return `[${displayText}](${url}${title ? ` "${title}"` : ""})`;
-  }, []);
+  const makeMdLink = useCallback(
+    (url: string, text?: string, title?: string): string => {
+      const displayText = text || url;
+      return `[${displayText}](${url}${title ? ` "${title}"` : ""})`;
+    },
+    [],
+  );
 
   return (
     <Form<MdxLink>
@@ -50,23 +63,23 @@ export const MdxLinkForm: React.FC<MdxLinkFormProps> = ({
         const title = formData.get("title") as string;
 
         if (isEditing && editor) {
-          // For editing: select and delete the old link, then insert new one
           editor.update(() => {
             const selection = $getSelection();
             if ($isRangeSelection(selection)) {
               const nodes = selection.getNodes();
-              
-              // Find the link node
+
               for (const node of nodes) {
                 const parent = node.getParent();
                 if ($isLinkNode(parent)) {
-                  // Create a selection that covers the entire link
                   const linkSelection = $createRangeSelection();
-                  linkSelection.anchor.set(parent.getKey(), 0, 'element');
-                  linkSelection.focus.set(parent.getKey(), parent.getChildrenSize(), 'element');
+                  linkSelection.anchor.set(parent.getKey(), 0, "element");
+                  linkSelection.focus.set(
+                    parent.getKey(),
+                    parent.getChildrenSize(),
+                    "element",
+                  );
                   $setSelection(linkSelection);
-                  
-                  // Delete the entire link and its content
+
                   parent.remove();
                   break;
                 } else if ($isLinkNode(node)) {
@@ -76,14 +89,12 @@ export const MdxLinkForm: React.FC<MdxLinkFormProps> = ({
               }
             }
           });
-          
-          // Insert the updated link as markdown
+
           insertLink(makeMdLink(url, text, title));
         } else {
-          // Insert new link
           insertLink(makeMdLink(url, text, title));
         }
-        onClose(false); // false = not cancelled, it was submitted
+        onClose(false);
       }}
     >
       <ModalBody>
@@ -94,18 +105,16 @@ export const MdxLinkForm: React.FC<MdxLinkFormProps> = ({
           isRequired
           autoFocus
         />
-        <Input
-          name="text"
-          label="Display Text"
-          placeholder="Text to display"
-        />
+        <Input name="text" label="Display Text" placeholder="Text to display" />
         <Input name="title" label="Title" placeholder="Title (optional)" />
       </ModalBody>
       <ModalFooter>
         <Button color="primary" type="submit" className="flex-1 rounded-xl!">
           {isEditing ? "Update Link" : "Insert Link"}
         </Button>
-        <Button className="flex-1 rounded-xl!" onPress={() => onClose(true)}>Cancel</Button>
+        <Button className="flex-1 rounded-xl!" onPress={() => onClose(true)}>
+          Cancel
+        </Button>
       </ModalFooter>
     </Form>
   );

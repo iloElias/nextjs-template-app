@@ -6,9 +6,9 @@ import { Link, Pen, TrashBin2 } from "@solar-icons/react";
 import { Separator } from "./mdx-toolbar";
 
 export const MdxLinkPreview: React.FC = () => {
-  const { linkPreview, setLinkPreview, setLinkEdit, openLinkDialog } = useMdxEditor();
+  const { linkPreview, setLinkPreview, setLinkEdit, openLinkDialog, isLinkDialogOpen } = useMdxEditor();
 
-  if (!linkPreview) {
+  if (!linkPreview || isLinkDialogOpen) {
     return null;
   }
 
