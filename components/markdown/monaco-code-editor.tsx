@@ -158,7 +158,12 @@ const MonacoEditorComponent: React.FC<{
   };
 
   useEffect(() => {
-    if (editorInstanceRef.current && mounted && resolvedTheme && themesDefinedRef.current) {
+    if (
+      editorInstanceRef.current &&
+      mounted &&
+      resolvedTheme &&
+      themesDefinedRef.current
+    ) {
       editorInstanceRef.current.updateOptions({ theme: editorTheme });
     }
   }, [editorTheme, mounted, resolvedTheme]);
@@ -227,9 +232,7 @@ const MonacoEditorComponent: React.FC<{
           </>
         )}
       </div>
-      <div
-        onKeyDown={(e) => e.nativeEvent.stopImmediatePropagation()}
-      >
+      <div onKeyDown={(e) => e.nativeEvent.stopImmediatePropagation()}>
         {mounted && resolvedTheme ? (
           <Editor
             key={`monaco-editor-${readOnly}`}
@@ -305,12 +308,11 @@ const MonacoEditorComponent: React.FC<{
   );
 };
 
-export const createMonacoCodeEditorDescriptor = (
-  readOnly = false,
-): CodeBlockEditorDescriptor => ({
-  match: () => true,
-  priority: 1,
-  Editor: (props) => (
-    <MonacoEditorComponent code={props.code} language={props.language} />
-  ),
-});
+export const createMonacoCodeEditorDescriptor =
+  (): CodeBlockEditorDescriptor => ({
+    match: () => true,
+    priority: 1,
+    Editor: (props) => (
+      <MonacoEditorComponent code={props.code} language={props.language} />
+    ),
+  });

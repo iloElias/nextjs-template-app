@@ -8,7 +8,7 @@ import { insertCodeBlock$ } from "@mdxeditor/editor";
 import { LanguageSelector } from "./language-selector";
 import { TextArea } from "../form/textarea";
 import { useMdxEditor } from "./mdx-editor-context";
-import { LANGUAGE_EXAMPLES } from "./language-examples";
+import { LANGUAGE_EXAMPLES } from "../../lib/language-examples";
 
 interface MdxCodeBlockFormProps {
   onClose: (cancelled?: boolean) => void;
