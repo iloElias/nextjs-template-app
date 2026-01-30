@@ -122,6 +122,7 @@ export const HeroBlockTypeSelect = () => {
 };
 
 export const HeroUndo = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const editor = useCellValue(activeEditor$);
   const [canUndo, setCanUndo] = useState(false);
 
@@ -142,7 +143,7 @@ export const HeroUndo = () => {
     <MdxButton
       onPress={() => editor?.dispatchCommand(UNDO_COMMAND, undefined)}
       isDisabled={!canUndo}
-      role="undo"
+      role={tmdx("toolbar.undo", { shortcut: "Ctrl + Z" })}
     >
       <UndoLeftRound />
     </MdxButton>
@@ -150,6 +151,7 @@ export const HeroUndo = () => {
 };
 
 export const HeroRedo = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const editor = useCellValue(activeEditor$);
   const [canRedo, setCanRedo] = useState(false);
 
@@ -170,7 +172,7 @@ export const HeroRedo = () => {
     <MdxButton
       onPress={() => editor?.dispatchCommand(REDO_COMMAND, undefined)}
       isDisabled={!canRedo}
-      role="redo"
+      role={tmdx("toolbar.redo", { shortcut: "Ctrl + Y" })}
     >
       <UndoRightRound />
     </MdxButton>
@@ -178,18 +180,24 @@ export const HeroRedo = () => {
 };
 
 export const HeroBold = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const applyFormat = usePublisher(applyFormat$);
   const currentFormat = useCellValue(currentFormat$);
   const isBold = (currentFormat & 1) !== 0;
 
   return (
-    <MdxButton active={isBold} onPress={() => applyFormat("bold")} role="bold">
+    <MdxButton
+      active={isBold}
+      onPress={() => applyFormat("bold")}
+      role={tmdx("toolbar.bold")}
+    >
       <TextBold />
     </MdxButton>
   );
 };
 
 export const HeroItalic = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const applyFormat = usePublisher(applyFormat$);
   const currentFormat = useCellValue(currentFormat$);
   const isItalic = (currentFormat & 2) !== 0;
@@ -198,7 +206,7 @@ export const HeroItalic = () => {
     <MdxButton
       active={isItalic}
       onPress={() => applyFormat("italic")}
-      role="italic"
+      role={tmdx("toolbar.italic")}
     >
       <TextItalic />
     </MdxButton>
@@ -206,6 +214,7 @@ export const HeroItalic = () => {
 };
 
 export const HeroUnderline = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const applyFormat = usePublisher(applyFormat$);
   const currentFormat = useCellValue(currentFormat$);
   const isUnderline = (currentFormat & 8) !== 0;
@@ -214,7 +223,7 @@ export const HeroUnderline = () => {
     <MdxButton
       active={isUnderline}
       onPress={() => applyFormat("underline")}
-      role="underline"
+      role={tmdx("toolbar.underline")}
     >
       <TextUnderline />
     </MdxButton>
@@ -222,6 +231,7 @@ export const HeroUnderline = () => {
 };
 
 export const HeroStrikethrough = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const applyFormat = usePublisher(applyFormat$);
   const currentFormat = useCellValue(currentFormat$);
   const isStrikethrough = (currentFormat & 4) !== 0;
@@ -230,7 +240,7 @@ export const HeroStrikethrough = () => {
     <MdxButton
       active={isStrikethrough}
       onPress={() => applyFormat("strikethrough")}
-      role="strikethrough"
+      role={tmdx("toolbar.strikethrough")}
     >
       <TextCross />
     </MdxButton>
@@ -238,18 +248,24 @@ export const HeroStrikethrough = () => {
 };
 
 export const HeroCode = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const applyFormat = usePublisher(applyFormat$);
   const currentFormat = useCellValue(currentFormat$);
   const isCode = (currentFormat & 16) !== 0;
 
   return (
-    <MdxButton active={isCode} onPress={() => applyFormat("code")} role="code">
+    <MdxButton
+      active={isCode}
+      onPress={() => applyFormat("code")}
+      role={tmdx("toolbar.inlineCode")}
+    >
       <Code />
     </MdxButton>
   );
 };
 
 export const HeroCreateLink = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const activeEditor = useCellValue(activeEditor$);
   const cancelEdit = usePublisher(cancelLinkEdit$);
   const {
@@ -309,7 +325,9 @@ export const HeroCreateLink = () => {
           key={linkEdit ? `${linkEdit.isEditing}-${linkEdit.url}` : "new"}
         >
           <ModalHeader>
-            {linkEdit?.isEditing ? "Edit Link" : "Insert Link"}
+            {linkEdit?.isEditing
+              ? tmdx("createLink.url")
+              : tmdx("toolbar.link")}
           </ModalHeader>
           <MdxLinkForm
             selectedText={linkEdit?.text || ""}
@@ -320,7 +338,7 @@ export const HeroCreateLink = () => {
           />
         </ModalContent>
       </Modal>
-      <MdxButton onPress={handleOpenDialog} role="createlink">
+      <MdxButton onPress={handleOpenDialog} role={tmdx("toolbar.link")}>
         <Link />
       </MdxButton>
     </>
@@ -328,6 +346,7 @@ export const HeroCreateLink = () => {
 };
 
 export const HeroBulletList = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const applyListType = usePublisher(applyListType$);
   const currentListType = useCellValue(currentListType$);
   const isBullet = currentListType === "bullet";
@@ -336,7 +355,7 @@ export const HeroBulletList = () => {
     <MdxButton
       active={isBullet}
       onPress={() => applyListType(isBullet ? "" : "bullet")}
-      role="bulletlist"
+      role={tmdx("toolbar.bulletedList")}
     >
       <List />
     </MdxButton>
@@ -344,6 +363,7 @@ export const HeroBulletList = () => {
 };
 
 export const HeroNumberedList = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const applyListType = usePublisher(applyListType$);
   const currentListType = useCellValue(currentListType$);
   const isNumbered = currentListType === "number";
@@ -352,7 +372,7 @@ export const HeroNumberedList = () => {
     <MdxButton
       active={isNumbered}
       onPress={() => applyListType(isNumbered ? "" : "number")}
-      role="numberedlist"
+      role={tmdx("toolbar.numberedList")}
     >
       <ListArrowDownMinimalistic />
     </MdxButton>
@@ -360,6 +380,7 @@ export const HeroNumberedList = () => {
 };
 
 export const HeroCheckList = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const applyListType = usePublisher(applyListType$);
   const currentListType = useCellValue(currentListType$);
   const isCheck = currentListType === "check";
@@ -368,7 +389,7 @@ export const HeroCheckList = () => {
     <MdxButton
       active={isCheck}
       onPress={() => applyListType(isCheck ? "" : "check")}
-      role="checklist"
+      role={tmdx("toolbar.checkList")}
     >
       <Checklist />
     </MdxButton>
@@ -376,6 +397,7 @@ export const HeroCheckList = () => {
 };
 
 export const HeroInsertImage = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const insertImage = usePublisher(insertImage$);
 
   const disclosure = useDisclosure();
@@ -387,25 +409,25 @@ export const HeroInsertImage = () => {
   return (
     <>
       <Dialogue disclosure={disclosure} size="sm" placement="center">
-        <ModalHeader>Inserir imagem</ModalHeader>
+        <ModalHeader>{tmdx("uploadImage.dialogTitle")}</ModalHeader>
         <ModalBody>
           <Input
-            label="URL da imagem"
+            label={tmdx("uploadImage.autoCompletePlaceholder")}
             value={src}
             onValueChange={setSrc}
             placeholder="https://example.com/image.jpg"
           />
           <Input
-            label="Texto alternativo"
+            label={tmdx("uploadImage.alt")}
             value={altText}
             onValueChange={setAltText}
-            placeholder="Descrição da imagem"
+            placeholder={tmdx("uploadImage.alt")}
           />
           <Input
-            label="Título"
+            label={tmdx("uploadImage.title")}
             value={title}
             onValueChange={setTitle}
-            placeholder="Título da imagem"
+            placeholder={tmdx("uploadImage.title")}
           />
         </ModalBody>
         <ModalFooter>
@@ -417,14 +439,14 @@ export const HeroInsertImage = () => {
               insertImage({ src, altText, title });
             }}
           >
-            Confirm
+            {tmdx("dialogControls.save")}
           </Button>
           <Button className="flex-1 rounded-xl!" onPress={disclosure.onClose}>
-            Close
+            {tmdx("dialogControls.cancel")}
           </Button>
         </ModalFooter>
       </Dialogue>
-      <MdxButton onPress={disclosure.onOpen} role="insertimage">
+      <MdxButton onPress={disclosure.onOpen} role={tmdx("toolbar.image")}>
         <Gallery />
       </MdxButton>
     </>
@@ -432,6 +454,7 @@ export const HeroInsertImage = () => {
 };
 
 export const HeroInsertTable = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const insertTable = usePublisher(insertTable$);
 
   const disclosure = useDisclosure();
@@ -442,11 +465,15 @@ export const HeroInsertTable = () => {
   return (
     <>
       <Dialogue disclosure={disclosure} size="sm" placement="center">
-        <ModalHeader>Tamanho da tabela</ModalHeader>
+        <ModalHeader>{tmdx("toolbar.table")}</ModalHeader>
         <ModalBody>
-          <NumberInput label="Linhas" value={rows} onValueChange={setRows} />
           <NumberInput
-            label="Colunas"
+            label={tmdx("table.insertRowAbove")}
+            value={rows}
+            onValueChange={setRows}
+          />
+          <NumberInput
+            label={tmdx("table.columnMenu")}
             value={columns}
             onValueChange={setColumns}
           />
@@ -460,14 +487,14 @@ export const HeroInsertTable = () => {
               insertTable({ rows, columns });
             }}
           >
-            Confirm
+            {tmdx("dialogControls.save")}
           </Button>
           <Button className="flex-1 rounded-xl!" onPress={disclosure.onClose}>
-            Close
+            {tmdx("dialogControls.cancel")}
           </Button>
         </ModalFooter>
       </Dialogue>
-      <MdxButton onPress={disclosure.onOpen} role="inserttable">
+      <MdxButton onPress={disclosure.onOpen} role={tmdx("toolbar.table")}>
         <Card />
       </MdxButton>
     </>
@@ -475,16 +502,21 @@ export const HeroInsertTable = () => {
 };
 
 export const HeroInsertThematicBreak = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const insertBreak = usePublisher(insertThematicBreak$);
 
   return (
-    <MdxButton onPress={() => insertBreak()} role="insertthematicbreak">
+    <MdxButton
+      onPress={() => insertBreak()}
+      role={tmdx("toolbar.thematicBreak")}
+    >
       <AlignVerticalSpacing />
     </MdxButton>
   );
 };
 
 export const HeroInsertCodeBlock = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const disclosure = useDisclosure();
 
   return (
@@ -496,11 +528,11 @@ export const HeroInsertCodeBlock = () => {
         placement="center"
       >
         <ModalContent>
-          <ModalHeader>Insert Code Block</ModalHeader>
+          <ModalHeader>{tmdx("toolbar.codeBlock")}</ModalHeader>
           <MdxCodeBlockForm onClose={disclosure.onClose} />
         </ModalContent>
       </Modal>
-      <MdxButton onPress={disclosure.onOpen} role="insertcodeblock">
+      <MdxButton onPress={disclosure.onOpen} role={tmdx("toolbar.codeBlock")}>
         <CodeSquare />
       </MdxButton>
     </>
@@ -508,6 +540,7 @@ export const HeroInsertCodeBlock = () => {
 };
 
 export const HeroRichTextMode = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const viewMode = useCellValue(viewMode$);
   const setViewMode = usePublisher(viewMode$);
   const isActive = viewMode === "rich-text";
@@ -516,7 +549,7 @@ export const HeroRichTextMode = () => {
     <MdxButton
       active={isActive}
       onPress={() => setViewMode("rich-text")}
-      role="rich-text"
+      role={tmdx("toolbar.richText")}
     >
       <DocumentAdd />
     </MdxButton>
@@ -524,6 +557,7 @@ export const HeroRichTextMode = () => {
 };
 
 export const HeroDiffMode = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const viewMode = useCellValue(viewMode$);
   const setViewMode = usePublisher(viewMode$);
   const isActive = viewMode === "diff";
@@ -532,7 +566,7 @@ export const HeroDiffMode = () => {
     <MdxButton
       active={isActive}
       onPress={() => setViewMode("diff")}
-      role="diff"
+      role={tmdx("toolbar.diffMode")}
     >
       <Notes />
     </MdxButton>
@@ -540,6 +574,7 @@ export const HeroDiffMode = () => {
 };
 
 export const HeroSourceMode = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const viewMode = useCellValue(viewMode$);
   const setViewMode = usePublisher(viewMode$);
   const isActive = viewMode === "source";
@@ -548,7 +583,7 @@ export const HeroSourceMode = () => {
     <MdxButton
       active={isActive}
       onPress={() => setViewMode("source")}
-      role="source"
+      role={tmdx("toolbar.source")}
     >
       <CodeSquare />
     </MdxButton>
@@ -556,9 +591,9 @@ export const HeroSourceMode = () => {
 };
 
 export const HeroCodeLanguageSelect = () => {
+  const tmdx = useScopedI18n("mdx-editor");
   const activeEditor = useCellValue(activeEditor$);
   const { setCurrentCodeLanguage } = useMdxEditor();
-  const [isInCodeBlock, setIsInCodeBlock] = useState(false);
   const [codeBlockLanguage, setCodeBlockLanguage] = useState("javascript");
 
   useEffect(() => {
@@ -572,12 +607,9 @@ export const HeroCodeLanguageSelect = () => {
           const element = anchorNode.getTopLevelElementOrThrow();
 
           if ($isCodeNode(element)) {
-            setIsInCodeBlock(true);
             const lang = element.getLanguage() || "javascript";
             setCodeBlockLanguage(lang);
             setCurrentCodeLanguage(lang);
-          } else {
-            setIsInCodeBlock(false);
           }
         }
       });
@@ -612,10 +644,10 @@ export const HeroCodeLanguageSelect = () => {
 
   return (
     <Select
-      aria-label="Code Language"
+      aria-label={tmdx("codeBlock.language")}
       size="sm"
       className="max-w-40"
-      placeholder="Language"
+      placeholder={tmdx("codeBlock.selectLanguage")}
       selectedKeys={new Set([codeBlockLanguage])}
       onSelectionChange={handleLanguageChange}
     >

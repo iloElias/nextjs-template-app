@@ -22,6 +22,7 @@ import { cn } from "@heroui/react";
 import { MdxEditorProvider } from "./mdx-editor-context";
 import { MdxLinkPreview } from "./mdx-link-preview";
 import { createMonacoCodeEditorDescriptor } from "./monaco-code-editor";
+import { useScopedI18n } from "@/locales/client";
 
 interface MDXEditorComponentProps {
   markdown?: string;
@@ -36,6 +37,8 @@ export function MDXEditorComponent({
   onChange,
   readOnly = false,
 }: MDXEditorComponentProps) {
+  const tmdx = useScopedI18n("mdx-editor");
+
   return (
     <MdxEditorProvider>
       <SolarProvider
@@ -53,6 +56,10 @@ export function MDXEditorComponent({
           markdown={markdown}
           onChange={onChange}
           readOnly={readOnly}
+          translation={(key, defaultValue) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return tmdx(key as any) || defaultValue;
+          }}
           className={cn(readOnly && "disabled")}
           contentEditableClassName={cn(
             "dark:prose-invert rounded-lg max-w-none min-h-125 text-default-700! prose prose-slate",
@@ -72,7 +79,9 @@ export function MDXEditorComponent({
             linkDialogPlugin({
               LinkDialog: () => <></>,
             }),
-            imagePlugin(),
+            imagePlugin({
+              
+            }),
             tablePlugin(),
             codeBlockPlugin({
               defaultCodeBlockLanguage: "javascript",

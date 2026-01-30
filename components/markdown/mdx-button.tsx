@@ -1,4 +1,3 @@
-import { useScopedI18n } from "@/locales/client";
 import { Button, ButtonProps, cn, Tooltip } from "@heroui/react";
 
 export interface MdxButtonProps extends ButtonProps {
@@ -11,13 +10,10 @@ export const MdxButton: React.FC<MdxButtonProps> = ({
   role,
   ...props
 }) => {
-  const tmdxbutton = useScopedI18n("mdx-editor.buttons");
-
   return (
     <Tooltip
       isDisabled={!role}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      content={role && tmdxbutton(role as any)}
+      content={role}
       delay={100}
       closeDelay={0}
     >

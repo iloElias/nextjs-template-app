@@ -99,6 +99,7 @@ export default {
       superscript: "Sobrescrito",
       subscript: "Subscrito",
       strikethrough: "Riscado",
+      removeStrikethrough: "Remover riscado",
     },
     admonitions: {
       note: "Nota",

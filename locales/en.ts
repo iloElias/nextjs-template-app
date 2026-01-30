@@ -96,6 +96,10 @@ export default {
       redo: "Redo {shortcut}",
       highlight: "Highlight",
       removeHighlight: "Remove highlight",
+      superscript: "Superscript",
+      subscript: "Subscript",
+      strikethrough: "Strikethrough",
+      removeStrikethrough: "Remove strikethrough",
     },
     admonitions: {
       note: "Note",
