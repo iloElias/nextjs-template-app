@@ -80,7 +80,7 @@ export default function MarkdownEditor() {
         >
           Manter editável
         </Checkbox>
-        {/* <ThemeToggle /> */}
+        <ThemeToggle />
       </div>
       <MDXEditorComponent
         readOnly={!isEditable}

@@ -18,26 +18,21 @@ interface LinkEditData {
 }
 
 interface MdxEditorContextValue {
-  // Link preview state
   linkPreview: LinkPreviewData | null;
   setLinkPreview: (data: LinkPreviewData | null) => void;
   
-  // Link edit state
   linkEdit: LinkEditData | null;
   setLinkEdit: (data: LinkEditData | null) => void;
   
-  // Dialog state
   isLinkDialogOpen: boolean;
   openLinkDialog: () => void;
   closeLinkDialog: () => void;
   
-  // Link operations
   removeLink: (linkNodeKey: string) => void;
   setRemoveLink: (fn: (linkNodeKey: string) => void) => void;
   
-  // Code block state
-  currentCodeLanguage: string;
-  setCurrentCodeLanguage: (language: string) => void;
+  currentCodeLanguage?: string;
+  setCurrentCodeLanguage: (language?: string) => void;
 }
 
 const MdxEditorContext = createContext<MdxEditorContextValue | undefined>(undefined);
@@ -59,7 +54,7 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({ children }
   const [linkEdit, setLinkEdit] = useState<LinkEditData | null>(null);
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [removeLink, setRemoveLink] = useState<(linkNodeKey: string) => void>(() => () => {});
-  const [currentCodeLanguage, setCurrentCodeLanguage] = useState("javascript");
+  const [currentCodeLanguage, setCurrentCodeLanguage] = useState<string | undefined>("javascript");
 
   const openLinkDialog = useCallback(() => {
     setIsLinkDialogOpen(true);

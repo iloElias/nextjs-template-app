@@ -35,7 +35,7 @@ export const MdxCodeBlockForm: React.FC<MdxCodeBlockFormProps> = ({
     <>
       <ModalBody>
         <LanguageSelector
-          value={language}
+          value={language || ""}
           onChange={setLanguage}
           className="w-full"
         />

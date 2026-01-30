@@ -2,9 +2,11 @@ import {
   Button,
   cn,
   ButtonProps as HeroUIButtonProps,
+  Spinner,
 } from "@heroui/react";
 import { useTheme } from "next-themes";
 import ThemeUserFeedback from "../ux/theme-user-feedback";
+import { useAppContext } from "@/contexts/app-context";
 
 interface ThemeSwitcherProps extends HeroUIButtonProps {
   className?: string;
@@ -14,13 +16,20 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({
   className,
   ...props
 }: ThemeSwitcherProps) => {
+  const { mounted } = useAppContext();
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  if (!theme) return null;
+  if (!mounted) {
+    return (
+      <Button isDisabled isIconOnly {...props}>
+        <Spinner size="sm" color="current" />
+      </Button>
+    );
+  }
 
   return (
     <Button

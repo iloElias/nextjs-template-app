@@ -20,18 +20,19 @@ import {
   HeroStrikethrough,
   HeroBlockTypeSelect,
   HeroInsertCodeBlock,
+  HeroCodeLanguageSelect,
 } from "./mdx-toolbar-buttons";
 import { useScopedI18n } from "@/locales/client";
 import { LinkDialogMonitor } from "./mdx-link-dialog-monitor";
 
 export const Separator: React.FC = () => {
-  return <div className="bg-default mx-1 w-px h-6" />;
+  return <div className="bg-default mx-1 min-w-px w-px h-6" />;
 };
 
 export const MdxToolbar: React.FC = () => {
   const [viewMode] = useCellValues(viewMode$);
 
-  const tmode = useScopedI18n("mdx-editor.mode");
+  const tmdx = useScopedI18n("mdx-editor");
 
   return (
     <>
@@ -44,6 +45,7 @@ export const MdxToolbar: React.FC = () => {
           </ButtonGroup>
           <Separator />
           <HeroBlockTypeSelect />
+          {/* <HeroCodeLanguageSelect /> */}
           <Separator />
           <ButtonGroup>
             <HeroBold />
@@ -72,7 +74,7 @@ export const MdxToolbar: React.FC = () => {
         </>
       )}
       <span className={cn("flex-1", viewMode !== "rich-text" && "hidden")} />
-      <p className="mx-2 min-w-max text-tiny">{tmode(viewMode)}</p>
+      <p className="mx-2 min-w-max text-tiny">{tmdx(`codeBlock.${viewMode}`)}</p>
       <span className={cn("flex-1", viewMode === "rich-text" && "hidden")} />
       <ButtonGroup>
         <HeroRichTextMode />

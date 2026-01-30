@@ -12,7 +12,11 @@ body {
 
 html,
 [data-overlay-container="true"] {
-  @apply max-h-screen min-h-screen bg-background text-foreground overflow-auto;
+  @apply max-h-screen min-h-screen bg-background text-foreground;
+}
+
+[data-overlay-container="true"] {
+  @apply overflow-auto!;
 }
 
 svg.solar-icons {
@@ -50,6 +54,10 @@ svg.solar-icons path {
 
 .prose > ul > * {
   @apply my-0!;
+}
+
+.prose table > * > * > :is(th, td) {
+  @apply border-default! border-1;
 }
 
 .prose table > :is(caption, thead, tbody) {

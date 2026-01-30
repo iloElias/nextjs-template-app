@@ -48,39 +48,47 @@ import { MdxButton } from "./mdx-button";
 import { useState, useEffect, useCallback } from "react";
 import { Dialogue } from "../dialogue";
 import { Button, useDisclosure, Select, SelectItem } from "@heroui/react";
-import { Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from "../modal";
+import {
+  Modal,
+  ModalContent,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "../modal";
 import { NumberInput } from "../form/number-input";
 import { Input } from "../form/input";
 import { useScopedI18n } from "@/locales/client";
 import { MdxLinkForm } from "./mdx-link-form";
 import { useMdxEditor } from "./mdx-editor-context";
 import { MdxCodeBlockForm } from "./mdx-code-block-form";
+import { SUPPORTED_LANGUAGES } from "./language-selector";
+import { $isCodeNode } from "@lexical/code";
+import { $getSelection, $isRangeSelection } from "lexical";
 
 export const HeroBlockTypeSelect = () => {
-  const tmdxbutton = useScopedI18n("mdx-editor.buttons");
-  const btt = useScopedI18n("mdx-editor.block-types");
+  const tmdx = useScopedI18n("mdx-editor");
 
   const currentBlockType = useCellValue(currentBlockType$);
   const convertSelectionToNode = usePublisher(convertSelectionToNode$);
 
   const blockTypes = [
-    { key: "paragraph", label: btt("paragraph") },
-    { key: "h1", label: btt("h1") },
-    { key: "h2", label: btt("h2") },
-    { key: "h3", label: btt("h3") },
-    { key: "h4", label: btt("h4") },
-    { key: "h5", label: btt("h5") },
-    { key: "h6", label: btt("h6") },
-    { key: "quote", label: btt("quote") },
-    { key: "list", label: btt("list") },
+    { key: "paragraph", label: tmdx("toolbar.blockTypes.paragraph") },
+    { key: "h1", label: tmdx("toolbar.blockTypes.heading", { level: "1" }) },
+    { key: "h2", label: tmdx("toolbar.blockTypes.heading", { level: "2" }) },
+    { key: "h3", label: tmdx("toolbar.blockTypes.heading", { level: "3" }) },
+    { key: "h4", label: tmdx("toolbar.blockTypes.heading", { level: "4" }) },
+    { key: "h5", label: tmdx("toolbar.blockTypes.heading", { level: "5" }) },
+    { key: "h6", label: tmdx("toolbar.blockTypes.heading", { level: "6" }) },
+    { key: "quote", label: tmdx("toolbar.blockTypes.quote") },
+    { key: "list", label: tmdx("toolbar.blockTypes.list") },
   ];
 
   return (
     <Select
-      aria-label={tmdxbutton("blocktype")}
+      aria-label={tmdx("toolbar.blockTypeSelect.placeholder")}
       size="sm"
-      className="max-w-32"
-      placeholder={tmdxbutton("blocktype")}
+      classNames={{ mainWrapper: "min-w-36" }}
+      placeholder={tmdx("toolbar.blockTypeSelect.placeholder")}
       disabledKeys={["list"]}
       selectedKeys={new Set([currentBlockType || "paragraph"])}
       onSelectionChange={(keys) => {
@@ -244,7 +252,13 @@ export const HeroCode = () => {
 export const HeroCreateLink = () => {
   const activeEditor = useCellValue(activeEditor$);
   const cancelEdit = usePublisher(cancelLinkEdit$);
-  const { linkEdit, isLinkDialogOpen, openLinkDialog, closeLinkDialog, setLinkEdit } = useMdxEditor();
+  const {
+    linkEdit,
+    isLinkDialogOpen,
+    openLinkDialog,
+    closeLinkDialog,
+    setLinkEdit,
+  } = useMdxEditor();
   const disclosure = useDisclosure();
 
   // Sync context state with disclosure state
@@ -270,25 +284,30 @@ export const HeroCreateLink = () => {
     openLinkDialog();
   }, [activeEditor, openLinkDialog, setLinkEdit]);
 
-  const handleClose = useCallback((cancelled: boolean = true) => {
-    const wasEditing = linkEdit?.isEditing === true;
-    closeLinkDialog();
-    disclosure.onClose();
-    // Only call cancelEdit if we're cancelling (not submitting) an edit
-    if (cancelled && wasEditing) {
-      cancelEdit();
-    }
-  }, [linkEdit, cancelEdit, closeLinkDialog, disclosure]);
+  const handleClose = useCallback(
+    (cancelled: boolean = true) => {
+      const wasEditing = linkEdit?.isEditing === true;
+      closeLinkDialog();
+      disclosure.onClose();
+      // Only call cancelEdit if we're cancelling (not submitting) an edit
+      if (cancelled && wasEditing) {
+        cancelEdit();
+      }
+    },
+    [linkEdit, cancelEdit, closeLinkDialog, disclosure],
+  );
 
   return (
     <>
-      <Modal 
+      <Modal
         isOpen={disclosure.isOpen}
         onClose={() => handleClose(true)}
-        size="sm" 
+        size="sm"
         placement="center"
       >
-        <ModalContent key={linkEdit ? `${linkEdit.isEditing}-${linkEdit.url}` : 'new'}>
+        <ModalContent
+          key={linkEdit ? `${linkEdit.isEditing}-${linkEdit.url}` : "new"}
+        >
           <ModalHeader>
             {linkEdit?.isEditing ? "Edit Link" : "Insert Link"}
           </ModalHeader>
@@ -470,10 +489,10 @@ export const HeroInsertCodeBlock = () => {
 
   return (
     <>
-      <Modal 
+      <Modal
         isOpen={disclosure.isOpen}
         onClose={disclosure.onClose}
-        size="md" 
+        size="md"
         placement="center"
       >
         <ModalContent>
@@ -533,5 +552,76 @@ export const HeroSourceMode = () => {
     >
       <CodeSquare />
     </MdxButton>
+  );
+};
+
+export const HeroCodeLanguageSelect = () => {
+  const activeEditor = useCellValue(activeEditor$);
+  const { setCurrentCodeLanguage } = useMdxEditor();
+  const [isInCodeBlock, setIsInCodeBlock] = useState(false);
+  const [codeBlockLanguage, setCodeBlockLanguage] = useState("javascript");
+
+  useEffect(() => {
+    if (!activeEditor) return;
+
+    const checkCodeBlock = () => {
+      activeEditor.getEditorState().read(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          const anchorNode = selection.anchor.getNode();
+          const element = anchorNode.getTopLevelElementOrThrow();
+
+          if ($isCodeNode(element)) {
+            setIsInCodeBlock(true);
+            const lang = element.getLanguage() || "javascript";
+            setCodeBlockLanguage(lang);
+            setCurrentCodeLanguage(lang);
+          } else {
+            setIsInCodeBlock(false);
+          }
+        }
+      });
+    };
+
+    checkCodeBlock();
+    return activeEditor.registerUpdateListener(checkCodeBlock);
+  }, [activeEditor, setCurrentCodeLanguage]);
+
+  const handleLanguageChange = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (keys: any) => {
+      const selected = Array.from(keys)[0] as string;
+      if (!selected || !activeEditor) return;
+
+      activeEditor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          const anchorNode = selection.anchor.getNode();
+          const element = anchorNode.getTopLevelElementOrThrow();
+
+          if ($isCodeNode(element)) {
+            element.setLanguage(selected);
+            setCodeBlockLanguage(selected);
+            setCurrentCodeLanguage(selected);
+          }
+        }
+      });
+    },
+    [activeEditor, setCurrentCodeLanguage],
+  );
+
+  return (
+    <Select
+      aria-label="Code Language"
+      size="sm"
+      className="max-w-40"
+      placeholder="Language"
+      selectedKeys={new Set([codeBlockLanguage])}
+      onSelectionChange={handleLanguageChange}
+    >
+      {SUPPORTED_LANGUAGES.map((lang) => (
+        <SelectItem key={lang.key}>{lang.label}</SelectItem>
+      ))}
+    </Select>
   );
 };
