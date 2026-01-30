@@ -5,9 +5,14 @@ import {
 } from "@heroui/react";
 import React, { useCallback } from "react";
 
-export type FormInitialData<T = Record<string, unknown>> = Partial<T>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FormValue = any;
 
-export interface FormProps<T = Record<string, unknown>> extends Omit<
+export type FormDataRecord = Record<string, FormValue | FormValue[]>;
+
+export type FormInitialData<T = FormDataRecord> = Partial<T>;
+
+export interface FormProps<T = FormDataRecord> extends Omit<
   HeroUIFormProps,
   "onSubmit"
 > {
@@ -16,15 +21,15 @@ export interface FormProps<T = Record<string, unknown>> extends Omit<
   onSubmit?: (event: React.FormEvent<HTMLFormElement>, data: T) => void;
 }
 
-export interface FormContextType<T = Record<string, unknown>> {
+export interface FormContextType<T = FormDataRecord> {
   initialData?: FormInitialData<T>;
 }
 
 const FormContext = React.createContext<
-  FormContextType<Record<string, unknown>> | undefined
+  FormContextType<FormDataRecord> | undefined
 >(undefined);
 
-export const Form = <T,>({
+export const Form = <T = FormDataRecord,>({
   initialData,
   onSubmit,
   className,
@@ -57,6 +62,6 @@ export const Form = <T,>({
   );
 };
 
-export const useForm = <T = Record<string, unknown>,>(): FormContextType<T> => {
+export const useForm = <T = FormDataRecord,>(): FormContextType<T> => {
   return (React.useContext(FormContext) as FormContextType<T>) ?? {};
 };
