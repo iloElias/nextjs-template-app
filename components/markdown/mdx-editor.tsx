@@ -72,8 +72,8 @@ export function MDXEditorComponent({
           }}
           className={cn(readOnly && "disabled")}
           contentEditableClassName={cn(
-            "dark:prose-invert rounded-lg max-w-none min-h-125 text-default-700! prose prose-slate",
-            readOnly && "p-0!",
+            "dark:prose-invert rounded-lg max-w-none min-h-125 text-default-700! prose prose-slate editor-content",
+            readOnly && "p-0! editor-readonly",
           )}
           plugins={[
             diffSourcePlugin({

@@ -5,18 +5,8 @@
 @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:where(.dark, .dark *));
 
-html,
-body {
-  @apply overflow-hidden!;
-}
-
-html,
-[data-overlay-container="true"] {
-  @apply max-h-screen min-h-screen bg-background text-foreground;
-}
-
-[data-overlay-container="true"] {
-  @apply overflow-auto!;
+html {
+  @apply max-h-screen min-h-screen bg-background text-foreground overflow-auto!;
 }
 
 svg.solar-icons {
@@ -54,6 +44,17 @@ svg.solar-icons path {
 
 .prose > ul > * {
   @apply my-0!;
+}
+
+.prose
+  :where(ul > li):not(
+    :where([class~="not-prose"], [class~="not-prose"] *)
+  )::marker {
+  @apply text-current!;
+}
+
+.prose ul > li {
+  @apply my-1!;
 }
 
 .prose table > * > * > :is(th, td) {
@@ -157,6 +158,39 @@ div[data-lexical-decorator="true"] > div {
   @apply border-none;
 }
 
+/* Enhanced Checkbox Styling */
+.editor-content li[role="checkbox"] {
+  @apply list-none relative pl-7;
+}
+
+.editor-content li[role="checkbox"]::before {
+  content: "";
+  @apply absolute left-0 top-1 w-5 h-5 rounded-lg border-2 border-default-300 bg-default-100 cursor-pointer transition-all duration-200;
+}
+
+.editor-content li[role="checkbox"]:hover::before {
+  @apply border-default-400 bg-default-200;
+}
+
+.editor-content li[role="checkbox"][aria-checked="true"]::before {
+  @apply border-primary bg-primary;
+}
+
+.editor-content li[role="checkbox"][aria-checked="true"]:hover::before {
+  @apply border-primary-600 bg-primary-600;
+}
+
+.editor-content li[role="checkbox"][aria-checked="true"]::after {
+  content: "";
+  @apply absolute left-[0.45rem] top-2 w-1.5 h-2.5 border-white border-r-2 border-b-2 cursor-pointer;
+  transform: rotate(45deg);
+}
+
+.editor-readonly li[role="checkbox"]::before,
+.editor-readonly li[role="checkbox"]::after {
+  @apply cursor-default pointer-events-none;
+}
+
 @media print {
   @page {
     size: A4;
@@ -165,5 +199,9 @@ div[data-lexical-decorator="true"] > div {
 
   :is(.no-print, .no-print *) {
     display: none;
+  }
+
+  .editor-content li[role="checkbox"][aria-checked="true"]::after {
+    @apply border-primary-600;
   }
 }

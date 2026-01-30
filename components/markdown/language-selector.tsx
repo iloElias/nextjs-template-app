@@ -58,6 +58,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   return (
     <Select
       size="sm"
+      variant="flat"
       label={label}
       selectedKeys={new Set([value])}
       onSelectionChange={handleSelectionChange}

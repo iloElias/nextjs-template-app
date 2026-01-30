@@ -1,5 +1,5 @@
-import MarkdownEditor from "./markdown-editor";
+import MdxEditor from "./mdx-editor";
 
 export default function Page() {
-  return <MarkdownEditor />;
+  return <MdxEditor />;
 }
