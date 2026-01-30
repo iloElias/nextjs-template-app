@@ -8,6 +8,7 @@ import { insertCodeBlock$ } from "@mdxeditor/editor";
 import { LanguageSelector } from "./language-selector";
 import { TextArea } from "../form/textarea";
 import { useMdxEditor } from "./mdx-editor-context";
+import { LANGUAGE_EXAMPLES } from "./language-examples";
 
 interface MdxCodeBlockFormProps {
   onClose: (cancelled?: boolean) => void;
@@ -18,8 +19,15 @@ export const MdxCodeBlockForm: React.FC<MdxCodeBlockFormProps> = ({
 }) => {
   const { currentCodeLanguage, setCurrentCodeLanguage } = useMdxEditor();
   const [language, setLanguage] = useState(currentCodeLanguage);
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(
+    currentCodeLanguage ? (LANGUAGE_EXAMPLES[currentCodeLanguage] ?? "") : "",
+  );
   const insertCodeBlock = usePublisher(insertCodeBlock$);
+
+  const handleLanguageChange = (lang: string) => {
+    setLanguage(lang);
+    setCode(LANGUAGE_EXAMPLES[lang] ?? "");
+  };
 
   const handleSubmit = () => {
     insertCodeBlock({
@@ -36,7 +44,7 @@ export const MdxCodeBlockForm: React.FC<MdxCodeBlockFormProps> = ({
       <ModalBody>
         <LanguageSelector
           value={language || ""}
-          onChange={setLanguage}
+          onChange={handleLanguageChange}
           className="w-full"
         />
         <TextArea
@@ -55,10 +63,7 @@ export const MdxCodeBlockForm: React.FC<MdxCodeBlockFormProps> = ({
         >
           Insert
         </Button>
-        <Button
-          className="flex-1 rounded-xl!"
-          onPress={() => onClose(true)}
-        >
+        <Button className="flex-1 rounded-xl!" onPress={() => onClose(true)}>
           Cancel
         </Button>
       </ModalFooter>

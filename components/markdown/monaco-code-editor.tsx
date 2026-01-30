@@ -5,8 +5,9 @@ import {
   useCodeBlockEditorContext,
 } from "@mdxeditor/editor";
 import Editor, { Monaco } from "@monaco-editor/react";
+import type { editor } from "monaco-editor";
 import { useTheme } from "next-themes";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { LanguageSelector } from "./language-selector";
 import { useMdxEditor } from "./mdx-editor-context";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -49,28 +50,28 @@ const defineCustomThemes = (monaco: Monaco) => {
     base: "vs",
     inherit: true,
     rules: [
-      { token: "comment", foreground: "6272a4", fontStyle: "italic" },
-      { token: "keyword", foreground: "d91b8a" },
-      { token: "string", foreground: "8f7e00" },
-      { token: "number", foreground: "8e44d9" },
-      { token: "regexp", foreground: "8f7e00" },
-      { token: "type", foreground: "0099b3" },
-      { token: "class", foreground: "0099b3" },
-      { token: "function", foreground: "00994d" },
-      { token: "variable", foreground: "383a42" },
-      { token: "constant", foreground: "8e44d9" },
-      { token: "operator", foreground: "d91b8a" },
-      { token: "delimiter", foreground: "383a42" },
+      { token: "comment", foreground: "6a737d", fontStyle: "italic" },
+      { token: "keyword", foreground: "af00db" },
+      { token: "string", foreground: "22863a" },
+      { token: "number", foreground: "005cc5" },
+      { token: "regexp", foreground: "032f62" },
+      { token: "type", foreground: "6f42c1" },
+      { token: "class", foreground: "6f42c1" },
+      { token: "function", foreground: "005cc5" },
+      { token: "variable", foreground: "24292e" },
+      { token: "constant", foreground: "005cc5" },
+      { token: "operator", foreground: "d73a49" },
+      { token: "delimiter", foreground: "24292e" },
     ],
     colors: {
-      "editor.background": "#f8f8f8",
-      "editor.foreground": "#383a42",
-      "editorLineNumber.foreground": "#9ca3af",
-      "editorCursor.foreground": "#383a42",
-      "editor.selectionBackground": "#d1d5da",
-      "editor.lineHighlightBackground": "#efefef",
-      "editorWhitespace.foreground": "#d1d5da",
-      "editorIndentGuide.background": "#d1d5da",
+      "editor.background": "#ffffff",
+      "editor.foreground": "#24292e",
+      "editorLineNumber.foreground": "#d1d5db",
+      "editorCursor.foreground": "#24292e",
+      "editor.selectionBackground": "#c8e1ff",
+      "editor.lineHighlightBackground": "#f6f8fa",
+      "editorWhitespace.foreground": "#e1e4e8",
+      "editorIndentGuide.background": "#e1e4e8",
     },
   });
 };
@@ -88,8 +89,11 @@ const MonacoEditorComponent: React.FC<{
   const [currentLanguage, setCurrentLanguage] = useState(language);
   const [isFocused, setIsFocused] = useState(false);
   const [copied, setCopied] = useState(false);
+  const editorInstanceRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const themesDefinedRef = useRef(false);
 
   const editorTheme = resolvedTheme === "dark" ? "dracula" : "dracula-light";
+  const initialTheme = resolvedTheme === "dark" ? "vs-dark" : "vs";
 
   const editorHeight = useMemo(() => {
     const lines = code.split("\n").length;
@@ -152,6 +156,12 @@ const MonacoEditorComponent: React.FC<{
   const handleBlur = () => {
     setIsFocused(false);
   };
+
+  useEffect(() => {
+    if (editorInstanceRef.current && mounted && resolvedTheme && themesDefinedRef.current) {
+      editorInstanceRef.current.updateOptions({ theme: editorTheme });
+    }
+  }, [editorTheme, mounted, resolvedTheme]);
 
   return (
     <div
@@ -218,12 +228,12 @@ const MonacoEditorComponent: React.FC<{
         )}
       </div>
       <div
-        className="py-1!"
         onKeyDown={(e) => e.nativeEvent.stopImmediatePropagation()}
       >
         {mounted && resolvedTheme ? (
           <Editor
-            key={`monaco-editor-${readOnly}-${editorTheme}`}
+            key={`monaco-editor-${readOnly}`}
+            className="w-full!"
             height={`${editorHeight}px`}
             language={getMonacoLanguage(currentLanguage)}
             value={code}
@@ -232,10 +242,14 @@ const MonacoEditorComponent: React.FC<{
                 setCode(value || "");
               }
             }}
-            onMount={(editor, monaco) => {
+            onMount={(editorInstance, monaco) => {
               defineCustomThemes(monaco);
+              themesDefinedRef.current = true;
+              editorInstanceRef.current = editorInstance;
+              // Apply custom theme after defining it
+              editorInstance.updateOptions({ theme: editorTheme });
             }}
-            theme={editorTheme}
+            theme={initialTheme}
             options={{
               minimap: { enabled: false },
               fontSize: 14,

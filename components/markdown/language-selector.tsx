@@ -1,7 +1,7 @@
 "use client";
 
-import { selectTheme } from "@/lib/heroui";
-import { Select, SelectItem, SelectProps, SharedSelection } from "@heroui/react";
+import { SharedSelection } from "@heroui/react";
+import { Select } from "../form/select";
 
 export const SUPPORTED_LANGUAGES = [
   { key: "javascript", label: "JavaScript" },
@@ -63,10 +63,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       onSelectionChange={handleSelectionChange}
       className={className}
       aria-label="Select code language"
-    >
-      {SUPPORTED_LANGUAGES.map((lang) => (
-        <SelectItem key={lang.key}>{lang.label}</SelectItem>
-      ))}
-    </Select>
+      items={SUPPORTED_LANGUAGES}
+    />
   );
 };
