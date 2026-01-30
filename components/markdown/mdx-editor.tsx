@@ -21,8 +21,18 @@ import { MdxToolbar } from "./mdx-toolbar";
 import { cn } from "@heroui/react";
 import { MdxEditorProvider } from "./mdx-editor-context";
 import { MdxLinkPreview } from "./mdx-link-preview";
+import { MdxImageEditToolbar } from "./mdx-image-edit-toolbar";
 import { createMonacoCodeEditorDescriptor } from "./monaco-code-editor";
 import { useScopedI18n } from "@/locales/client";
+
+const imageUploadHandler = async (image: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("Failed to read image file"));
+    reader.readAsDataURL(image);
+  });
+};
 
 interface MDXEditorComponentProps {
   markdown?: string;
@@ -80,7 +90,10 @@ export function MDXEditorComponent({
               LinkDialog: () => <></>,
             }),
             imagePlugin({
-              
+              ImageDialog: () => <></>,
+              EditImageToolbar: MdxImageEditToolbar as React.FC,
+              imageUploadHandler,
+              disableImageSettingsButton: true,
             }),
             tablePlugin(),
             codeBlockPlugin({

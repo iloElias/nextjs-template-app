@@ -17,6 +17,14 @@ interface LinkEditData {
   isEditing: boolean;
 }
 
+interface ImageEditData {
+  src: string;
+  altText: string;
+  title?: string;
+  imageNodeKey?: string;
+  isEditing: boolean;
+}
+
 interface MdxEditorContextValue {
   linkPreview: LinkPreviewData | null;
   setLinkPreview: (data: LinkPreviewData | null) => void;
@@ -30,6 +38,13 @@ interface MdxEditorContextValue {
   
   removeLink: (linkNodeKey: string) => void;
   setRemoveLink: (fn: (linkNodeKey: string) => void) => void;
+
+  imageEdit: ImageEditData | null;
+  setImageEdit: (data: ImageEditData | null) => void;
+
+  isImageDialogOpen: boolean;
+  openImageDialog: () => void;
+  closeImageDialog: () => void;
   
   currentCodeLanguage?: string;
   setCurrentCodeLanguage: (language?: string) => void;
@@ -54,6 +69,8 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({ children }
   const [linkEdit, setLinkEdit] = useState<LinkEditData | null>(null);
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [removeLink, setRemoveLink] = useState<(linkNodeKey: string) => void>(() => () => {});
+  const [imageEdit, setImageEdit] = useState<ImageEditData | null>(null);
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [currentCodeLanguage, setCurrentCodeLanguage] = useState<string | undefined>("javascript");
 
   const openLinkDialog = useCallback(() => {
@@ -63,6 +80,15 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({ children }
   const closeLinkDialog = useCallback(() => {
     setIsLinkDialogOpen(false);
     setLinkEdit(null);
+  }, []);
+
+  const openImageDialog = useCallback(() => {
+    setIsImageDialogOpen(true);
+  }, []);
+
+  const closeImageDialog = useCallback(() => {
+    setIsImageDialogOpen(false);
+    setImageEdit(null);
   }, []);
 
   const value: MdxEditorContextValue = {
@@ -75,6 +101,11 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({ children }
     closeLinkDialog,
     removeLink,
     setRemoveLink,
+    imageEdit,
+    setImageEdit,
+    isImageDialogOpen,
+    openImageDialog,
+    closeImageDialog,
     currentCodeLanguage,
     setCurrentCodeLanguage,
   };

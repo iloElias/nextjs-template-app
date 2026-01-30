@@ -8,6 +8,8 @@ import { Separator } from "./mdx-toolbar";
 export const MdxLinkPreview: React.FC = () => {
   const { linkPreview, setLinkPreview, setLinkEdit, openLinkDialog, isLinkDialogOpen } = useMdxEditor();
 
+  const displayText = linkPreview?.url || linkPreview?.text || "";
+
   if (!linkPreview || isLinkDialogOpen) {
     return null;
   }
@@ -19,19 +21,27 @@ export const MdxLinkPreview: React.FC = () => {
         top: `${linkPreview.position.top}px`,
         left: `${linkPreview.position.left}px`,
         zIndex: 1000,
+        maxWidth: "300px",
       }}
-      className="flex flex-row items-center gap-2 p-1 rounded-xl"
+      className="flex flex-row items-center gap-1 bg-background/80 shadow-small backdrop-blur p-1 rounded-lg"
     >
-      <a
-        href={linkPreview.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-1 ml-1.5 max-w-xs text-primary hover:underline truncate"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Link size={16} />
-        <span className="truncate">{linkPreview.url}</span>
-      </a>
+      {linkPreview.url ? (
+        <a
+          href={linkPreview.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1 ml-1.5 max-w-xs text-primary hover:underline truncate"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Link size={16} />
+          <span className="truncate">{displayText}</span>
+        </a>
+      ) : (
+        <div className="flex items-center gap-1 ml-1.5 max-w-xs text-primary truncate">
+          <Link size={16} />
+          <span className="truncate">{displayText}</span>
+        </div>
+      )}
       <Separator />
       <ButtonGroup>
         <Button

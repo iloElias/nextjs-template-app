@@ -44,15 +44,41 @@ export const LinkDialogMonitor: React.FC = () => {
         });
       }
       
+      // Calculate position with viewport boundaries
+      const POPOVER_OFFSET = 6;
+      const POPOVER_ESTIMATED_WIDTH = 300; // Max popover width
+      const POPOVER_ESTIMATED_HEIGHT = 50;
+      
+      const rect = linkDialogState.rectangle;
+      let top = rect.top + POPOVER_OFFSET;
+      let left = rect.left + rect.width + POPOVER_OFFSET;
+      
+      // Check right boundary
+      if (left + POPOVER_ESTIMATED_WIDTH > window.innerWidth) {
+        left = rect.left - POPOVER_ESTIMATED_WIDTH - POPOVER_OFFSET;
+      }
+      
+      // Check left boundary
+      if (left < 0) {
+        left = POPOVER_OFFSET;
+      }
+      
+      // Check bottom boundary
+      if (top + POPOVER_ESTIMATED_HEIGHT > window.innerHeight) {
+        top = rect.top - POPOVER_ESTIMATED_HEIGHT - POPOVER_OFFSET;
+      }
+      
+      // Check top boundary
+      if (top < 0) {
+        top = POPOVER_OFFSET;
+      }
+      
       setLinkPreview({
         url: linkDialogState.url,
         title: linkDialogState.title,
         text: linkText,
         linkNodeKey: linkDialogState.linkNodeKey,
-        position: {
-          top: linkDialogState.rectangle.top + linkDialogState.rectangle.height + 5,
-          left: linkDialogState.rectangle.left,
-        },
+        position: { top, left },
       });
     } else if (linkDialogState.type === "edit") {
       setLinkPreview(null);

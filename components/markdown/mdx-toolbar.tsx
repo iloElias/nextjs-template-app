@@ -20,13 +20,12 @@ import {
   HeroStrikethrough,
   HeroBlockTypeSelect,
   HeroInsertCodeBlock,
-  HeroCodeLanguageSelect,
 } from "./mdx-toolbar-buttons";
 import { useScopedI18n } from "@/locales/client";
 import { LinkDialogMonitor } from "./mdx-link-dialog-monitor";
 
 export const Separator: React.FC = () => {
-  return <div className="bg-default mx-1 min-w-px w-px h-6" />;
+  return <div className="bg-default mx-1! w-px min-w-px h-6" />;
 };
 
 export const MdxToolbar: React.FC = () => {

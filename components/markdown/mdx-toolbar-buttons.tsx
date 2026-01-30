@@ -3,7 +3,6 @@
 import {
   usePublisher,
   useCellValue,
-  insertImage$,
   insertTable$,
   insertThematicBreak$,
   activeEditor$,
@@ -15,6 +14,7 @@ import {
   currentBlockType$,
   convertSelectionToNode$,
   cancelLinkEdit$,
+  closeImageDialog$,
 } from "@mdxeditor/editor";
 import {
   UNDO_COMMAND,
@@ -56,7 +56,6 @@ import {
   ModalHeader,
 } from "../modal";
 import { NumberInput } from "../form/number-input";
-import { Input } from "../form/input";
 import { useScopedI18n } from "@/locales/client";
 import { MdxLinkForm } from "./mdx-link-form";
 import { useMdxEditor } from "./mdx-editor-context";
@@ -64,6 +63,7 @@ import { MdxCodeBlockForm } from "./mdx-code-block-form";
 import { SUPPORTED_LANGUAGES } from "./language-selector";
 import { $isCodeNode } from "@lexical/code";
 import { $getSelection, $isRangeSelection } from "lexical";
+import { MdxImageForm } from "./mdx-image-form";
 
 export const HeroBlockTypeSelect = () => {
   const tmdx = useScopedI18n("mdx-editor");
@@ -398,55 +398,64 @@ export const HeroCheckList = () => {
 
 export const HeroInsertImage = () => {
   const tmdx = useScopedI18n("mdx-editor");
-  const insertImage = usePublisher(insertImage$);
-
+  const cancelEdit = usePublisher(closeImageDialog$);
+  const {
+    imageEdit,
+    isImageDialogOpen,
+    openImageDialog,
+    closeImageDialog,
+    setImageEdit,
+  } = useMdxEditor();
   const disclosure = useDisclosure();
 
-  const [title, setTitle] = useState<string>("");
-  const [src, setSrc] = useState<string>("");
-  const [altText, setAltText] = useState<string>("");
+  useEffect(() => {
+    if (isImageDialogOpen && !disclosure.isOpen) {
+      disclosure.onOpen();
+    } else if (!isImageDialogOpen && disclosure.isOpen) {
+      disclosure.onClose();
+    }
+  }, [isImageDialogOpen, disclosure]);
+
+  const handleOpenDialog = useCallback(() => {
+    setImageEdit({ src: "", altText: "", title: "", isEditing: false });
+    openImageDialog();
+  }, [openImageDialog, setImageEdit]);
+
+  const handleClose = useCallback(
+    (cancelled: boolean = true) => {
+      const wasEditing = imageEdit?.isEditing === true;
+      closeImageDialog();
+      disclosure.onClose();
+      if (cancelled && wasEditing) {
+        cancelEdit();
+      }
+    },
+    [cancelEdit, closeImageDialog, disclosure, imageEdit],
+  );
 
   return (
     <>
-      <Dialogue disclosure={disclosure} size="sm" placement="center">
-        <ModalHeader>{tmdx("uploadImage.dialogTitle")}</ModalHeader>
-        <ModalBody>
-          <Input
-            label={tmdx("uploadImage.autoCompletePlaceholder")}
-            value={src}
-            onValueChange={setSrc}
-            placeholder="https://example.com/image.jpg"
+      <Modal
+        isOpen={disclosure.isOpen}
+        onClose={() => handleClose(true)}
+        size="sm"
+        placement="center"
+      >
+        <ModalContent
+          key={imageEdit ? `${imageEdit.isEditing}-${imageEdit.src}` : "new"}
+        >
+          <ModalHeader>{tmdx("uploadImage.dialogTitle")}</ModalHeader>
+          <MdxImageForm
+            existingSrc={imageEdit?.src || ""}
+            existingAltText={imageEdit?.altText || ""}
+            existingTitle={imageEdit?.title || ""}
+            isEditing={imageEdit?.isEditing || false}
+            imageNodeKey={imageEdit?.imageNodeKey}
+            onClose={handleClose}
           />
-          <Input
-            label={tmdx("uploadImage.alt")}
-            value={altText}
-            onValueChange={setAltText}
-            placeholder={tmdx("uploadImage.alt")}
-          />
-          <Input
-            label={tmdx("uploadImage.title")}
-            value={title}
-            onValueChange={setTitle}
-            placeholder={tmdx("uploadImage.title")}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            color="primary"
-            className="flex-1 rounded-xl!"
-            onPress={() => {
-              disclosure.onClose();
-              insertImage({ src, altText, title });
-            }}
-          >
-            {tmdx("dialogControls.save")}
-          </Button>
-          <Button className="flex-1 rounded-xl!" onPress={disclosure.onClose}>
-            {tmdx("dialogControls.cancel")}
-          </Button>
-        </ModalFooter>
-      </Dialogue>
-      <MdxButton onPress={disclosure.onOpen} role={tmdx("toolbar.image")}>
+        </ModalContent>
+      </Modal>
+      <MdxButton onPress={handleOpenDialog} role={tmdx("toolbar.image")}>
         <Gallery />
       </MdxButton>
     </>
