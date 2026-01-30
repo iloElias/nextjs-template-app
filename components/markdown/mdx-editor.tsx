@@ -24,6 +24,7 @@ import { MdxLinkPreview } from "./mdx-link-preview";
 import { MdxImageEditToolbar } from "./mdx-image-edit-toolbar";
 import { createMonacoCodeEditorDescriptor } from "./monaco-code-editor";
 import { useScopedI18n } from "@/locales/client";
+import en from "@/locales/en";
 
 const imageUploadHandler = async (image: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -50,7 +51,7 @@ export function MDXEditorComponent({
   const tmdx = useScopedI18n("mdx-editor");
 
   return (
-    <MdxEditorProvider>
+    <MdxEditorProvider readOnly={readOnly}>
       <SolarProvider
         value={{
           weight: "LineDuotone",
@@ -95,11 +96,14 @@ export function MDXEditorComponent({
               imageUploadHandler,
               disableImageSettingsButton: true,
             }),
-            tablePlugin(),
+            tablePlugin({
+              tableCellPadding: true,
+              tablePipeAlign: true,
+            }),
             codeBlockPlugin({
               defaultCodeBlockLanguage: "javascript",
               codeBlockEditorDescriptors: [
-                createMonacoCodeEditorDescriptor(readOnly),
+                createMonacoCodeEditorDescriptor(),
               ],
             }),
             toolbarPlugin({

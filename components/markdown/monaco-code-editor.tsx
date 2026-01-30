@@ -10,9 +10,10 @@ import { useMemo, useState, useEffect } from "react";
 import { LanguageSelector } from "./language-selector";
 import { useMdxEditor } from "./mdx-editor-context";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { TrashBin2 } from "@solar-icons/react";
-import { Button, Tooltip } from "@heroui/react";
+import { TrashBin2, Copy, CheckCircle } from "@solar-icons/react";
+import { Button, cn, Tooltip } from "@heroui/react";
 import { MdxButton } from "./mdx-button";
+import { useAppContext } from "@/contexts/app-context";
 
 const defineCustomThemes = (monaco: Monaco) => {
   monaco.editor.defineTheme("dracula", {
@@ -43,24 +44,57 @@ const defineCustomThemes = (monaco: Monaco) => {
       "editorIndentGuide.background": "#44475a",
     },
   });
+
+  monaco.editor.defineTheme("dracula-light", {
+    base: "vs",
+    inherit: true,
+    rules: [
+      { token: "comment", foreground: "6272a4", fontStyle: "italic" },
+      { token: "keyword", foreground: "d91b8a" },
+      { token: "string", foreground: "8f7e00" },
+      { token: "number", foreground: "8e44d9" },
+      { token: "regexp", foreground: "8f7e00" },
+      { token: "type", foreground: "0099b3" },
+      { token: "class", foreground: "0099b3" },
+      { token: "function", foreground: "00994d" },
+      { token: "variable", foreground: "383a42" },
+      { token: "constant", foreground: "8e44d9" },
+      { token: "operator", foreground: "d91b8a" },
+      { token: "delimiter", foreground: "383a42" },
+    ],
+    colors: {
+      "editor.background": "#f8f8f8",
+      "editor.foreground": "#383a42",
+      "editorLineNumber.foreground": "#9ca3af",
+      "editorCursor.foreground": "#383a42",
+      "editor.selectionBackground": "#d1d5da",
+      "editor.lineHighlightBackground": "#efefef",
+      "editorWhitespace.foreground": "#d1d5da",
+      "editorIndentGuide.background": "#d1d5da",
+    },
+  });
 };
 
 const MonacoEditorComponent: React.FC<{
   code: string;
   language: string;
-  readOnly?: boolean;
-}> = ({ code, language, readOnly = false }) => {
+}> = ({ code, language }) => {
   const { setCode, lexicalNode } = useCodeBlockEditorContext();
   const [editor] = useLexicalComposerContext();
-  const { theme } = useTheme();
-  const { currentCodeLanguage, setCurrentCodeLanguage } = useMdxEditor();
+  const { resolvedTheme } = useTheme();
+  const { currentCodeLanguage, setCurrentCodeLanguage, readOnly } =
+    useMdxEditor();
+  const { mounted } = useAppContext();
   const [currentLanguage, setCurrentLanguage] = useState(language);
   const [isFocused, setIsFocused] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const editorTheme = resolvedTheme === "dark" ? "dracula" : "dracula-light";
 
   const editorHeight = useMemo(() => {
     const lines = code.split("\n").length;
-    const lineHeight = 19;
-    const padding = 2;
+    const lineHeight = 20;
+    const padding = 0;
     const minHeight = 0;
     const maxHeight = 300;
     const calculatedHeight = lines * lineHeight + padding;
@@ -121,71 +155,148 @@ const MonacoEditorComponent: React.FC<{
 
   return (
     <div
-      className="border border-default-200 rounded-lg overflow-hidden"
+      className={cn(
+        "border border-default-200 rounded-lg overflow-hidden",
+        readOnly && "bg-default-50/50",
+      )}
       onFocus={handleFocus}
       onBlur={handleBlur}
       tabIndex={-1}
     >
-      {!readOnly && (
-        <div className="flex justify-between items-center bg-background px-3 py-2 border-default-200 border-b">
-          <LanguageSelector
-            value={currentLanguage}
-            onChange={handleLanguageChange}
+      <div
+        className={cn(
+          "flex justify-between items-center bg-background px-2 py-2 border-default-200 border-b",
+          { "justify-between": readOnly },
+        )}
+      >
+        {!readOnly ? (
+          <>
+            <LanguageSelector
+              label=""
+              value={currentLanguage}
+              onChange={handleLanguageChange}
+            />
+            <MdxButton
+              role="Delete code block"
+              onPress={() => {
+                editor.update(() => {
+                  lexicalNode.remove();
+                });
+              }}
+            >
+              <TrashBin2 />
+            </MdxButton>
+          </>
+        ) : (
+          <>
+            <span className="font-mono text-default-500 text-xs">
+              {currentLanguage}
+            </span>
+            <Tooltip
+              content={copied ? "Copied!" : "Copy code"}
+              isOpen={copied ? true : undefined}
+            >
+              <div>
+                <Button
+                  size="sm"
+                  isIconOnly
+                  className={cn(
+                    "bg-default-100 hover:bg-default-200 h-8",
+                    copied ? "bg-success-100!" : "",
+                  )}
+                  onPress={async () => {
+                    await navigator.clipboard.writeText(code);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                >
+                  {copied ? <CheckCircle /> : <Copy />}
+                </Button>
+              </div>
+            </Tooltip>
+          </>
+        )}
+      </div>
+      <div
+        className="py-1!"
+        onKeyDown={(e) => e.nativeEvent.stopImmediatePropagation()}
+      >
+        {mounted && resolvedTheme ? (
+          <Editor
+            key={`monaco-editor-${readOnly}-${editorTheme}`}
+            height={`${editorHeight}px`}
+            language={getMonacoLanguage(currentLanguage)}
+            value={code}
+            onChange={(value) => {
+              if (!readOnly) {
+                setCode(value || "");
+              }
+            }}
+            onMount={(editor, monaco) => {
+              defineCustomThemes(monaco);
+            }}
+            theme={editorTheme}
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              lineNumbers: "on",
+              scrollBeyondLastLine: false,
+              automaticLayout: true,
+              tabSize: 2,
+              wordWrap: "on",
+              readOnly: readOnly,
+              scrollbar: {
+                vertical: "hidden",
+                horizontal: "hidden",
+                verticalScrollbarSize: 0,
+                horizontalScrollbarSize: 0,
+                alwaysConsumeMouseWheel: false,
+              },
+              overviewRulerLanes: 0,
+              hideCursorInOverviewRuler: true,
+              ...(readOnly && {
+                domReadOnly: true,
+                readOnly: true,
+                cursorStyle: "line-thin",
+                cursorBlinking: "solid",
+                renderLineHighlight: "none",
+                contextmenu: false,
+                quickSuggestions: false,
+                parameterHints: { enabled: false },
+                suggest: { showWords: false },
+                folding: false,
+                glyphMargin: false,
+                occurrencesHighlight: "off",
+                selectionHighlight: false,
+                renderWhitespace: "none",
+                guides: {
+                  indentation: false,
+                },
+                hover: {
+                  enabled: false,
+                },
+                links: false,
+                colorDecorators: false,
+              }),
+            }}
           />
-          <MdxButton role="Delete code block" onPress={() => {
-            editor.update(() => {
-              lexicalNode.remove();
-            });
-          }}>
-            <TrashBin2 />
-          </MdxButton>
-        </div>
-      )}
-      <div onKeyDown={(e) => e.nativeEvent.stopImmediatePropagation()}>
-        <Editor
-          key={`monaco-editor-${readOnly}`}
-          height={`${editorHeight}px`}
-          language={getMonacoLanguage(currentLanguage)}
-          value={code}
-          onChange={(value) => {
-            if (!readOnly) {
-              setCode(value || "");
-            }
-          }}
-          onMount={(editor, monaco) => {
-            defineCustomThemes(monaco);
-          }}
-          theme={theme === "dark" ? "dracula" : "light"}
-          options={{
-            minimap: { enabled: false },
-            fontSize: 14,
-            lineNumbers: "on",
-            scrollBeyondLastLine: false,
-            automaticLayout: true,
-            tabSize: 2,
-            wordWrap: "on",
-            readOnly: readOnly,
-            scrollbar: {
-              vertical: "auto",
-              horizontal: "auto",
-            },
-          }}
-        />
+        ) : (
+          <div
+            style={{ height: `${editorHeight}px` }}
+            className="bg-default-100 animate-pulse"
+          />
+        )}
       </div>
     </div>
   );
 };
 
 export const createMonacoCodeEditorDescriptor = (
-  readOnly: boolean,
+  readOnly = false,
 ): CodeBlockEditorDescriptor => ({
   match: () => true,
   priority: 1,
   Editor: (props) => (
-    <MonacoEditorComponent
-      code={props.code}
-      language={props.language}
-      readOnly={readOnly}
-    />
+    <MonacoEditorComponent code={props.code} language={props.language} />
   ),
 });
