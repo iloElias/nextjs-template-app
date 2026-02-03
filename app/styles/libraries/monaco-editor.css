@@ -1,0 +1,7 @@
+/* ===================================
+   Solar Icons Library Styles
+   =================================== */
+
+div.monaco-editor {
+  @apply pt-1;
+}

@@ -9,7 +9,11 @@
 @import "./styles/base.css";
 
 /* Library-specific Styles */
-@import "./styles/libraries/mdxeditor.css";
+@import "./styles/libraries/mdx-editor.css";
+@import "./styles/libraries/mdx-editor-table.css";
+
+@import "./styles/libraries/monaco-editor.css";
+
 @import "./styles/libraries/typography.css";
 @import "./styles/libraries/solar-icons.css";
 

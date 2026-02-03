@@ -64,6 +64,7 @@ const MonacoEditorComponent: React.FC<{
     <>
       <LanguageSelector
         label=""
+        className="max-w-32"
         value={currentLanguage}
         onChange={handleLanguageChange}
       />

@@ -19,22 +19,22 @@
   @apply mb-0!;
 }
 
-.prose > ul > * {
+.prose > :is(ul, ol) > * {
   @apply my-0!;
 }
 
-.prose ul > li {
+.prose :is(ul, ol) > li {
   @apply my-1!;
 }
 
 .prose
-  :where(ul > li):not(
+  :where(:is(ul, ol) > li):not(
     :where([class~="not-prose"], [class~="not-prose"] *)
   )::marker {
   @apply text-current!;
 }
 
-.prose :is(h1, h2, h3, h4, h5, h6, p, a, ul, li, blockquote, strong) {
+.prose :is(h1, h2, h3, h4, h5, h6, p, a, ul, ol, li, blockquote, strong) {
   @apply text-inherit;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .prose :is(code) span {
-  @apply bg-default-200 p-1 rounded-md;
+  @apply bg-default-200 p-1 rounded-md translate-y-0.5;
 }
 
 .prose
@@ -74,4 +74,8 @@
 
 .prose table > :is(caption, thead, tbody) {
   @apply border-b-default border-b-1;
+}
+
+.prose blockquote {
+  @apply border-l-default pl-2;
 }

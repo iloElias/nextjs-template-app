@@ -33,10 +33,10 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
 
   const editorHeight = useMemo(() => {
     if (height !== "auto") return height;
-    
+
     const lines = code.split("\n").length;
     const lineHeight = 16;
-    const padding = 1;
+    const padding = 8;
     const minHeight = 100;
     const calculatedHeight = lines * lineHeight + padding;
     return Math.max(calculatedHeight, minHeight);
@@ -51,7 +51,7 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
       )}
     >
       {(header || showLanguageLabel || showCopyButton) && (
-        <div className="flex justify-between items-center bg-background px-2 py-2 border-default-200 border-b">
+        <div className="flex justify-between items-center bg-transparent px-2 py-2 border-default-200 border-b max-h-12">
           {header ? (
             header
           ) : (
@@ -66,23 +66,21 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
                   content={copied ? "Copied!" : "Copy code"}
                   isOpen={copied ? true : undefined}
                 >
-                  <div>
-                    <Button
-                      size="sm"
-                      isIconOnly
-                      className={cn(
-                        "bg-default-100 hover:bg-default-200 h-8",
-                        copied ? "bg-success-100!" : "",
-                      )}
-                      onPress={async () => {
-                        await navigator.clipboard.writeText(code);
-                        setCopied(true);
-                        setTimeout(() => setCopied(false), 2000);
-                      }}
-                    >
-                      {copied ? <CheckCircle /> : <Copy />}
-                    </Button>
-                  </div>
+                  <Button
+                    size="sm"
+                    isIconOnly
+                    className={cn(
+                      "bg-default-100 hover:bg-default-200 h-8",
+                      copied ? "bg-success-100!" : "",
+                    )}
+                    onPress={async () => {
+                      await navigator.clipboard.writeText(code);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                  >
+                    {copied ? <CheckCircle /> : <Copy />}
+                  </Button>
                 </Tooltip>
               )}
             </>
