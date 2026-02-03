@@ -1,0 +1,18 @@
+/* ===================================
+   Print Utilities
+   =================================== */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  :is(.no-print, .no-print *) {
+    display: none;
+  }
+
+  .editor-content li[role="checkbox"][aria-checked="true"]::after {
+    @apply border-primary-600;
+  }
+}

@@ -1,0 +1,85 @@
+/* ===================================
+   MDXEditor Library Styles
+   =================================== */
+
+/* Toolbar */
+.mdxeditor.disabled > .mdxeditor-toolbar {
+  @apply hidden;
+}
+
+.mdxeditor-toolbar {
+  @apply bg-background! border border-default rounded-xl!;
+}
+
+.mdxeditor-source-editor,
+.cm-editor {
+  @apply dark:invert;
+}
+
+.mdxeditor * hr {
+  @apply my-2! border-t-2;
+}
+
+.mdxeditor-popup-container {
+  @apply border-none;
+}
+
+/* Editor Content */
+.editor-content * table {
+  @apply mx-2 my-2 max-w-[calc(100%-1rem)];
+}
+
+.editor-content * table thead tr th {
+  @apply py-0;
+}
+
+.editor-content * table *,
+.editor-content * table {
+  @apply border-default-400!;
+}
+
+div[data-lexical-decorator="true"] > div {
+  @apply p-0!;
+}
+
+/* Read Only Mode */
+.editor-readonly * div[data-lexical-decorator="true"] > div > :first-child {
+  @apply hidden p-0!;
+}
+
+.editor-readonly * img {
+  @apply pointer-events-none;
+}
+
+.editor-readonly li[role="checkbox"]::before,
+.editor-readonly li[role="checkbox"]::after {
+  @apply cursor-default pointer-events-none;
+}
+
+/* Checkboxes */
+.editor-content li[role="checkbox"] {
+  @apply list-none relative pl-7;
+}
+
+.editor-content li[role="checkbox"]::before {
+  content: "";
+  @apply absolute left-0 top-1 w-5 h-5 rounded-lg border-2 border-default-300 bg-default-100 cursor-pointer transition-all duration-200;
+}
+
+.editor-content li[role="checkbox"]:hover::before {
+  @apply border-default-400 bg-default-200;
+}
+
+.editor-content li[role="checkbox"][aria-checked="true"]::before {
+  @apply border-primary bg-primary;
+}
+
+.editor-content li[role="checkbox"][aria-checked="true"]:hover::before {
+  @apply border-primary-600 bg-primary-600;
+}
+
+.editor-content li[role="checkbox"][aria-checked="true"]::after {
+  content: "";
+  @apply absolute left-[0.45rem] top-2 w-1.5 h-2.5 border-white border-r-2 border-b-2 cursor-pointer;
+  transform: rotate(45deg);
+}

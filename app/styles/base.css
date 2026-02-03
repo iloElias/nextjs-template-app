@@ -1,0 +1,7 @@
+/* ===================================
+   Base Styles
+   =================================== */
+
+html {
+  @apply max-h-screen min-h-screen bg-background text-foreground overflow-auto!;
+}

@@ -1,0 +1,12 @@
+/* ===================================
+   Solar Icons Library Styles
+   =================================== */
+
+svg.solar-icons {
+  color: currentColor !important;
+}
+
+svg.solar-icons path {
+  color: currentColor !important;
+  stroke-width: inherit !important;
+}

@@ -1,0 +1,23 @@
+/* ===================================
+   Editor Header Component
+   =================================== */
+
+.editor-header * svg {
+  @apply fill-default-500;
+}
+
+.editor-header * button {
+  @apply bg-default-100;
+}
+
+.editor-header * button:hover {
+  @apply bg-default-200/80!;
+}
+
+.editor-header * button:focus {
+  @apply bg-default-200/80!;
+}
+
+.editor-header *[aria-checked="true"] {
+  @apply bg-default-200!;
+}
