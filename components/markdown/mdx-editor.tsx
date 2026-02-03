@@ -106,6 +106,7 @@ export function MDXEditorComponent({
               ],
             }),
             toolbarPlugin({
+              toolbarClassName: "scrollbar",
               toolbarContents: () => !readOnly && <MdxToolbar />,
             }),
           ]}
