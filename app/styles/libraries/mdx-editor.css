@@ -8,7 +8,7 @@
 }
 
 .mdxeditor-toolbar {
-  @apply bg-background! border border-default rounded-xl!;
+  @apply bg-background top-2! border border-default rounded-xl!;
 }
 
 .mdxeditor-source-editor,

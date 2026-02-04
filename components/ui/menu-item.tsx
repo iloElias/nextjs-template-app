@@ -6,7 +6,7 @@ import Link from "next/link";
 interface MenuItemProps {
   label: string;
   icon?: React.ReactNode;
-  href: string;
+  href?: string;
   variant?: "light" | "flat" | "solid";
   size?: "sm" | "md" | "lg";
   className?: string;
@@ -20,21 +20,21 @@ export function MenuItem({
   size = "md",
   className,
 }: MenuItemProps) {
-  return (
-    <Link href={href}>
-      <Button
-        variant={variant}
-        size={size}
-        className={cn(
-          "justify-start hover:bg-default-100 w-full transition-colors",
-          className,
-        )}
-        startContent={icon}
-      >
-        {label}
-      </Button>
-    </Link>
+  const button = (
+    <Button
+      variant={variant}
+      size={size}
+      className={cn(
+        "justify-start hover:bg-default-100 w-full transition-colors",
+        className,
+      )}
+      startContent={icon}
+    >
+      {label}
+    </Button>
   );
+
+  return href ? <Link href={href}>{button}</Link> : button;
 }
 
 interface MenuItemGroupProps {
