@@ -16,6 +16,7 @@ import { Section } from "../../layout/section";
 import { SelectMultiple } from "../../form/select-multiple";
 import { Select, SelectOption } from "../../form/select";
 import { Form } from "../../form/form";
+import NavigationMenu from "../../layout/navigation-menu";
 
 const selectItems: SelectOption[] = [
   { label: "Item 1", description: "Description 1", key: 1 },
@@ -28,6 +29,10 @@ export default function FormPage() {
 
   return (
     <Section className="flex flex-col gap-4 max-w-md">
+      <NavigationMenu />
+      
+      <h2 className="font-semibold text-xl">Form Example</h2>
+      
       <Form
         initialData={{
           name: "piece of shit",

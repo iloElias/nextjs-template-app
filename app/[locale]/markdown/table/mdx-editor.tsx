@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Checkbox } from "@heroui/react";
 import ThemeToggle from "@/components/ui/theme-toggle";
+import NavigationMenu from "@/components/layout/navigation-menu";
 
 const MDXEditorComponent = dynamic(
   () =>
@@ -45,6 +46,7 @@ export default function MdxEditor() {
   return (
     <div className="mx-auto p-6 max-w-5xl container">
       <div className="flex flex-col gap-3 mb-3">
+        <NavigationMenu />
         <h1 className="font-bold text-3xl">Markdown Editor</h1>
         <Checkbox
           isSelected={isEditable}
