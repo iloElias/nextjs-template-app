@@ -2,15 +2,8 @@
    Base Styles
    =================================== */
 
-@utility bg-background {
-  background-color: hsl(var(--heroui-background) / 1);
-  &:where(.dark, .dark *) {
-    background-color: hsl(var(--heroui-default-50) / 1) !important;
-  }
-}
-
 html {
-  @apply max-h-screen min-h-screen bg-background text-foreground overflow-auto!;
+  @apply max-h-screen min-h-screen bg-background dark:bg-default-50 text-foreground overflow-auto!;
 }
 
 * {

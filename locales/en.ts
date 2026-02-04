@@ -77,6 +77,7 @@ export default {
       removeInlineCode: "Remove code format",
       inlineCode: "Inline code format",
       link: "Create link",
+      emoji: "Insert emoji",
       richText: "Rich text",
       diffMode: "Diff mode",
       source: "Source mode",
@@ -100,6 +101,14 @@ export default {
       subscript: "Subscript",
       strikethrough: "Strikethrough",
       removeStrikethrough: "Remove strikethrough",
+    },
+    emojiPicker: {
+      searchPlaceholder: "Search emoji...",
+      loading: "Loading emojis...",
+      noEmojiFound: "No emoji found",
+      noEmojiFoundFor: 'No emoji found for "{search}"',
+      hoverToPreview: "Hover to preview",
+      skinToneSelector: "Select skin tone",
     },
     admonitions: {
       note: "Note",

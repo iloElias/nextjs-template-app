@@ -37,6 +37,7 @@ import {
   List,
   ListArrowDownMinimalistic,
   Notes,
+  SmileCircle,
   TextBold,
   TextCross,
   TextItalic,
@@ -47,7 +48,15 @@ import {
 import { MdxButton } from "./mdx-button";
 import { useState, useEffect, useCallback } from "react";
 import { Dialogue } from "../dialogue";
-import { Button, useDisclosure, Select, SelectItem } from "@heroui/react";
+import {
+  Button,
+  useDisclosure,
+  Select,
+  SelectItem,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@heroui/react";
 import {
   Modal,
   ModalContent,
@@ -64,6 +73,7 @@ import { SUPPORTED_LANGUAGES } from "./language-selector";
 import { $isCodeNode } from "@lexical/code";
 import { $getSelection, $isRangeSelection } from "lexical";
 import { MdxImageForm } from "./mdx-image-form";
+import { CustomEmojiPicker } from "../emoji-picker/emoji-picker";
 
 export const HeroBlockTypeSelect = () => {
   const tmdx = useScopedI18n("mdx-editor");
@@ -664,5 +674,49 @@ export const HeroCodeLanguageSelect = () => {
         <SelectItem key={lang.key}>{lang.label}</SelectItem>
       ))}
     </Select>
+  );
+};
+
+export const HeroInsertEmoji = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const activeEditor = useCellValue(activeEditor$);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleEmojiSelect = useCallback(
+    ({ emoji }: { emoji: string }) => {
+      if (!activeEditor) return;
+
+      activeEditor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          selection.insertText(emoji);
+        }
+      });
+
+      setIsOpen(false);
+    },
+    [activeEditor],
+  );
+
+  return (
+    <Popover
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      placement="bottom"
+      offset={10}
+    >
+      <PopoverTrigger className="h-8 bg-default-100 hover:bg-default-200 text-default-800! duration-75!">
+        <MdxButton onPress={() => setIsOpen(true)} role={tmdx("toolbar.emoji")}>
+          <SmileCircle />
+        </MdxButton>
+      </PopoverTrigger>
+      <PopoverContent>
+        <CustomEmojiPicker
+          onEmojiSelect={handleEmojiSelect}
+          showSearch={true}
+          containerPadding="small"
+        />
+      </PopoverContent>
+    </Popover>
   );
 };

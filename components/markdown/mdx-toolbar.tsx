@@ -20,6 +20,7 @@ import {
   HeroStrikethrough,
   HeroBlockTypeSelect,
   HeroInsertCodeBlock,
+  HeroInsertEmoji,
 } from "./mdx-toolbar-buttons";
 import { useScopedI18n } from "@/locales/client";
 import { LinkDialogMonitor } from "./mdx-link-dialog-monitor";
@@ -46,6 +47,7 @@ export const MdxToolbar: React.FC = () => {
           <HeroBlockTypeSelect />
           {/* <HeroCodeLanguageSelect /> */}
           <Separator />
+            <HeroInsertEmoji />
           <ButtonGroup>
             <HeroBold />
             <HeroItalic />
