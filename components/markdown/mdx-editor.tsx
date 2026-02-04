@@ -24,6 +24,7 @@ import { MdxLinkPreview } from "./mdx-link-preview";
 import { MdxImageEditToolbar } from "./mdx-image-edit-toolbar";
 import { createMonacoCodeEditorDescriptor } from "./monaco-code-editor";
 import { useScopedI18n } from "@/locales/client";
+import { emojiAutocompletePlugin } from "./emoji-autocomplete-plugin-wrapper";
 
 const imageUploadHandler = async (image: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -109,6 +110,7 @@ export function MDXEditorComponent({
               toolbarClassName: "scrollbar",
               toolbarContents: () => !readOnly && <MdxToolbar />,
             }),
+            ...(!readOnly ? [emojiAutocompletePlugin()] : []),
           ]}
         />
       </SolarProvider>

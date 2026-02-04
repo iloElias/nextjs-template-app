@@ -109,6 +109,8 @@ export default {
       noEmojiFoundFor: 'Nenhum emoji encontrado para "{search}"',
       hoverToPreview: "Passe o mouse para visualizar",
       skinToneSelector: "Selecionar tom de pele",
+      autocompleteHint:
+        "↑↓ para navegar, ↵ para selecionar, ESC para fechar",
     },
     admonitions: {
       note: "Nota",
