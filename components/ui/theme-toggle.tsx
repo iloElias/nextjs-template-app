@@ -12,7 +12,7 @@ interface ThemeSwitcherProps extends HeroUIButtonProps {
   className?: string;
 }
 
-const ThemeToggle: React.FC<ThemeSwitcherProps> = ({
+export const ThemeToggle: React.FC<ThemeSwitcherProps> = ({
   className,
   ...props
 }: ThemeSwitcherProps) => {
@@ -45,5 +45,3 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({
     </Button>
   );
 };
-
-export default ThemeToggle;

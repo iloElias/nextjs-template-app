@@ -1,3 +1,4 @@
+import { normalizeLocale } from "@/lib/utils";
 import axios from "axios";
 
 export interface EmojiData {
@@ -18,25 +19,6 @@ export interface Emoji {
   shortcodes: string[];
   hexcode: string;
 }
-
-const normalizeLocale = (locale: string): string => {
-  const baseLocale = locale.split("-")[0].toLowerCase();
-  const supportedLocales = [
-    "en",
-    "pt",
-    "es",
-    "fr",
-    "de",
-    "it",
-    "ja",
-    "ko",
-    "zh",
-    "ru",
-    "ar",
-    "hi",
-  ];
-  return supportedLocales.includes(baseLocale) ? baseLocale : "en";
-};
 
 export const fetchEmojis = async (locale: string = "en"): Promise<Emoji[]> => {
   const normalizedLocale = normalizeLocale(locale);

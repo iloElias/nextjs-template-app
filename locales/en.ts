@@ -130,6 +130,12 @@ export default {
     contentArea: {
       editableMarkdown: "editable markdown",
     },
+    loading: {
+      content: "Loading content...",
+      markdown: "Loading markdown...",
+      previousVersion: "Loading previous version...",
+      editorMounting: "Initializing editor...",
+    },
   },
   page: {
     "not-found": {

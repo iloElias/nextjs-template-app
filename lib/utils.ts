@@ -40,3 +40,22 @@ export const isEmpty = (
   }
   return false;
 };
+
+export const normalizeLocale = (locale: string): string => {
+  const baseLocale = locale.split("-")[0].toLowerCase();
+  const supportedLocales = [
+    "en",
+    "pt",
+    "es",
+    "fr",
+    "de",
+    "it",
+    "ja",
+    "ko",
+    "zh",
+    "ru",
+    "ar",
+    "hi",
+  ];
+  return supportedLocales.includes(baseLocale) ? baseLocale : "en";
+};

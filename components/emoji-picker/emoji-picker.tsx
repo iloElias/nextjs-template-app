@@ -1,15 +1,20 @@
 "use client";
 
-import { EmojiPicker as FrimousseEmojiPicker } from "frimousse";
-import { ComponentPropsWithoutRef } from "react";
-import { EmojiPickerSearch } from "./emoji-picker-search";
-import { EmojiPickerContainer } from "./emoji-picker-container";
+import { normalizeLocale } from "@/lib/utils";
 import { useScopedI18n } from "@/locales/client";
 import { cn } from "@heroui/react";
+import { EmojiPicker as FrimousseEmojiPicker } from "frimousse";
+import { useParams } from "next/navigation";
+import { ComponentPropsWithoutRef } from "react";
+import { EmojiPickerContainer } from "./emoji-picker-container";
+import { EmojiPickerSearch } from "./emoji-picker-search";
 
-export interface CustomEmojiPickerProps extends ComponentPropsWithoutRef<
-  typeof FrimousseEmojiPicker.Root
-> {
+export type FrimousseEmojiPickerRoot = typeof FrimousseEmojiPicker.Root;
+
+export type FrimousseEmojiPickerLocales =
+  React.ComponentProps<FrimousseEmojiPickerRoot>["locale"];
+
+export interface CustomEmojiPickerProps extends ComponentPropsWithoutRef<FrimousseEmojiPickerRoot> {
   showSearch?: boolean;
   containerPadding?: "none" | "small" | "medium" | "large";
 }
@@ -21,6 +26,9 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
   columns = 9,
   ...props
 }) => {
+  const params = useParams();
+  const locale = params?.locale as string;
+
   const tmdx = useScopedI18n("mdx-editor");
 
   return (
@@ -29,6 +37,7 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
       padding={containerPadding}
     >
       <FrimousseEmojiPicker.Root
+        locale={normalizeLocale(locale || "en") as FrimousseEmojiPickerLocales}
         className={`isolate flex h-92 w-fit flex-col ${className || ""}`}
         columns={columns}
         {...props}

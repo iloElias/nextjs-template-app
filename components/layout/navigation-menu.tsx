@@ -23,7 +23,7 @@ import {
   Palette,
 } from "@solar-icons/react";
 import { useChangeLocale, useCurrentLocale } from "@/locales/client";
-import ThemeToggle from "@/components/ui/theme-toggle";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Accordion, AccordionGroup } from "@/components/ui/accordion";
 import { MenuItem, MenuItemGroup } from "@/components/ui/menu-item";
 
@@ -35,7 +35,7 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
-export default function NavigationMenu() {
+export function NavigationMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const changeLocale = useChangeLocale();
   const currentLocale = useCurrentLocale();

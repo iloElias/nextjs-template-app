@@ -1,7 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { Emoji } from "@/http/emojis";
+import { useScopedI18n } from "@/locales/client";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  cn,
+  Code,
+  Listbox,
+  ListboxItem,
+  ScrollShadow,
+} from "@heroui/react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { mergeRegister } from "@lexical/utils";
 import {
   $getSelection,
   $isRangeSelection,
@@ -14,18 +26,7 @@ import {
   KEY_TAB_COMMAND,
   TextNode,
 } from "lexical";
-import { mergeRegister } from "@lexical/utils";
-import { useScopedI18n } from "@/locales/client";
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  Listbox,
-  ListboxItem,
-  cn,
-  Code,
-} from "@heroui/react";
-import type { Emoji } from "@/http/emojis";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface EmojiAutocompleteProps {
   emojis: Emoji[];
@@ -181,7 +182,13 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
         for (let i = cursorOffset - 1; i >= 0; i--) {
           const char = textContent[i];
           if (char === ":") {
-            colonIndex = i;
+            if (
+              i === 0 ||
+              textContent[i - 1] === " " ||
+              textContent[i - 1] === "\n"
+            ) {
+              colonIndex = i;
+            }
             break;
           }
           if (char === " " || char === "\n") {
@@ -196,7 +203,7 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
 
         const searchText = textContent.substring(colonIndex + 1, cursorOffset);
 
-        if (searchText.length === 0) {
+        if (searchText.length < 3) {
           if (isOpen) close();
           return;
         }
@@ -348,10 +355,10 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
       shadow="lg"
       className="animate-appearance-in"
     >
-      <CardBody className="rounded-large p-1">
-        <div
+      <CardBody className="rounded-large py-1.5 px-1">
+        <ScrollShadow
           ref={listboxRef}
-          className="max-h-80 overflow-y-auto"
+          className="max-h-64 overflow-y-auto"
           style={{ scrollPadding: "8px" }}
         >
           <Listbox
@@ -400,7 +407,7 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
               </ListboxItem>
             ))}
           </Listbox>
-        </div>
+        </ScrollShadow>
       </CardBody>
       <CardFooter className="border-t border-divider bg-default-50/50 px-3 py-1.5">
         <p className="text-[10px] font-medium text-default-500">
