@@ -11,11 +11,6 @@
   @apply top-2! rounded-xl! bg-background! dark:bg-default-50!;
 }
 
-.mdxeditor-source-editor,
-.cm-editor {
-  @apply dark:invert;
-}
-
 .mdxeditor * hr {
   @apply my-2! border-t-2;
 }
@@ -27,6 +22,26 @@
 /* Radix UI Popover positioning fixes for table editor */
 [data-radix-popper-content-wrapper] {
   z-index: 9999 !important;
+}
+
+/* CodeMirror styling to match Monaco editor */
+.mdxeditor .cm-editor {
+  @apply rounded-lg border border-default-200 bg-transparent;
+}
+
+.mdxeditor .cm-scroller {
+  @apply font-mono text-xs;
+}
+
+.mdxeditor .sp-wrapper,
+.mdxeditor .sp-layout {
+  @apply rounded-lg;
+}
+
+/* Source/Diff view container styling */
+.mdxeditor-source-editor,
+.mdxeditor-diff-editor {
+  @apply rounded-lg;
 }
 
 div[data-lexical-decorator="true"] > div {

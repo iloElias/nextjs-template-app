@@ -21,8 +21,10 @@ import "@mdxeditor/editor/style.css";
 import { SolarProvider } from "@solar-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useTheme } from "next-themes";
 import { useMemo } from "react";
 import { Loading } from "../loading";
+import { getCodeMirrorExtensions } from "./codemirror-extensions";
 import { emojiAutocompletePlugin } from "./emoji-autocomplete-plugin-wrapper";
 import { MdxEditorProvider } from "./mdx-editor-context";
 import { MdxImageEditToolbar } from "./mdx-image-edit-toolbar";
@@ -67,6 +69,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
   readOnly = false,
 }) => {
   const tmdx = useScopedI18n("mdx-editor");
+  const { resolvedTheme } = useTheme();
 
   const { data: fetchedMarkdown, isLoading: isLoadingMarkdown } = useQuery({
     queryKey: ["markdown", markdownUrl],
@@ -90,6 +93,11 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
     if (isLoadingPrevious) return tmdx("loading.previousVersion");
     return readOnly ? tmdx("loading.content") : tmdx("loading.markdown");
   }, [isLoadingMarkdown, isLoadingPrevious, readOnly, tmdx]);
+
+  const codeMirrorExtensions = useMemo(() => {
+    const theme = resolvedTheme === "dark" ? "dark" : "light";
+    return getCodeMirrorExtensions(theme);
+  }, [resolvedTheme]);
 
   return (
     <MdxEditorProvider readOnly={readOnly}>
@@ -130,6 +138,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
               diffSourcePlugin({
                 diffMarkdown: previousVersion || "",
                 viewMode: "rich-text",
+                codeMirrorExtensions,
               }),
               headingsPlugin(),
               listsPlugin(),
