@@ -144,7 +144,7 @@ export default function NavigationMenu() {
 
   return (
     <>
-      <div className="right-0 bottom-0 z-50 fixed m-2">
+      <div className="fixed right-0 bottom-0 z-50 m-2">
         <Button
           color="primary"
           isIconOnly
@@ -162,7 +162,7 @@ export default function NavigationMenu() {
               <DrawerHeader className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <Code size={24} />
-                  <h2 className="font-semibold text-xl">Navigation</h2>
+                  <h2 className="text-xl font-semibold">Navigation</h2>
                 </div>
               </DrawerHeader>
               <DrawerBody>
@@ -179,7 +179,7 @@ export default function NavigationMenu() {
 
                 <Divider className="mt-4" />
 
-                <div className="flex flex-col gap-3 mt-4">
+                <div className="mt-4 flex flex-col gap-3">
                   <div className="flex items-center gap-2">
                     <Translation size={20} />
                     <Select
@@ -198,7 +198,7 @@ export default function NavigationMenu() {
                       ))}
                     </Select>
                   </div>
-                  <div className="flex justify-between items-center gap-2">
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <Palette size={20} />
                       <span className="text-sm">Theme</span>

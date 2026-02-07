@@ -10,9 +10,7 @@ export default function RootLayout({
 }>) {
   return (
     <Html lang={DEFAULT_LOCALE}>
-      <Body>
-        {children}
-      </Body>
+      <Body>{children}</Body>
     </Html>
   );
 }

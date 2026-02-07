@@ -11,17 +11,12 @@ export const MdxButton: React.FC<MdxButtonProps> = ({
   ...props
 }) => {
   return (
-    <Tooltip
-      isDisabled={!role}
-      content={role}
-      delay={100}
-      closeDelay={0}
-    >
+    <Tooltip isDisabled={!role} content={role} delay={100} closeDelay={0}>
       <Button
         size="sm"
         isIconOnly
         className={cn(
-          "h-8 bg-default-100 hover:bg-default-200 text-default-800! duration-75!",
+          "h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200",
           active && "bg-primary-200!",
         )}
         {...props}

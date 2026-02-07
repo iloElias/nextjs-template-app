@@ -8,8 +8,21 @@ export interface EmojiPickerButtonProps {
   onEmojiSelect?: (emoji: string) => void;
   buttonLabel?: string;
   buttonClassName?: string;
-  variant?: "solid" | "bordered" | "light" | "flat" | "faded" | "shadow" | "ghost";
-  color?: "default" | "primary" | "secondary" | "success" | "warning" | "danger";
+  variant?:
+    | "solid"
+    | "bordered"
+    | "light"
+    | "flat"
+    | "faded"
+    | "shadow"
+    | "ghost";
+  color?:
+    | "default"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger";
   size?: "sm" | "md" | "lg";
   showSearch?: boolean;
   containerPadding?: "none" | "small" | "medium" | "large";

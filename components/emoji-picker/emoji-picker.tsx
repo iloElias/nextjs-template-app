@@ -5,6 +5,7 @@ import { ComponentPropsWithoutRef } from "react";
 import { EmojiPickerSearch } from "./emoji-picker-search";
 import { EmojiPickerContainer } from "./emoji-picker-container";
 import { useScopedI18n } from "@/locales/client";
+import { cn } from "@heroui/react";
 
 export interface CustomEmojiPickerProps extends ComponentPropsWithoutRef<
   typeof FrimousseEmojiPicker.Root
@@ -24,7 +25,7 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
 
   return (
     <EmojiPickerContainer
-      className="bg-transparent shadow-none border-none"
+      className="border-none bg-transparent shadow-none"
       padding={containerPadding}
     >
       <FrimousseEmojiPicker.Root
@@ -34,12 +35,12 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
       >
         {showSearch && <EmojiPickerSearch />}
 
-        <FrimousseEmojiPicker.Viewport className="relative flex-1 mt-3 outline-none">
-          <FrimousseEmojiPicker.Loading className="absolute inset-0 flex justify-center items-center text-default-400 text-sm">
+        <FrimousseEmojiPicker.Viewport className="relative mt-3 flex-1 outline-none">
+          <FrimousseEmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-sm text-default-400">
             {tmdx("emojiPicker.loading")}
           </FrimousseEmojiPicker.Loading>
 
-          <FrimousseEmojiPicker.Empty className="absolute inset-0 flex justify-center items-center text-default-400 text-sm">
+          <FrimousseEmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-sm text-default-400">
             {({ search }) =>
               search
                 ? tmdx("emojiPicker.noEmojiFoundFor", { search })
@@ -52,20 +53,23 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
             components={{
               CategoryHeader: ({ category, ...headerProps }) => (
                 <div
-                  className="top-0 sticky bg-content1 p-1 font-medium text-default-500 text-xs tracking-wider"
+                  className="sticky top-0 bg-content1 p-1 text-xs font-medium tracking-wider text-default-500"
                   {...headerProps}
                 >
                   {category.label}
                 </div>
               ),
               Row: ({ children, ...rowProps }) => (
-                <div className="px-0 overflow-clip!" {...rowProps}>
+                <div className="overflow-clip! px-0" {...rowProps}>
                   {children}
                 </div>
               ),
               Emoji: ({ emoji, ...emojiProps }) => (
                 <button
-                  className="flex justify-center items-center data-active:bg-primary/10 hover:bg-default-100 rounded-md data-active:ring-2 data-active:ring-primary/30 size-9 text-xl transition-all"
+                  className={cn(
+                    "flex size-9 items-center justify-center rounded-md text-xl transition-all duration-75",
+                    "hover:bg-default-100 data-active:bg-primary/10 data-active:ring-2 data-active:ring-primary/30",
+                  )}
                   {...emojiProps}
                 >
                   {emoji.emoji}
@@ -75,10 +79,10 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
           />
         </FrimousseEmojiPicker.Viewport>
 
-        <div className="flex justify-between items-center mt-3 pt-3 border-default-200 border-t">
+        <div className="mt-3 flex items-center justify-between border-t border-default-200 pt-3">
           <FrimousseEmojiPicker.ActiveEmoji>
             {({ emoji }) => (
-              <div className="min-h-5 text-default-600 text-sm">
+              <div className="min-h-5 text-sm text-default-600">
                 {emoji ? (
                   <span>
                     <span className="mr-2">{emoji.emoji}</span>
@@ -93,7 +97,7 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
             )}
           </FrimousseEmojiPicker.ActiveEmoji>
 
-          <FrimousseEmojiPicker.SkinToneSelector className="flex justify-center items-center hover:bg-default-100 rounded-md size-8 text-lg transition-colors" />
+          <FrimousseEmojiPicker.SkinToneSelector className="flex size-8 items-center justify-center rounded-md text-lg transition-colors hover:bg-default-100" />
         </div>
       </FrimousseEmojiPicker.Root>
     </EmojiPickerContainer>

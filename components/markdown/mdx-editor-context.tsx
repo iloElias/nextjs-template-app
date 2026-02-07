@@ -110,7 +110,7 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({
     setImageEdit(null);
   }, []);
 
-  useEffect(() => {    
+  useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setReadOnly(!!editorReadOnly);
   }, [editorReadOnly]);

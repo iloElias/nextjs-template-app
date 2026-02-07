@@ -705,7 +705,7 @@ export const HeroInsertEmoji = () => {
       placement="bottom"
       offset={10}
     >
-      <PopoverTrigger className="h-8 bg-default-100 hover:bg-default-200 text-default-800! duration-75!">
+      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
         <MdxButton onPress={() => setIsOpen(true)} role={tmdx("toolbar.emoji")}>
           <SmileCircle />
         </MdxButton>

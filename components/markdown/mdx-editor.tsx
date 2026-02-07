@@ -102,9 +102,7 @@ export function MDXEditorComponent({
             }),
             codeBlockPlugin({
               defaultCodeBlockLanguage: "javascript",
-              codeBlockEditorDescriptors: [
-                createMonacoCodeEditorDescriptor(),
-              ],
+              codeBlockEditorDescriptors: [createMonacoCodeEditorDescriptor()],
             }),
             toolbarPlugin({
               toolbarClassName: "scrollbar",

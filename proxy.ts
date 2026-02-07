@@ -1,5 +1,5 @@
-import {createI18nMiddleware} from "next-international/middleware";
-import {NextRequest, NextResponse} from "next/server";
+import { createI18nMiddleware } from "next-international/middleware";
+import { NextRequest, NextResponse } from "next/server";
 import { DEFAULT_LOCALE, LOCALES } from "./service/i18n";
 
 // Only accessible without token
@@ -14,12 +14,16 @@ export const PUBLIC_WEB_PATHS = [
 export const PUBLIC_WEB_AUTH_PATHS = ["/auth/code", "/auth/with"];
 
 export const AUTH_TOKEN_KEY = `${process.env.NEXT_PUBLIC_SERVICE_ID}_auth_token`;
-export const AUTHENTICATED_KEY =
-  `${process.env.NEXT_PUBLIC_SERVICE_ID}_authenticated`;
-export const AUTH_BROWSER_AGENT_KEY =
-  `${process.env.NEXT_PUBLIC_SERVICE_ID}_auth_browser_agent`;
+export const AUTHENTICATED_KEY = `${process.env.NEXT_PUBLIC_SERVICE_ID}_authenticated`;
+export const AUTH_BROWSER_AGENT_KEY = `${process.env.NEXT_PUBLIC_SERVICE_ID}_auth_browser_agent`;
 
-const publicMatcher = ["/img/", "/favicon.ico", "/api", "/static", "/robots.txt"];
+const publicMatcher = [
+  "/img/",
+  "/favicon.ico",
+  "/api",
+  "/static",
+  "/robots.txt",
+];
 
 const metaMatcher = [
   "/_next/static",
@@ -44,7 +48,7 @@ const log = (request: NextRequest) => {
 };
 
 export function proxy(request: NextRequest) {
-  const {pathname} = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
   if (
     metaMatcher.some((path) => pathname.startsWith(path)) ||

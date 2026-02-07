@@ -26,7 +26,7 @@ import { useScopedI18n } from "@/locales/client";
 import { LinkDialogMonitor } from "./mdx-link-dialog-monitor";
 
 export const Separator: React.FC = () => {
-  return <div className="bg-default mx-1! w-px min-w-px h-6" />;
+  return <div className="mx-1! h-6 w-px min-w-px bg-default" />;
 };
 
 export const MdxToolbar: React.FC = () => {
@@ -47,7 +47,7 @@ export const MdxToolbar: React.FC = () => {
           <HeroBlockTypeSelect />
           {/* <HeroCodeLanguageSelect /> */}
           <Separator />
-            <HeroInsertEmoji />
+          <HeroInsertEmoji />
           <ButtonGroup>
             <HeroBold />
             <HeroItalic />
@@ -75,7 +75,9 @@ export const MdxToolbar: React.FC = () => {
         </>
       )}
       <span className={cn("flex-1", viewMode !== "rich-text" && "hidden")} />
-      <p className="mx-2 min-w-max text-tiny">{tmdx(`codeBlock.${viewMode}`)}</p>
+      <p className="mx-2 min-w-max text-tiny">
+        {tmdx(`codeBlock.${viewMode}`)}
+      </p>
       <span className={cn("flex-1", viewMode === "rich-text" && "hidden")} />
       <ButtonGroup>
         <HeroRichTextMode />

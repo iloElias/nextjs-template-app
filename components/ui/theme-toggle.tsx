@@ -34,7 +34,7 @@ const ThemeToggle: React.FC<ThemeSwitcherProps> = ({
   return (
     <Button
       className={cn(
-        "bg-default-100 hover:bg-default-200 shadow-sm text-default-700 duration-100",
+        "bg-default-100 text-default-700 shadow-sm duration-100 hover:bg-default-200",
         className,
       )}
       onPress={toggleTheme}

@@ -33,7 +33,7 @@ export function Accordion({
         <Button
           type="button"
           onPress={() => setIsOpen(!isOpen)}
-          className="flex justify-between items-center bg-default/25 px-4 py-3 w-full text-left"
+          className="flex w-full items-center justify-between bg-default/25 px-4 py-3 text-left"
         >
           <div className="flex flex-1 items-center gap-2">{title}</div>
           <AltArrowDown
@@ -46,7 +46,7 @@ export function Accordion({
         </Button>
         <div
           className={cn(
-            "overflow-hidden transition-all duration-200 ease-in-out interpolate",
+            "interpolate overflow-hidden transition-all duration-200 ease-in-out",
             isOpen ? "h-auto" : "h-0",
           )}
         >

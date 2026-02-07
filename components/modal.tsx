@@ -1,5 +1,5 @@
 import {
-  cn, 
+  cn,
   Modal as HeroUIModal,
   ModalProps as HeroUIModalProps,
   ModalContent as HeroUIModalContent,

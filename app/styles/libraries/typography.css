@@ -39,7 +39,7 @@
 }
 
 .prose > :is(hr) {
-  @apply border-default-200 duration-200 border-t!;
+  @apply border-t! border-default-200 duration-200;
 }
 
 /* Code Blocks */
@@ -48,7 +48,7 @@
 }
 
 .prose :is(code) span {
-  @apply bg-default-200 p-1 rounded-md translate-y-0.5;
+  @apply translate-y-0.5 rounded-md bg-default-200 p-1;
 }
 
 .prose
@@ -56,7 +56,7 @@
     :where([class~="not-prose"], [class~="not-prose"] *)
   ):before {
   content: " ";
-  @apply inline-block w-0 h-0;
+  @apply inline-block h-0 w-0;
 }
 
 .prose
@@ -64,16 +64,16 @@
     :where([class~="not-prose"], [class~="not-prose"] *)
   )::after {
   content: " ";
-  @apply inline-block w-0 h-0;
+  @apply inline-block h-0 w-0;
 }
 
 /* Tables */
 .prose table > * > * > :is(th, td) {
-  @apply border-default! border-1;
+  @apply border-1 border-default!;
 }
 
 .prose table > :is(caption, thead, tbody) {
-  @apply border-b-default border-b-1;
+  @apply border-b-1 border-b-default;
 }
 
 .prose blockquote {

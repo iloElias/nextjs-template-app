@@ -7,8 +7,11 @@ import ThemeToggle from "@/components/ui/theme-toggle";
 import NavigationMenu from "@/components/layout/navigation-menu";
 
 const MDXEditorComponent = dynamic(
-  () => import("@/components/markdown/mdx-editor").then(mod => ({ default: mod.MDXEditorComponent })),
-  { ssr: false }
+  () =>
+    import("@/components/markdown/mdx-editor").then((mod) => ({
+      default: mod.MDXEditorComponent,
+    })),
+  { ssr: false },
 );
 
 const INITIAL_MARKDOWN = `# Welcome to MDX Editor
@@ -273,7 +276,6 @@ This comprehensive example demonstrates the MDX Editor's capabilities including:
 
 **Try editing this content to explore all features!** 🎨`;
 
-
 const PREVIOUS_VERSION = `# Welcome to MDX Editor
 
 ## Getting Started
@@ -301,10 +303,10 @@ export default function MdxEditor() {
   const [isEditable, setIsEditable] = useState<boolean>(true);
 
   return (
-    <div className="mx-auto p-6 max-w-5xl container">
-      <div className="flex flex-col gap-3 mb-3">
+    <div className="container mx-auto max-w-5xl p-6">
+      <div className="mb-3 flex flex-col gap-3">
         <NavigationMenu />
-        <h1 className="font-bold text-3xl">Markdown Editor</h1>
+        <h1 className="text-3xl font-bold">Markdown Editor</h1>
         <Checkbox
           isSelected={isEditable}
           onChange={(e) => setIsEditable(e.target.checked)}

@@ -45,19 +45,19 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
   return (
     <div
       className={cn(
-        "border border-default-200 rounded-lg overflow-hidden",
+        "overflow-hidden rounded-lg border border-default-200",
         readOnly && "bg-default-50/50",
         className,
       )}
     >
       {(header || showLanguageLabel || showCopyButton) && (
-        <div className="flex justify-between items-center bg-transparent px-2 py-2 border-default-200 border-b max-h-12">
+        <div className="flex max-h-12 items-center justify-between border-b border-default-200 bg-transparent px-2 py-2">
           {header ? (
             header
           ) : (
             <>
               {showLanguageLabel && (
-                <span className="font-mono text-default-500 text-xs">
+                <span className="font-mono text-xs text-default-500">
                   {language}
                 </span>
               )}
@@ -70,7 +70,7 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
                     size="sm"
                     isIconOnly
                     className={cn(
-                      "bg-default-100 hover:bg-default-200 h-8",
+                      "h-8 bg-default-100 hover:bg-default-200",
                       copied ? "bg-success-100!" : "",
                     )}
                     onPress={async () => {

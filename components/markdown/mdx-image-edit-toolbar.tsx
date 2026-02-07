@@ -76,14 +76,14 @@ export const MdxImageEditToolbar: React.FC<MdxImageEditToolbarProps> = ({
   };
 
   return (
-    <Card className="top-0 right-0 z-10 m-1.5! absolute max-w-[calc(100%-12px)]">
-      <CardBody className="max-w-full flex flex-row items-center gap-1 bg-background p-1 rounded-lg">
+    <Card className="absolute top-0 right-0 z-10 m-1.5! max-w-[calc(100%-12px)]">
+      <CardBody className="flex max-w-full flex-row items-center gap-1 rounded-lg bg-background p-1">
         <a
           href={imageSource}
           title={imageSource}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 ml-1.5! max-w-xs text-primary! hover:underline! truncate"
+          className="ml-1.5! flex max-w-xs items-center gap-1 truncate text-primary! hover:underline!"
           onClick={(e) => e.stopPropagation()}
         >
           <Link size={16} className="min-w-4" />

@@ -8,7 +8,6 @@ import { getApiUrl } from "@/service/env";
 import { cookieOptions, cookies } from "@/service/cookie";
 import { googleLogout } from "@react-oauth/google";
 
-
 export const apiBaseUrl = getApiUrl();
 
 const api = axios.create({
@@ -66,12 +65,12 @@ const interceptors: {
 
 api.interceptors.request.use(
   interceptors.RequestSuccess,
-  interceptors.RequestError
+  interceptors.RequestError,
 );
 
 api.interceptors.response.use(
   interceptors.ResponseSuccess,
-  interceptors.ResponseError
+  interceptors.ResponseError,
 );
 
 export { api };

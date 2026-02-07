@@ -25,7 +25,7 @@ export function MenuItem({
       variant={variant}
       size={size}
       className={cn(
-        "justify-start hover:bg-default-100 w-full transition-colors",
+        "w-full justify-start transition-colors hover:bg-default-100",
         className,
       )}
       startContent={icon}

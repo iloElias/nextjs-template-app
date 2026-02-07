@@ -1,7 +1,7 @@
 export interface ComponentProps {
-    children?: React.ReactNode
+  children?: React.ReactNode;
 }
 
 export const Component: React.FC<ComponentProps> = ({ children }) => {
-    return <>{children}</>
-}
+  return <>{children}</>;
+};

@@ -122,7 +122,7 @@ export const MonacoEditorCore: React.FC<MonacoEditorCoreProps> = ({
     return (
       <div
         style={{ height: `${height}px` }}
-        className="bg-default-100 animate-pulse"
+        className="animate-pulse bg-default-100"
       />
     );
   }

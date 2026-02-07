@@ -7,28 +7,42 @@ export interface EmojiData {
   text: string;
   type: number;
   version: number;
+  shortcodes?: string[];
+  tags?: string[];
 }
 
 export interface Emoji {
   emoji: string;
   label: string;
   tags: string[];
+  shortcodes: string[];
   hexcode: string;
 }
 
 const normalizeLocale = (locale: string): string => {
   const baseLocale = locale.split("-")[0].toLowerCase();
   const supportedLocales = [
-    "en", "pt", "es", "fr", "de", "it", "ja", "ko", "zh", "ru", "ar", "hi"
+    "en",
+    "pt",
+    "es",
+    "fr",
+    "de",
+    "it",
+    "ja",
+    "ko",
+    "zh",
+    "ru",
+    "ar",
+    "hi",
   ];
   return supportedLocales.includes(baseLocale) ? baseLocale : "en";
 };
 
 export const fetchEmojis = async (locale: string = "en"): Promise<Emoji[]> => {
   const normalizedLocale = normalizeLocale(locale);
-  
+
   const { data } = await axios.get<EmojiData[]>(
-    `https://cdn.jsdelivr.net/npm/emojibase-data@latest/${normalizedLocale}/data.json`
+    `https://cdn.jsdelivr.net/npm/emojibase-data@latest/${normalizedLocale}/data.json`,
   );
 
   return data
@@ -36,7 +50,8 @@ export const fetchEmojis = async (locale: string = "en"): Promise<Emoji[]> => {
     .map((emoji) => ({
       emoji: emoji.emoji,
       label: emoji.label,
-      tags: [],
+      tags: emoji.tags || [],
+      shortcodes: emoji.shortcodes || [],
       hexcode: emoji.hexcode,
     }));
 };

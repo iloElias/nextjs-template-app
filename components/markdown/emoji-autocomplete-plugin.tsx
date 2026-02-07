@@ -7,7 +7,7 @@ import { fetchEmojis, type Emoji } from "@/http/emojis";
 
 export function EmojiAutocompletePlugin() {
   const locale = useCurrentLocale();
-  
+
   const { data: emojis = [] } = useQuery<Emoji[]>({
     queryKey: ["emojis", locale],
     queryFn: () => fetchEmojis(locale),

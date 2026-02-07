@@ -13,14 +13,17 @@ export const Providers: React.FC<{
   locale: string;
 }> = ({ children, locale }) => {
   const providerLocale = locale;
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 1000 * 60 * 5,
-        gcTime: 1000 * 60 * 10,
-      },
-    },
-  }));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 1000 * 60 * 5,
+            gcTime: 1000 * 60 * 10,
+          },
+        },
+      }),
+  );
 
   return (
     <AppProvider>

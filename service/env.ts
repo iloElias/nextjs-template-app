@@ -24,7 +24,7 @@ export const getApiUrl = () => {
   const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   if (isEmpty(envUrl)) {
-    throw new Error("No defined env api base url in: PUBLIC_API_BASE_URL")
+    throw new Error("No defined env api base url in: PUBLIC_API_BASE_URL");
   }
 
   const hostname =

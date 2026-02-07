@@ -8,8 +8,10 @@ export const DashboardLayout: React.FC = () => {
     <Section className="flex flex-col gap-4">
       <NavigationMenu />
       <div className="flex flex-col gap-2">
-        <h2 className="font-semibold text-xl">Dashboard Component</h2>
-        <p className="text-default-500 text-sm">Dashboard layout content goes here.</p>
+        <h2 className="text-xl font-semibold">Dashboard Component</h2>
+        <p className="text-sm text-default-500">
+          Dashboard layout content goes here.
+        </p>
       </div>
     </Section>
   );

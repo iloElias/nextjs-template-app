@@ -59,7 +59,10 @@ export const MdxImageForm: React.FC<MdxImageFormProps> = ({
       const altText = String(formData.get("altText") || "").trim();
       const title = String(formData.get("title") || "").trim();
       const fileCandidate = formData.get("file");
-      const file = fileCandidate instanceof File && fileCandidate.size > 0 ? fileCandidate : null;
+      const file =
+        fileCandidate instanceof File && fileCandidate.size > 0
+          ? fileCandidate
+          : null;
 
       let resolvedSrc = srcValue;
 
@@ -108,16 +111,16 @@ export const MdxImageForm: React.FC<MdxImageFormProps> = ({
       }}
     >
       <ModalBody>
-        <p className="text-default-500 text-tiny">
+        <p className="text-tiny text-default-500">
           {tmdx("uploadImage.uploadInstructions")}
         </p>
         <input
           name="file"
           type="file"
           accept="image/*"
-          className="hover:file:bg-default-200 file:bg-default-100 file:mr-4 file:px-3 file:py-2 file:border-0 file:rounded-large w-full text-default-600 text-tiny file:text-default-700 file:text-tiny"
+          className="w-full text-tiny text-default-600 file:mr-4 file:rounded-large file:border-0 file:bg-default-100 file:px-3 file:py-2 file:text-tiny file:text-default-700 hover:file:bg-default-200"
         />
-        <p className="mt-2 text-default-500 text-tiny">
+        <p className="mt-2 text-tiny text-default-500">
           {tmdx("uploadImage.addViaUrlInstructions")}
         </p>
         <Input

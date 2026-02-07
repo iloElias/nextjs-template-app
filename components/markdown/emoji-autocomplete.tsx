@@ -16,7 +16,15 @@ import {
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
 import { useScopedI18n } from "@/locales/client";
-import { Card, CardBody, CardFooter, Listbox, ListboxItem, cn, Code } from "@heroui/react";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  Listbox,
+  ListboxItem,
+  cn,
+  Code,
+} from "@heroui/react";
 import type { Emoji } from "@/http/emojis";
 
 interface EmojiAutocompleteProps {
@@ -28,10 +36,12 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+  const [position, setPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const triggerNodeRef = useRef<TextNode | null>(null);
   const triggerOffsetRef = useRef<number>(0);
-  const selectedItemRef = useRef<HTMLLIElement | null>(null);
   const listboxRef = useRef<HTMLDivElement | null>(null);
   const popupRef = useRef<HTMLDivElement | null>(null);
   const t = useScopedI18n("mdx-editor.emojiPicker");
@@ -74,22 +84,31 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
 
   const filteredEmojis = useMemo(() => {
     if (!search || search.length === 0) return [];
-    
+
     const searchLower = search.toLowerCase();
-    
+
     return emojis
       .filter((emoji) => {
         if (!emoji || !emoji.emoji) return false;
-        
-        const label = String(emoji.label || '').toLowerCase();
+
+        const label = String(emoji.label || "").toLowerCase();
         const labelMatch = label.includes(searchLower);
-        
-        const tagMatch = Array.isArray(emoji.tags) && emoji.tags.some((tag) => {
-          const tagStr = String(tag || '').toLowerCase();
-          return tagStr.includes(searchLower);
-        });
-        
-        return labelMatch || tagMatch;
+
+        const tagMatch =
+          Array.isArray(emoji.tags) &&
+          emoji.tags.some((tag) => {
+            const tagStr = String(tag || "").toLowerCase();
+            return tagStr.includes(searchLower);
+          });
+
+        const shortcodeMatch =
+          Array.isArray(emoji.shortcodes) &&
+          emoji.shortcodes.some((shortcode) => {
+            const shortcodeStr = String(shortcode || "").toLowerCase();
+            return shortcodeStr.includes(searchLower);
+          });
+
+        return labelMatch || tagMatch || shortcodeMatch;
       })
       .slice(0, 10);
   }, [search, emojis]);
@@ -106,39 +125,39 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
     (emoji: Emoji) => {
       const triggerNode = triggerNodeRef.current;
       const triggerOffset = triggerOffsetRef.current;
-      
+
       if (!triggerNode) return;
 
       editor.update(() => {
         const selection = $getSelection();
         if (!$isRangeSelection(selection)) return;
-        
+
         const node = selection.anchor.getNode();
         if (!$isTextNode(node)) return;
 
         const textContent = node.getTextContent();
-        
+
         const startPos = triggerOffset;
         const endPos = startPos + search.length + 1;
-        
+
         const beforeEmoji = textContent.substring(0, startPos);
         const afterEmoji = textContent.substring(endPos);
         const newText = beforeEmoji + emoji.emoji + afterEmoji;
-        
+
         node.setTextContent(newText);
-        
+
         const cursorPos = beforeEmoji.length + emoji.emoji.length;
         node.select(cursorPos, cursorPos);
       });
 
       close();
     },
-    [editor, search, close]
+    [editor, search, close],
   );
 
   useEffect(() => {
     if (!hasEmojis) return;
-    
+
     const updateListener = editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
         const selection = $getSelection();
@@ -149,7 +168,7 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
 
         const anchor = selection.anchor;
         const node = anchor.getNode();
-        
+
         if (!$isTextNode(node)) {
           if (isOpen) close();
           return;
@@ -199,7 +218,10 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
         });
         triggerNodeRef.current = node;
         triggerOffsetRef.current = colonIndex;
-        setIsOpen(true);
+
+        if (!isOpen) {
+          setIsOpen(true);
+        }
       });
     });
 
@@ -209,11 +231,17 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
   }, [editor, isOpen, close, hasEmojis]);
 
   useEffect(() => {
-    if (selectedItemRef.current && listboxRef.current) {
-      selectedItemRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
+    if (listboxRef.current) {
+      const selectedElement = listboxRef.current.querySelector(
+        `[data-emoji-index="${selectedIndex}"]`,
+      );
+      if (selectedElement) {
+        selectedElement.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "nearest",
+        });
+      }
     }
   }, [selectedIndex]);
 
@@ -225,12 +253,12 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
         KEY_ARROW_DOWN_COMMAND,
         (event) => {
           event?.preventDefault();
-          setSelectedIndex((prev) => 
-            prev < filteredEmojis.length - 1 ? prev + 1 : prev
+          setSelectedIndex((prev) =>
+            prev < filteredEmojis.length - 1 ? prev + 1 : prev,
           );
           return true;
         },
-        COMMAND_PRIORITY_HIGH
+        COMMAND_PRIORITY_HIGH,
       ),
       editor.registerCommand(
         KEY_ARROW_UP_COMMAND,
@@ -239,7 +267,7 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
           setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
           return true;
         },
-        COMMAND_PRIORITY_HIGH
+        COMMAND_PRIORITY_HIGH,
       ),
       editor.registerCommand(
         KEY_ENTER_COMMAND,
@@ -251,7 +279,7 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
           }
           return false;
         },
-        COMMAND_PRIORITY_HIGH
+        COMMAND_PRIORITY_HIGH,
       ),
       editor.registerCommand(
         KEY_TAB_COMMAND,
@@ -263,7 +291,7 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
           }
           return false;
         },
-        COMMAND_PRIORITY_HIGH
+        COMMAND_PRIORITY_HIGH,
       ),
       editor.registerCommand(
         KEY_ESCAPE_COMMAND,
@@ -272,8 +300,8 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
           close();
           return true;
         },
-        COMMAND_PRIORITY_HIGH
-      )
+        COMMAND_PRIORITY_HIGH,
+      ),
     );
   }, [editor, isOpen, filteredEmojis, selectedIndex, insertEmoji, close]);
 
@@ -283,7 +311,7 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
 
   if (filteredEmojis.length === 0) {
     if (emojis.length === 0) return null;
-    
+
     return (
       <Card
         ref={popupRef}
@@ -298,7 +326,7 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
         className="animate-appearance-in"
       >
         <CardBody className="py-3">
-          <p className="text-default-500 text-small">
+          <p className="text-small text-default-500">
             {t("noEmojiFoundFor", { search })}
           </p>
         </CardBody>
@@ -320,51 +348,62 @@ export function EmojiAutocomplete({ emojis }: EmojiAutocompleteProps) {
       shadow="lg"
       className="animate-appearance-in"
     >
-      <CardBody className="p-2 rounded-large">
-        <Listbox
-          aria-label="Emoji autocomplete"
-          variant="flat"
-          selectionMode="single"
-          classNames={{
-            base: "max-h-80 overflow-y-auto p-0",
-            list: "gap-0",
-          }}
+      <CardBody className="rounded-large p-1">
+        <div
+          ref={listboxRef}
+          className="max-h-80 overflow-y-auto"
+          style={{ scrollPadding: "8px" }}
         >
-          {filteredEmojis.map((emoji, index) => (
-            <ListboxItem
-              key={emoji.hexcode}
-              textValue={emoji.label}
-              className={cn(
-                "p-2 m-1 w-[calc(100%-0.5rem)] overflow-hidden rounded-medium transition-all cursor-pointer truncate hover:bg-default/10",
-                index === selectedIndex && "bg-default/20 ring ring-primary",
-              )}
-              startContent={
-                <span className="flex justify-center items-center w-8 h-8 text-2xl shrink-0">
-                  {emoji.emoji}
-                </span>
-              }
-              description={
-                <Code
-                  size="sm"
-                  className="max-w-full truncate"
-                >
-                  :{emoji.label.toLowerCase().replace(/\s+/g, "_")}:
-                </Code>
-              }
-              onClick={() => insertEmoji(emoji)}
-              onMouseEnter={() => setSelectedIndex(index)}
-            >
-              <div className="flex-1 min-w-0">
-                <span className="font-medium text-default-700 text-small block truncate">
-                  {emoji.label}
-                </span>
-              </div>
-            </ListboxItem>
-          ))}
-        </Listbox>
+          <Listbox
+            aria-label="Emoji autocomplete"
+            variant="flat"
+            selectionMode="single"
+            classNames={{
+              base: "p-0",
+              list: "gap-0",
+            }}
+          >
+            {filteredEmojis.map((emoji, index) => (
+              <ListboxItem
+                key={emoji.hexcode}
+                data-emoji-index={index}
+                textValue={emoji.label}
+                className={cn(
+                  "mx-1 my-0.5 w-[calc(100%-0.5rem)] cursor-pointer truncate overflow-hidden rounded-medium px-2 py-1.5 transition-all hover:bg-default/10",
+                  index === selectedIndex &&
+                    "bg-default/20 ring-1 ring-primary",
+                )}
+                startContent={
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center text-lg">
+                    {emoji.emoji}
+                  </span>
+                }
+                description={
+                  <Code
+                    size="sm"
+                    className="h-4 max-w-full truncate px-1 py-0 text-[10px]"
+                  >
+                    :
+                    {emoji.shortcodes?.[0] ||
+                      emoji.label.toLowerCase().replace(/\s+/g, "_")}
+                    :
+                  </Code>
+                }
+                onClick={() => insertEmoji(emoji)}
+                onMouseEnter={() => setSelectedIndex(index)}
+              >
+                <div className="min-w-0 flex-1">
+                  <span className="block truncate text-xs font-medium text-default-700">
+                    {emoji.label}
+                  </span>
+                </div>
+              </ListboxItem>
+            ))}
+          </Listbox>
+        </div>
       </CardBody>
-      <CardFooter className="bg-default-50/50 px-4 py-2 border-divider border-t">
-        <p className="font-medium text-default-500 text-tiny">
+      <CardFooter className="border-t border-divider bg-default-50/50 px-3 py-1.5">
+        <p className="text-[10px] font-medium text-default-500">
           {t("autocompleteHint")}
         </p>
       </CardFooter>

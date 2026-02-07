@@ -21,7 +21,7 @@
 }
 
 .editor-content:not(.editor-readonly) * table * :is(th, td) {
-  @apply leading-3 items-start;
+  @apply items-start leading-3;
 }
 
 .editor-content:not(.editor-readonly) * table * :is(th, td) * {
@@ -30,68 +30,124 @@
 
 /* Remove corner borders in edit mode */
 /* Top-left corner */
-.editor-content:not(.editor-readonly) * table > thead > tr:first-child > :first-child {
-  @apply border-t-transparent! border-l-transparent! w-10!;
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > thead
+  > tr:first-child
+  > :first-child {
+  @apply w-10! border-t-transparent! border-l-transparent!;
 }
 
 /* Top-right corner */
-.editor-content:not(.editor-readonly) * table > thead > tr:first-child > :last-child {
-  @apply border-t-transparent! border-r-transparent! w-10!;
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > thead
+  > tr:first-child
+  > :last-child {
+  @apply w-10! border-t-transparent! border-r-transparent!;
 }
 
 /* Bottom-left corner */
-.editor-content:not(.editor-readonly) * table > tfoot > tr:last-child > :first-child {
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > tfoot
+  > tr:last-child
+  > :first-child {
   @apply border-b-transparent! border-l-transparent!;
 }
 
 /* Bottom-right corner */
-.editor-content:not(.editor-readonly) * table > tfoot > tr:last-child > :last-child {
-  @apply border-b-transparent! border-r-transparent!;
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > tfoot
+  > tr:last-child
+  > :last-child {
+  @apply border-r-transparent! border-b-transparent!;
 }
 
 /* Remove all borders */
 .editor-content:not(.editor-readonly) * table > thead > tr:first-child > th {
-  @apply border-t-transparent! border-x-transparent!;
+  @apply border-x-transparent! border-t-transparent!;
 }
 
-.editor-content:not(.editor-readonly) * table > thead > tr:first-child > th:is(:first-child, :last-child) {
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > thead
+  > tr:first-child
+  > th:is(:first-child, :last-child) {
   @apply border-y-transparent!;
 }
 
-.editor-content:not(.editor-readonly) * table > tbody > tr >:first-child {
+.editor-content:not(.editor-readonly) * table > tbody > tr > :first-child {
   @apply border-y-transparent! border-l-transparent!;
 }
 
-.editor-content:not(.editor-readonly) * table > tbody > :first-child :last-child {
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > tbody
+  > :first-child
+  :last-child {
   @apply border-y-transparent! border-r-transparent!;
 }
 
 .editor-content:not(.editor-readonly) * table > tfoot > tr:last-child > th {
-  @apply border-b-transparent! border-x-transparent!;
+  @apply border-x-transparent! border-b-transparent!;
 }
 
 /*  */
-.editor-content:not(.editor-readonly) * table  * [data-tool-cell="true"] {
-  @apply max-h-10! p-0! m-0!;
+.editor-content:not(.editor-readonly) * table * [data-tool-cell="true"] {
+  @apply m-0! max-h-10! p-0!;
 }
 
-.editor-content:not(.editor-readonly) * table * :is([data-tool-cell="true"] button, button) {
-  @apply m-1 w-8 h-8 flex items-center justify-center! text-foreground bg-default opacity-50! hover:opacity-80! active:opacity-100 active:scale-[0.97]! duration-100 transition-transform-colors-opacity rounded-medium;
+.editor-content:not(.editor-readonly)
+  *
+  table
+  *
+  :is([data-tool-cell="true"] button, button) {
+  @apply m-1 flex h-8 w-8 items-center justify-center! rounded-medium bg-default text-foreground opacity-50! transition-transform-colors-opacity duration-100 hover:opacity-80! active:scale-[0.97]! active:opacity-100;
 }
 
-.editor-content:not(.editor-readonly) * table > thead > tr > :not(:first-child, :last-child) {
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > thead
+  > tr
+  > :not(:first-child, :last-child) {
   @apply p-1!;
 }
 
-.editor-content:not(.editor-readonly) * table > thead > tr > :not(:first-child, :last-child) button {
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > thead
+  > tr
+  > :not(:first-child, :last-child)
+  button {
   @apply m-0! w-full;
 }
 
-.editor-content:not(.editor-readonly) * table > tbody > :first-child > :last-child {
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > tbody
+  > :first-child
+  > :last-child {
   @apply p-1!;
 }
 
-.editor-content:not(.editor-readonly) * table > tbody > :first-child :last-child button {
+.editor-content:not(.editor-readonly)
+  *
+  table
+  > tbody
+  > :first-child
+  :last-child
+  button {
   @apply m-0! h-full!;
 }
 
@@ -103,6 +159,11 @@
   @apply m-0! w-full!;
 }
 
-.editor-content:not(.editor-readonly) * table * :is([data-tool-cell="true"] button, button):active svg {
+.editor-content:not(.editor-readonly)
+  *
+  table
+  *
+  :is([data-tool-cell="true"] button, button):active
+  svg {
   transform: translate(0px, 0px);
 }

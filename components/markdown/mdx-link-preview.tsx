@@ -6,7 +6,13 @@ import { Link, Pen, TrashBin2 } from "@solar-icons/react";
 import { Separator } from "./mdx-toolbar";
 
 export const MdxLinkPreview: React.FC = () => {
-  const { linkPreview, setLinkPreview, setLinkEdit, openLinkDialog, isLinkDialogOpen } = useMdxEditor();
+  const {
+    linkPreview,
+    setLinkPreview,
+    setLinkEdit,
+    openLinkDialog,
+    isLinkDialogOpen,
+  } = useMdxEditor();
 
   const displayText = linkPreview?.url || linkPreview?.text || "";
 
@@ -23,21 +29,21 @@ export const MdxLinkPreview: React.FC = () => {
         zIndex: 1000,
         maxWidth: "300px",
       }}
-      className="flex flex-row items-center gap-1 bg-background/80 shadow-small backdrop-blur p-1 rounded-lg"
+      className="flex flex-row items-center gap-1 rounded-lg bg-background/80 p-1 shadow-small backdrop-blur"
     >
       {linkPreview.url ? (
         <a
           href={linkPreview.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 ml-1.5 max-w-xs text-primary hover:underline truncate"
+          className="ml-1.5 flex max-w-xs items-center gap-1 truncate text-primary hover:underline"
           onClick={(e) => e.stopPropagation()}
         >
           <Link size={16} />
           <span className="truncate">{displayText}</span>
         </a>
       ) : (
-        <div className="flex items-center gap-1 ml-1.5 max-w-xs text-primary truncate">
+        <div className="ml-1.5 flex max-w-xs items-center gap-1 truncate text-primary">
           <Link size={16} />
           <span className="truncate">{displayText}</span>
         </div>
@@ -61,13 +67,19 @@ export const MdxLinkPreview: React.FC = () => {
         >
           <Pen />
         </Button>
-        <LinkRemoveButton linkNodeKey={linkPreview.linkNodeKey} onRemove={() => setLinkPreview(null)} />
+        <LinkRemoveButton
+          linkNodeKey={linkPreview.linkNodeKey}
+          onRemove={() => setLinkPreview(null)}
+        />
       </ButtonGroup>
     </Card>
   );
 };
 
-const LinkRemoveButton: React.FC<{ linkNodeKey: string; onRemove: () => void }> = ({ linkNodeKey, onRemove }) => {
+const LinkRemoveButton: React.FC<{
+  linkNodeKey: string;
+  onRemove: () => void;
+}> = ({ linkNodeKey, onRemove }) => {
   const { removeLink } = useMdxEditor();
 
   const handleRemoveLink = () => {

@@ -29,7 +29,17 @@
   "scope": {
     "required": false,
     "format": "lowercase with hyphens",
-    "commonScopes": ["auth", "ui", "api", "form", "layout", "config", "deps", "types", "utils"],
+    "commonScopes": [
+      "auth",
+      "ui",
+      "api",
+      "form",
+      "layout",
+      "config",
+      "deps",
+      "types",
+      "utils"
+    ],
     "guidelines": [
       "Use lowercase",
       "Use hyphens to separate words",

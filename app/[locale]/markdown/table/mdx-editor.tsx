@@ -44,10 +44,10 @@ export default function MdxEditor() {
   const [isEditable, setIsEditable] = useState<boolean>(true);
 
   return (
-    <div className="mx-auto p-6 max-w-5xl container">
-      <div className="flex flex-col gap-3 mb-3">
+    <div className="container mx-auto max-w-5xl p-6">
+      <div className="mb-3 flex flex-col gap-3">
         <NavigationMenu />
-        <h1 className="font-bold text-3xl">Markdown Editor</h1>
+        <h1 className="text-3xl font-bold">Markdown Editor</h1>
         <Checkbox
           isSelected={isEditable}
           onChange={(e) => setIsEditable(e.target.checked)}

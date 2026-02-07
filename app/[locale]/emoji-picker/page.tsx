@@ -18,9 +18,9 @@ export default function EmojiPickerPage() {
   };
 
   return (
-    <div className="bg-background p-8 min-h-screen">
+    <div className="min-h-screen bg-background p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-2 font-bold text-default-900 text-4xl">
+        <h1 className="mb-2 text-4xl font-bold text-default-900">
           Emoji Picker Demo
         </h1>
         <p className="mb-8 text-default-600">
@@ -29,14 +29,12 @@ export default function EmojiPickerPage() {
 
         <div className="space-y-8">
           {/* Example 1: Default Button */}
-          <section className="bg-content1 p-6 border border-default-200 rounded-lg">
-            <h2 className="mb-4 font-semibold text-default-800 text-2xl">
+          <section className="rounded-lg border border-default-200 bg-content1 p-6">
+            <h2 className="mb-4 text-2xl font-semibold text-default-800">
               Default Emoji Picker Button
             </h2>
             <div className="flex flex-wrap items-start gap-4">
-              <EmojiPickerButton
-                onEmojiSelect={handleEmojiSelect}
-              />
+              <EmojiPickerButton onEmojiSelect={handleEmojiSelect} />
               <EmojiPickerButton
                 buttonLabel="🎨 Choose Emoji"
                 variant="bordered"
@@ -52,8 +50,8 @@ export default function EmojiPickerPage() {
               />
             </div>
           </section>
-          <section className="bg-content1 p-6 border border-default-200 rounded-lg">
-            <h2 className="mb-4 font-semibold text-default-800 text-2xl">
+          <section className="rounded-lg border border-default-200 bg-content1 p-6">
+            <h2 className="mb-4 text-2xl font-semibold text-default-800">
               Custom Container Padding
             </h2>
             <div className="flex flex-wrap gap-4">
@@ -79,8 +77,8 @@ export default function EmojiPickerPage() {
           </section>
 
           {/* Example 3: Without Search */}
-          <section className="bg-content1 p-6 border border-default-200 rounded-lg">
-            <h2 className="mb-4 font-semibold text-default-800 text-2xl">
+          <section className="rounded-lg border border-default-200 bg-content1 p-6">
+            <h2 className="mb-4 text-2xl font-semibold text-default-800">
               Without Search Input
             </h2>
             <EmojiPickerButton
@@ -93,14 +91,14 @@ export default function EmojiPickerPage() {
 
           {/* Selected Emoji Display */}
           {selectedEmoji && (
-            <section className="bg-content1 p-6 border border-default-200 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="font-semibold text-default-800 text-2xl">
+            <section className="rounded-lg border border-default-200 bg-content1 p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-2xl font-semibold text-default-800">
                   Selected Emoji
                 </h2>
                 <button
                   onClick={clearEmojis}
-                  className="text-danger text-sm hover:underline"
+                  className="text-sm text-danger hover:underline"
                 >
                   Clear All
                 </button>
@@ -110,17 +108,17 @@ export default function EmojiPickerPage() {
                   <span className="text-6xl">{selectedEmoji}</span>
                   <span className="text-default-600">Last selected</span>
                 </div>
-                
+
                 {emojiList.length > 0 && (
                   <div>
-                    <h3 className="mb-2 font-medium text-default-600 text-sm">
+                    <h3 className="mb-2 text-sm font-medium text-default-600">
                       All selected emojis ({emojiList.length}):
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {emojiList.map((emoji, index) => (
                         <span
                           key={index}
-                          className="text-3xl hover:scale-110 transition-transform"
+                          className="text-3xl transition-transform hover:scale-110"
                         >
                           {emoji}
                         </span>
@@ -133,11 +131,11 @@ export default function EmojiPickerPage() {
           )}
 
           {/* Features Section */}
-          <section className="bg-content1 p-6 border border-default-200 rounded-lg">
-            <h2 className="mb-4 font-semibold text-default-800 text-2xl">
+          <section className="rounded-lg border border-default-200 bg-content1 p-6">
+            <h2 className="mb-4 text-2xl font-semibold text-default-800">
               Features
             </h2>
-            <ul className="space-y-2 text-default-600 list-disc list-inside">
+            <ul className="list-inside list-disc space-y-2 text-default-600">
               <li>Custom wrapped search input component</li>
               <li>Custom container with configurable padding</li>
               <li>Custom styled emoji buttons with hover effects</li>

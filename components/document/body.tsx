@@ -1,6 +1,9 @@
-import {cn} from "@heroui/react";
+import { cn } from "@heroui/react";
 
-export const Body: React.FC<React.HTMLAttributes<HTMLBodyElement>> = ({children, ...props}) => {
+export const Body: React.FC<React.HTMLAttributes<HTMLBodyElement>> = ({
+  children,
+  ...props
+}) => {
   return (
     <body className={cn("antialiased")} {...props}>
       {children}

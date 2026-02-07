@@ -28,11 +28,11 @@ export default function FormPage() {
   const disclosure = useDisclosure();
 
   return (
-    <Section className="flex flex-col gap-4 max-w-md">
+    <Section className="flex max-w-md flex-col gap-4">
       <NavigationMenu />
-      
-      <h2 className="font-semibold text-xl">Form Example</h2>
-      
+
+      <h2 className="text-xl font-semibold">Form Example</h2>
+
       <Form
         initialData={{
           name: "piece of shit",
