@@ -8,7 +8,7 @@
 }
 
 .mdxeditor-toolbar {
-  @apply top-2! overflow-x-auto! rounded-xl! border! border-default-200! bg-background! px-3! py-2! dark:bg-default-50!;
+  @apply top-2! overflow-x-auto! rounded-xl! border! border-default-200! bg-background! p-2! dark:bg-default-50!;
   min-height: fit-content !important;
 }
 

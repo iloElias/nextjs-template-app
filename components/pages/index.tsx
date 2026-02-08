@@ -1,7 +1,7 @@
 "use client";
 import { Section } from "../layout/section";
 import { useI18n } from "@/locales/client";
-import NavigationMenu from "../layout/navigation-menu";
+import { NavigationMenu } from "../layout/navigation-menu";
 
 export default function Home() {
   const t = useI18n();

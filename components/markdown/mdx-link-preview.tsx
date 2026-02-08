@@ -3,7 +3,7 @@
 import { useMdxEditor } from "./mdx-editor-context";
 import { Button, ButtonGroup, Card } from "@heroui/react";
 import { Link, Pen, TrashBin2 } from "@solar-icons/react";
-import { Separator } from "./mdx-toolbar";
+import { Separator } from "./mdx-toolbar-buttons";
 
 export const MdxLinkPreview: React.FC = () => {
   const {

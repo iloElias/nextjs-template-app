@@ -1,7 +1,7 @@
 "use client";
 
 import { Section } from "@/components/layout/section";
-import NavigationMenu from "@/components/layout/navigation-menu";
+import { NavigationMenu } from "@/components/layout/navigation-menu";
 
 export default function Page() {
   return (

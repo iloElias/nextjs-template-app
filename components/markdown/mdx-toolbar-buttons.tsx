@@ -31,7 +31,6 @@ import {
 } from "@mdxeditor/editor";
 import {
   AlignVerticalSpacing,
-  Card,
   Checklist,
   Code,
   CodeSquare,
@@ -42,7 +41,9 @@ import {
   ListArrowDownMinimalistic,
   MenuDots,
   Notes,
+  SidebarMinimalistic,
   SmileCircle,
+  Text,
   TextBold,
   TextCross,
   TextItalic,
@@ -64,6 +65,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Dialogue } from "../dialogue";
 import { CustomEmojiPicker } from "../emoji-picker/emoji-picker";
 import { NumberInput } from "../form/number-input";
+import { BulleList } from "../icons/bulle-list";
+import { NumberedList } from "../icons/numbered-list";
 import {
   Modal,
   ModalBody,
@@ -100,7 +103,7 @@ export const HeroBlockTypeSelect = () => {
     <Select
       aria-label={tmdx("toolbar.blockTypeSelect.placeholder")}
       size="sm"
-      className="min-w-33 max-w-33"
+      className="max-w-33 min-w-33"
       placeholder={tmdx("toolbar.blockTypeSelect.placeholder")}
       disabledKeys={["list"]}
       selectedKeys={new Set([currentBlockType || "paragraph"])}
@@ -273,6 +276,44 @@ export const HeroCode = () => {
       role={tmdx("toolbar.inlineCode")}
     >
       <Code />
+    </MdxButton>
+  );
+};
+
+export const HeroSuperscript = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const applyFormat = usePublisher(applyFormat$);
+  const currentFormat = useCellValue(currentFormat$);
+  const isSuperscript = (currentFormat & 64) !== 0;
+
+  return (
+    <MdxButton
+      active={isSuperscript}
+      onPress={() => applyFormat("superscript")}
+      role={tmdx("toolbar.superscript")}
+    >
+      <span className="text-medium font-semibold text-default-800 italic">
+        <span className="text-xl font-medium text-default-800/50">x</span>²
+      </span>
+    </MdxButton>
+  );
+};
+
+export const HeroSubscript = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const applyFormat = usePublisher(applyFormat$);
+  const currentFormat = useCellValue(currentFormat$);
+  const isSubscript = (currentFormat & 32) !== 0;
+
+  return (
+    <MdxButton
+      active={isSubscript}
+      onPress={() => applyFormat("subscript")}
+      role={tmdx("toolbar.subscript")}
+    >
+      <span className="text-medium font-semibold text-default-800 italic">
+        <span className="text-xl font-medium text-default-800/50">x</span>₂
+      </span>
     </MdxButton>
   );
 };
@@ -517,7 +558,7 @@ export const HeroInsertTable = () => {
         </ModalFooter>
       </Dialogue>
       <MdxButton onPress={disclosure.onOpen} role={tmdx("toolbar.table")}>
-        <Card />
+        <SidebarMinimalistic className="-rotate-90" />
       </MdxButton>
     </>
   );
@@ -733,7 +774,7 @@ export const HeroListMenu = () => {
     <Popover placement="bottom" offset={8} showArrow>
       <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
         <MdxButton role={tmdx("toolbar.listMenu")}>
-          <List />
+          <BulleList />
         </MdxButton>
       </PopoverTrigger>
       <PopoverContent className="rounded-xl p-1">
@@ -745,7 +786,7 @@ export const HeroListMenu = () => {
             }
             role={tmdx("toolbar.bulletedList")}
           >
-            <List />
+            <BulleList />
           </MdxButton>
           <MdxButton
             active={currentListType === "number"}
@@ -754,7 +795,7 @@ export const HeroListMenu = () => {
             }
             role={tmdx("toolbar.numberedList")}
           >
-            <ListArrowDownMinimalistic />
+            <NumberedList />
           </MdxButton>
           <MdxButton
             active={currentListType === "check"}
@@ -781,7 +822,7 @@ export const HeroInsertMenu = () => {
           <MenuDots weight="BoldDuotone" />
         </MdxButton>
       </PopoverTrigger>
-      <PopoverContent className="rounded-xl p-1">
+      <PopoverContent className="flex flex-row gap-1 rounded-xl p-1">
         <ButtonGroup>
           <HeroInsertTable />
           <HeroInsertThematicBreak />
@@ -789,5 +830,126 @@ export const HeroInsertMenu = () => {
         </ButtonGroup>
       </PopoverContent>
     </Popover>
+  );
+};
+
+export const HeroTextFormattingButtons = () => {
+  return (
+    <ButtonGroup>
+      <HeroBold />
+      <HeroItalic />
+      <HeroUnderline />
+      <HeroStrikethrough />
+    </ButtonGroup>
+  );
+};
+
+export const HeroBasicTextFormattingButtons = () => {
+  return (
+    <ButtonGroup>
+      <HeroBold />
+      <HeroItalic />
+      <HeroUnderline />
+    </ButtonGroup>
+  );
+};
+
+export const HeroScriptButtons = () => {
+  return (
+    <ButtonGroup>
+      <HeroSuperscript />
+      <HeroSubscript />
+    </ButtonGroup>
+  );
+};
+
+export const Separator: React.FC = () => {
+  return <div className="mx-1! h-6 w-px min-w-px bg-default" />;
+};
+
+interface ToolbarGroupProps {
+  children: React.ReactNode;
+  withSeparator?: boolean;
+}
+
+export const ToolbarGroup: React.FC<ToolbarGroupProps> = ({
+  children,
+  withSeparator = false,
+}) => {
+  return (
+    <>
+      {children}
+      {withSeparator && <Separator />}
+    </>
+  );
+};
+
+export const HeroTextFormattingGroup = () => {
+  return (
+    <ToolbarGroup>
+      <HeroTextFormattingButtons />
+      <HeroScriptButtons />
+      <HeroCode />
+    </ToolbarGroup>
+  );
+};
+
+export const HeroResponsiveToolbarMenu = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+
+  return (
+    <Popover placement="bottom" offset={8} showArrow>
+      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
+        <MdxButton role={tmdx("toolbar.textFormattingMenu")}>
+          <Text />
+        </MdxButton>
+      </PopoverTrigger>
+      <PopoverContent className="flex flex-row gap-1 rounded-xl p-1">
+        <HeroTextFormattingButtons />
+        <Separator />
+        <HeroScriptButtons />
+        <Separator />
+        <HeroCode />
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export const HeroMiscellaneousMenu = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+
+  return (
+    <Popover placement="bottom" offset={8} showArrow>
+      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
+        <MdxButton role={tmdx("toolbar.miscellaneousMenu")}>
+          <Text />
+        </MdxButton>
+      </PopoverTrigger>
+      <PopoverContent className="flex flex-row gap-1 rounded-xl p-1">
+        <HeroStrikethrough />
+        <Separator />
+        <HeroScriptButtons />
+        <Separator />
+        <HeroCode />
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export const HeroHistoryButtons = () => {
+  return (
+    <ButtonGroup>
+      <HeroUndo />
+      <HeroRedo />
+    </ButtonGroup>
+  );
+};
+
+export const HeroLinkImageButtons = () => {
+  return (
+    <ButtonGroup>
+      <HeroCreateLink />
+      <HeroInsertImage />
+    </ButtonGroup>
   );
 };

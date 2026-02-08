@@ -7,7 +7,7 @@ import { useScopedI18n } from "@/locales/client";
 import { useMdxEditor } from "./mdx-editor-context";
 import { activeEditor$, useCellValue, $isImageNode } from "@mdxeditor/editor";
 import { $getNodeByKey, $getSelection, $isNodeSelection } from "lexical";
-import { Separator } from "./mdx-toolbar";
+import { Separator } from "./mdx-toolbar-buttons";
 
 interface MdxImageEditToolbarProps {
   nodeKey: string;

@@ -3,31 +3,25 @@ import { ButtonGroup, cn } from "@heroui/react";
 import { useCellValues, viewMode$ } from "@mdxeditor/editor";
 import { LinkDialogMonitor } from "./mdx-link-dialog-monitor";
 import {
+  HeroBasicTextFormattingButtons,
   HeroBlockTypeSelect,
-  HeroBold,
-  HeroCode,
-  HeroCreateLink,
   HeroDiffMode,
+  HeroHistoryButtons,
   HeroInsertEmoji,
-  HeroInsertImage,
   HeroInsertMenu,
-  HeroItalic,
+  HeroLinkImageButtons,
   HeroListMenu,
-  HeroRedo,
+  HeroMiscellaneousMenu,
+  HeroResponsiveToolbarMenu,
   HeroRichTextMode,
   HeroSourceMode,
-  HeroStrikethrough,
-  HeroUnderline,
-  HeroUndo,
+  HeroTextFormattingGroup,
+  Separator,
 } from "./mdx-toolbar-buttons";
 
 export interface MdxToolbarProps {
   hasPrevioesVersion?: boolean;
 }
-
-export const Separator: React.FC = () => {
-  return <div className="mx-1! h-6 w-px min-w-px bg-default" />;
-};
 
 export const MdxToolbar: React.FC<MdxToolbarProps> = ({
   hasPrevioesVersion,
@@ -41,28 +35,27 @@ export const MdxToolbar: React.FC<MdxToolbarProps> = ({
       <LinkDialogMonitor />
       {viewMode === "rich-text" && (
         <>
-          <ButtonGroup>
-            <HeroUndo />
-            <HeroRedo />
-          </ButtonGroup>
+          <HeroHistoryButtons />
           <Separator />
           <HeroBlockTypeSelect />
-          {/* <HeroCodeLanguageSelect /> */}
           <Separator />
           <HeroInsertEmoji />
-          <ButtonGroup>
-            <HeroBold />
-            <HeroItalic />
-            <HeroUnderline />
-            <HeroStrikethrough />
-          </ButtonGroup>
-          <HeroCode />
-          <Separator />
-          <ButtonGroup>
-            <HeroCreateLink />
-            <HeroInsertImage />
-          </ButtonGroup>
-          <Separator />
+          {/* Compact mode - visible on screens < 768px */}
+          <div className="md:hidden">
+            <HeroResponsiveToolbarMenu />
+          </div>
+          {/* Medium mode - visible on screens 768px-1023px */}
+          <div className="hidden md:contents lg:hidden">
+            <HeroBasicTextFormattingButtons />
+            <HeroMiscellaneousMenu />
+          </div>
+          {/* Full mode - visible on screens >= 1024px */}
+          <div className="hidden lg:contents">
+            <HeroTextFormattingGroup />
+            <Separator />
+            <HeroLinkImageButtons />
+            <Separator />
+          </div>
           <HeroListMenu />
           <Separator />
           <HeroInsertMenu />

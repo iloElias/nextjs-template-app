@@ -93,6 +93,8 @@ export default {
       numberedList: "Numbered list",
       checkList: "Check list",
       listMenu: "Lists",
+      textFormattingMenu: "Text formatting",
+      miscellaneousMenu: "Miscellaneous",
       insertMenu: "Insert",
       deleteSandpack: "Delete this code block",
       undo: "Undo {shortcut}",

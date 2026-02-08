@@ -93,6 +93,8 @@ export default {
       numberedList: "Lista numerada",
       checkList: "Checklist",
       listMenu: "Listas",
+      textFormattingMenu: "Formatação de texto",
+      miscellaneousMenu: "Miscelâneos",
       insertMenu: "Inserir",
       deleteSandpack: "Deletar esse bloco de código",
       undo: "Desfazer {shortcut}",
