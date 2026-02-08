@@ -69,15 +69,15 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
                 </div>
               ),
               Row: ({ children, ...rowProps }) => (
-                <div className="overflow-clip! px-0" {...rowProps}>
+                <div className="overflow-visible! px-0" {...rowProps}>
                   {children}
                 </div>
               ),
               Emoji: ({ emoji, ...emojiProps }) => (
                 <button
                   className={cn(
-                    "flex size-9 items-center justify-center rounded-md text-xl transition-all duration-75",
-                    "hover:bg-default-100 data-active:bg-primary/10 data-active:ring-2 data-active:ring-primary/30",
+                    "flex size-8.5 m-0.5 items-center justify-center rounded-large text-xl transition-all duration-75",
+                    "data-active:bg-default-100 data-active:ring-2 data-active:ring-primary-400",
                   )}
                   {...emojiProps}
                 >
