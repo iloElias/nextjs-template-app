@@ -1,7 +1,7 @@
 "use client";
 
 import { Section } from "./section";
-import NavigationMenu from "./navigation-menu";
+import { NavigationMenu } from "./navigation-menu";
 
 export const DashboardLayout: React.FC = () => {
   return (
