@@ -23,14 +23,14 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useTheme } from "next-themes";
 import { useMemo } from "react";
-import { Loading } from "../loading";
 import { getCodeMirrorExtensions } from "../../lib/codemirror-extensions";
+import { Loading } from "../loading";
 import { emojiAutocompletePlugin } from "./emoji-autocomplete-plugin-wrapper";
 import { MdxEditorProvider } from "./mdx-editor-context";
 import { MdxImageEditToolbar } from "./mdx-image-edit-toolbar";
 import { MdxLinkPreview } from "./mdx-link-preview";
 import { MdxToolbar } from "./mdx-toolbar";
-import { createMonacoCodeEditorDescriptor } from "./monaco-code-editor";  
+import { createMonacoCodeEditorDescriptor } from "./monaco-code-editor";
 
 const imageUploadHandler = async (image: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -167,7 +167,10 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
               }),
               toolbarPlugin({
                 toolbarClassName: "scrollbar",
-                toolbarContents: () => !readOnly && <MdxToolbar hasPrevioesVersion={!!previousVersion} />,
+                toolbarContents: () =>
+                  !readOnly && (
+                    <MdxToolbar hasPrevioesVersion={!!previousVersion} />
+                  ),
               }),
               ...(!readOnly ? [emojiAutocompletePlugin()] : []),
             ]}

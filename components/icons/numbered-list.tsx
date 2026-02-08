@@ -20,21 +20,21 @@ export const NumberedList: React.FC<IconProps> = ({ ...props }) => {
       <path
         d="M22 19L10.5 19"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <path
         opacity="0.5"
         d="M22 12L10.5 12"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <path
         d="M22 5L10.5 5"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <path
         d="M5.49081 6.43409H7V8H2V6.43409H3.55227V3.92011L2 4.49001V2.84421L2.18524 2.77497L4.23866 2.01997L4.29035 2H5.49081V6.43409Z"

@@ -39,7 +39,9 @@ export const MdxLinkPreview: React.FC = () => {
           className="ml-1.5 flex max-w-xs items-center gap-1 truncate text-primary hover:underline"
           onClick={(e) => e.stopPropagation()}
         >
-          <Link size={16} />
+          <div className="min-w-4!">
+            <Link size={16} />
+          </div>
           <span className="truncate">{displayText}</span>
         </a>
       ) : (

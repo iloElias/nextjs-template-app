@@ -1,11 +1,11 @@
 "use client";
 
+import { useAppContext } from "@/contexts/app-context";
+import { cn } from "@heroui/react";
 import Editor, { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { useTheme } from "next-themes";
 import { useEffect, useRef } from "react";
-import { useAppContext } from "@/contexts/app-context";
-import { cn } from "@heroui/react";
 
 const defineCustomThemes = (monaco: Monaco) => {
   monaco.editor.defineTheme("dracula", {
@@ -79,6 +79,7 @@ export const getMonacoLanguage = (lang: string): string => {
     sh: "shell",
     md: "markdown",
   };
+  if (!lang) return "plaintext";
   return languageMap[lang.toLowerCase()] || lang.toLowerCase();
 };
 
