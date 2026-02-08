@@ -1,30 +1,34 @@
 "use client";
 
+import { useScopedI18n } from "@/locales/client";
 import {
-  usePublisher,
-  useCellValue,
-  insertTable$,
-  insertThematicBreak$,
+  Button,
+  ButtonGroup,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Select,
+  SelectItem,
+  useDisclosure,
+} from "@heroui/react";
+import { $isCodeNode } from "@lexical/code";
+import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
+import {
   activeEditor$,
   applyFormat$,
-  currentFormat$,
   applyListType$,
-  currentListType$,
-  viewMode$,
-  currentBlockType$,
-  convertSelectionToNode$,
   cancelLinkEdit$,
   closeImageDialog$,
+  convertSelectionToNode$,
+  currentBlockType$,
+  currentFormat$,
+  currentListType$,
+  insertTable$,
+  insertThematicBreak$,
+  useCellValue,
+  usePublisher,
+  viewMode$,
 } from "@mdxeditor/editor";
-import {
-  UNDO_COMMAND,
-  REDO_COMMAND,
-  CAN_UNDO_COMMAND,
-  CAN_REDO_COMMAND,
-  COMMAND_PRIORITY_CRITICAL,
-  $createParagraphNode,
-} from "lexical";
-import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import {
   AlignVerticalSpacing,
   Card,
@@ -36,6 +40,7 @@ import {
   Link,
   List,
   ListArrowDownMinimalistic,
+  MenuDots,
   Notes,
   SmileCircle,
   TextBold,
@@ -45,35 +50,33 @@ import {
   UndoLeftRound,
   UndoRightRound,
 } from "@solar-icons/react";
-import { MdxButton } from "./mdx-button";
-import { useState, useEffect, useCallback } from "react";
-import { Dialogue } from "../dialogue";
 import {
-  Button,
-  useDisclosure,
-  Select,
-  SelectItem,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@heroui/react";
+  $createParagraphNode,
+  $getSelection,
+  $isRangeSelection,
+  CAN_REDO_COMMAND,
+  CAN_UNDO_COMMAND,
+  COMMAND_PRIORITY_CRITICAL,
+  REDO_COMMAND,
+  UNDO_COMMAND,
+} from "lexical";
+import { useCallback, useEffect, useState } from "react";
+import { Dialogue } from "../dialogue";
+import { CustomEmojiPicker } from "../emoji-picker/emoji-picker";
+import { NumberInput } from "../form/number-input";
 import {
   Modal,
-  ModalContent,
   ModalBody,
+  ModalContent,
   ModalFooter,
   ModalHeader,
 } from "../modal";
-import { NumberInput } from "../form/number-input";
-import { useScopedI18n } from "@/locales/client";
-import { MdxLinkForm } from "./mdx-link-form";
-import { useMdxEditor } from "./mdx-editor-context";
-import { MdxCodeBlockForm } from "./mdx-code-block-form";
 import { SUPPORTED_LANGUAGES } from "./language-selector";
-import { $isCodeNode } from "@lexical/code";
-import { $getSelection, $isRangeSelection } from "lexical";
+import { MdxButton } from "./mdx-button";
+import { MdxCodeBlockForm } from "./mdx-code-block-form";
+import { useMdxEditor } from "./mdx-editor-context";
 import { MdxImageForm } from "./mdx-image-form";
-import { CustomEmojiPicker } from "../emoji-picker/emoji-picker";
+import { MdxLinkForm } from "./mdx-link-form";
 
 export const HeroBlockTypeSelect = () => {
   const tmdx = useScopedI18n("mdx-editor");
@@ -97,7 +100,7 @@ export const HeroBlockTypeSelect = () => {
     <Select
       aria-label={tmdx("toolbar.blockTypeSelect.placeholder")}
       size="sm"
-      classNames={{ mainWrapper: "min-w-36" }}
+      className="min-w-33 max-w-33"
       placeholder={tmdx("toolbar.blockTypeSelect.placeholder")}
       disabledKeys={["list"]}
       selectedKeys={new Set([currentBlockType || "paragraph"])}
@@ -716,6 +719,74 @@ export const HeroInsertEmoji = () => {
           showSearch={true}
           containerPadding="small"
         />
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export const HeroListMenu = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const applyListType = usePublisher(applyListType$);
+  const currentListType = useCellValue(currentListType$);
+
+  return (
+    <Popover placement="bottom" offset={8} showArrow>
+      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
+        <MdxButton role={tmdx("toolbar.listMenu")}>
+          <List />
+        </MdxButton>
+      </PopoverTrigger>
+      <PopoverContent className="rounded-xl p-1">
+        <ButtonGroup>
+          <MdxButton
+            active={currentListType === "bullet"}
+            onPress={() =>
+              applyListType(currentListType === "bullet" ? "" : "bullet")
+            }
+            role={tmdx("toolbar.bulletedList")}
+          >
+            <List />
+          </MdxButton>
+          <MdxButton
+            active={currentListType === "number"}
+            onPress={() =>
+              applyListType(currentListType === "number" ? "" : "number")
+            }
+            role={tmdx("toolbar.numberedList")}
+          >
+            <ListArrowDownMinimalistic />
+          </MdxButton>
+          <MdxButton
+            active={currentListType === "check"}
+            onPress={() =>
+              applyListType(currentListType === "check" ? "" : "check")
+            }
+            role={tmdx("toolbar.checkList")}
+          >
+            <Checklist />
+          </MdxButton>
+        </ButtonGroup>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export const HeroInsertMenu = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+
+  return (
+    <Popover placement="bottom" offset={8} showArrow>
+      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
+        <MdxButton role={tmdx("toolbar.insertMenu")}>
+          <MenuDots weight="BoldDuotone" />
+        </MdxButton>
+      </PopoverTrigger>
+      <PopoverContent className="rounded-xl p-1">
+        <ButtonGroup>
+          <HeroInsertTable />
+          <HeroInsertThematicBreak />
+          <HeroInsertCodeBlock />
+        </ButtonGroup>
       </PopoverContent>
     </Popover>
   );

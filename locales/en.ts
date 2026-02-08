@@ -92,6 +92,8 @@ export default {
       bulletedList: "Bulleted list",
       numberedList: "Numbered list",
       checkList: "Check list",
+      listMenu: "Lists",
+      insertMenu: "Insert",
       deleteSandpack: "Delete this code block",
       undo: "Undo {shortcut}",
       redo: "Redo {shortcut}",

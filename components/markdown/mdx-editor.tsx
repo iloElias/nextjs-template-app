@@ -121,7 +121,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
         )}
         {!isLoading && (
           <MDXEditor
-            key={markdownUrl || previousVersionUrl || "static"}
+            key={`${markdownUrl || previousVersionUrl || "static"}-${resolvedTheme}`}
             markdown={markdown}
             onChange={onChange}
             readOnly={readOnly}
@@ -167,7 +167,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
               }),
               toolbarPlugin({
                 toolbarClassName: "scrollbar",
-                toolbarContents: () => !readOnly && <MdxToolbar />,
+                toolbarContents: () => !readOnly && <MdxToolbar hasPrevioesVersion={!!previousVersion} />,
               }),
               ...(!readOnly ? [emojiAutocompletePlugin()] : []),
             ]}

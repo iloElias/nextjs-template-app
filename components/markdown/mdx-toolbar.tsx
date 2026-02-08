@@ -1,35 +1,37 @@
+import { useScopedI18n } from "@/locales/client";
 import { ButtonGroup, cn } from "@heroui/react";
 import { useCellValues, viewMode$ } from "@mdxeditor/editor";
+import { LinkDialogMonitor } from "./mdx-link-dialog-monitor";
 import {
-  HeroUndo,
-  HeroRedo,
+  HeroBlockTypeSelect,
   HeroBold,
-  HeroItalic,
-  HeroUnderline,
   HeroCode,
   HeroCreateLink,
-  HeroBulletList,
-  HeroNumberedList,
-  HeroCheckList,
-  HeroRichTextMode,
   HeroDiffMode,
-  HeroSourceMode,
-  HeroInsertImage,
-  HeroInsertTable,
-  HeroInsertThematicBreak,
-  HeroStrikethrough,
-  HeroBlockTypeSelect,
-  HeroInsertCodeBlock,
   HeroInsertEmoji,
+  HeroInsertImage,
+  HeroInsertMenu,
+  HeroItalic,
+  HeroListMenu,
+  HeroRedo,
+  HeroRichTextMode,
+  HeroSourceMode,
+  HeroStrikethrough,
+  HeroUnderline,
+  HeroUndo,
 } from "./mdx-toolbar-buttons";
-import { useScopedI18n } from "@/locales/client";
-import { LinkDialogMonitor } from "./mdx-link-dialog-monitor";
+
+export interface MdxToolbarProps {
+  hasPrevioesVersion?: boolean;
+}
 
 export const Separator: React.FC = () => {
   return <div className="mx-1! h-6 w-px min-w-px bg-default" />;
 };
 
-export const MdxToolbar: React.FC = () => {
+export const MdxToolbar: React.FC<MdxToolbarProps> = ({
+  hasPrevioesVersion,
+}) => {
   const [viewMode] = useCellValues(viewMode$);
 
   const tmdx = useScopedI18n("mdx-editor");
@@ -61,17 +63,9 @@ export const MdxToolbar: React.FC = () => {
             <HeroInsertImage />
           </ButtonGroup>
           <Separator />
-          <ButtonGroup>
-            <HeroBulletList />
-            <HeroNumberedList />
-            <HeroCheckList />
-          </ButtonGroup>
+          <HeroListMenu />
           <Separator />
-          <ButtonGroup>
-            <HeroInsertTable />
-            <HeroInsertThematicBreak />
-            <HeroInsertCodeBlock />
-          </ButtonGroup>
+          <HeroInsertMenu />
         </>
       )}
       <span className={cn("flex-1", viewMode !== "rich-text" && "hidden")} />
@@ -81,7 +75,7 @@ export const MdxToolbar: React.FC = () => {
       <span className={cn("flex-1", viewMode === "rich-text" && "hidden")} />
       <ButtonGroup>
         <HeroRichTextMode />
-        <HeroDiffMode />
+        {hasPrevioesVersion && <HeroDiffMode />}
         <HeroSourceMode />
       </ButtonGroup>
     </>

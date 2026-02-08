@@ -60,7 +60,7 @@ export default {
       blockTypes: {
         paragraph: "Parágrafo",
         quote: "Citação",
-        heading: "Cabeçalho {level}",
+        heading: "Titulo {level}",
         list: "Lista",
       },
       blockTypeSelect: {
@@ -92,6 +92,8 @@ export default {
       bulletedList: "Lista com marcadores",
       numberedList: "Lista numerada",
       checkList: "Checklist",
+      listMenu: "Listas",
+      insertMenu: "Inserir",
       deleteSandpack: "Deletar esse bloco de código",
       undo: "Desfazer {shortcut}",
       redo: "Refazer {shortcut}",
