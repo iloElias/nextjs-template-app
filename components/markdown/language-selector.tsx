@@ -50,9 +50,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 }) => {
   const handleSelectionChange = (keys: SharedSelection) => {
     const selectedValue = Array.from(keys)[0] as string;
-    if (selectedValue) {
-      onChange(selectedValue);
-    }
+    onChange(selectedValue || "markdown");
   };
 
   return (
@@ -60,7 +58,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       size="sm"
       variant="flat"
       label={label}
-      selectedKeys={new Set([value])}
+      selectedKeys={new Set([value || "markdown"])}
       onSelectionChange={handleSelectionChange}
       className={className}
       aria-label="Select code language"

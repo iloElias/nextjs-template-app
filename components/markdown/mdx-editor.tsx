@@ -24,6 +24,7 @@ import axios from "axios";
 import { useTheme } from "next-themes";
 import { useMemo } from "react";
 import { getCodeMirrorExtensions } from "../../lib/codemirror-extensions";
+import { convertReferenceLinksToInline } from "../../lib/markdown-utils";
 import { Loading } from "../loading";
 import { emojiAutocompletePlugin } from "./emoji-autocomplete-plugin-wrapper";
 import { MdxEditorProvider } from "./mdx-editor-context";
@@ -48,7 +49,68 @@ const fetchMarkdownFile = async (path: string): Promise<string> => {
       "Content-Type": "text/plain",
     },
   });
-  return response.data;
+
+  let data = response.data;
+
+  data = data.replace(/(<a[^>]*)\s+hr\s*\n?\s*f=/gi, "$1 href=");
+  data = data.replace(/\.vg\b/g, ".svg");
+
+  data = convertReferenceLinksToInline(data);
+
+  const voidTags = [
+    "img",
+    "br",
+    "hr",
+    "input",
+    "meta",
+    "link",
+    "area",
+    "base",
+    "col",
+    "embed",
+    "param",
+    "source",
+    "track",
+    "wbr",
+  ];
+
+  voidTags.forEach((tag) => {
+    const regex = new RegExp(`<${tag}([^>]*)>`, "gi");
+    data = data.replace(regex, (match: string, inside: string) => {
+      const trimmed = inside.trimEnd();
+      const isAlreadySelfClosing = trimmed.endsWith("/");
+
+      if (isAlreadySelfClosing) {
+        return match;
+      }
+
+      if (trimmed) {
+        return `<${tag}${trimmed} />`;
+      } else {
+        return `<${tag} />`;
+      }
+    });
+  });
+
+  const codeBlocks: string[] = [];
+
+  data = data.replace(
+    /(```[\s\S]*?```|`[^`]+`)/g,
+    (match: string, code: string) => {
+      codeBlocks.push(code);
+      return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+    },
+  );
+
+  data = data.replace(/<(https?:\/\/[^\s>]+)>/g, "[$1]($1)");
+
+  data = data.replace(/(?<![([\["`:])(https?:\/\/[^\s<>)\]]+)/g, "[$1]($1)");
+
+  codeBlocks.forEach((code, index) => {
+    data = data.replace(`__CODE_BLOCK_${index}__`, code);
+  });
+
+  return data;
 };
 
 interface MDXEditorComponentProps {

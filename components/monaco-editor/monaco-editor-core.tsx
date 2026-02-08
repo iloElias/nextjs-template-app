@@ -79,7 +79,7 @@ export const getMonacoLanguage = (lang: string): string => {
     sh: "shell",
     md: "markdown",
   };
-  if (!lang) return "plaintext";
+  if (!lang) return languageMap["md"];
   return languageMap[lang.toLowerCase()] || lang.toLowerCase();
 };
 

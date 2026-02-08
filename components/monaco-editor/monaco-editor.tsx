@@ -37,7 +37,7 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
     const lines = code.split("\n").length;
     const lineHeight = 16;
     const padding = 8;
-    const minHeight = 100;
+    const minHeight = 0;
     const calculatedHeight = lines * lineHeight + padding;
     return Math.max(calculatedHeight, minHeight);
   }, [code, height]);

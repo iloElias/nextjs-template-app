@@ -91,8 +91,6 @@ const MonacoEditorComponent: React.FC<{
         showCopyButton={readOnly}
         showLanguageLabel={readOnly}
         header={header}
-        height="auto"
-        maxHeight={300}
       />
     </div>
   );
