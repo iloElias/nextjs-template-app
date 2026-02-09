@@ -26,6 +26,7 @@ import { useChangeLocale, useCurrentLocale } from "@/locales/client";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Accordion, AccordionGroup } from "@/components/ui/accordion";
 import { MenuItem, MenuItemGroup } from "@/components/ui/menu-item";
+import { LanguageSelect } from "../ui/language-select";
 
 interface MenuItem {
   key: string;
@@ -37,13 +38,6 @@ interface MenuItem {
 
 export function NavigationMenu() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const changeLocale = useChangeLocale();
-  const currentLocale = useCurrentLocale();
-
-  const locales = [
-    { key: "en", label: "English" },
-    { key: "pt-BR", label: "Português (BR)" },
-  ];
 
   const menuStructure: MenuItem[] = [
     {
@@ -182,21 +176,7 @@ export function NavigationMenu() {
                 <div className="mt-4 flex flex-col gap-3">
                   <div className="flex items-center gap-2">
                     <Translation size={20} />
-                    <Select
-                      aria-label=" "
-                      selectedKeys={[currentLocale]}
-                      onChange={(e) => {
-                        const locale = e.target.value as "en" | "pt-BR";
-                        if (locale) {
-                          changeLocale(locale);
-                        }
-                      }}
-                      className="flex-1"
-                    >
-                      {locales.map((locale) => (
-                        <SelectItem key={locale.key}>{locale.label}</SelectItem>
-                      ))}
-                    </Select>
+                    <LanguageSelect className="flex-1" />
                   </div>
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">

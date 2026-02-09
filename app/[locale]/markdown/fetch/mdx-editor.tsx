@@ -1,7 +1,6 @@
 "use client";
 
 import { NavigationMenu } from "@/components/layout/navigation-menu";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button, Checkbox, Input } from "@heroui/react";
 import { Magnifer, Refresh } from "@solar-icons/react";
 import dynamic from "next/dynamic";
@@ -35,7 +34,6 @@ export default function MdxEditor() {
         >
           Manter editável
         </Checkbox>
-        <ThemeToggle />
         <div className="flex flex-row items-end gap-2">
           <Button
             onPress={() => setSearchMarkdownUrl(searchMarkdownUrl)}

@@ -1,6 +1,7 @@
 "use client";
 
 import { createI18nClient } from "next-international/client";
+import { locales } from "./locales";
 
 export const {
   useI18n,
@@ -8,7 +9,4 @@ export const {
   useChangeLocale,
   useCurrentLocale,
   I18nProviderClient,
-} = createI18nClient({
-  en: () => import("./en"),
-  "pt-BR": () => import("./pt-BR"),
-});
+} = createI18nClient(locales);

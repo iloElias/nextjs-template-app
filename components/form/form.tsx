@@ -1,6 +1,8 @@
+"use client";
+
 import {
-  FormProps as HeroUIFormProps,
   Form as HeroUIForm,
+  FormProps as HeroUIFormProps,
   cn,
 } from "@heroui/react";
 import React, { useCallback } from "react";

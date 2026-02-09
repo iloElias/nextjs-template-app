@@ -34,7 +34,7 @@ export const SUPPORTED_LANGUAGES = [
   { key: "plaintext", label: "Plain Text" },
 ];
 
-interface LanguageSelectorProps {
+interface LanguageSelectProps {
   value: string;
   onChange: (language: string) => void;
   size?: "sm" | "md" | "lg";
@@ -42,7 +42,7 @@ interface LanguageSelectorProps {
   className?: string;
 }
 
-export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
+export const CodeLanguageSelect: React.FC<LanguageSelectProps> = ({
   value,
   onChange,
   label = "Language",

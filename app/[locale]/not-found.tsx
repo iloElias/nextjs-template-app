@@ -1,15 +1,16 @@
-import { Section } from "@/components/layout/section";
+import { ErrorDisplay } from "@/components/error/error-display";
 import { getI18n } from "@/locales/server";
 
 export default async function NotFound() {
   const t = await getI18n();
 
   return (
-    <Section className="flex max-w-md flex-col gap-2">
-      <h1 className="text-xl font-semibold">{t("page.not-found.title")}</h1>
-      <p className="text-sm text-default-500">
-        {t("page.not-found.description")}
-      </p>
-    </Section>
+    <ErrorDisplay
+      type="page-not-found"
+      title={t("page.not-found.title")}
+      description={t("page.not-found.description")}
+      homeButtonLabel={t("page.not-found.go-home")}
+      backButtonLabel={t("page.not-found.go-back")}
+    />
   );
 }

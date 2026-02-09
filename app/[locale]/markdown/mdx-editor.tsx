@@ -14,7 +14,6 @@ const MDXEditorComponent = dynamic(
   { ssr: false },
 );
 
-
 export default function MdxEditor() {
   const [showPreviousVersion] = useState(true);
   const [isEditable, setIsEditable] = useState<boolean>(true);
@@ -23,19 +22,23 @@ export default function MdxEditor() {
     <div className="container mx-auto max-w-5xl p-6">
       <div className="mb-3 flex flex-col gap-3">
         <NavigationMenu />
-        <h1 className="text-3xl font-bold">Markdown Editor</h1>
-        <Checkbox
-          isSelected={isEditable}
-          onChange={(e) => setIsEditable(e.target.checked)}
-        >
-          Manter editável
-        </Checkbox>
-        <ThemeToggle />
+        <h1 className="text-3xl font-bold flex flex-row items-center gap-4">
+          Markdown Editor
+          <Checkbox
+            isSelected={isEditable}
+            onChange={(e) => setIsEditable(e.target.checked)}
+          >
+            Manter editável
+          </Checkbox>
+        <ThemeToggle className="ml-auto"/>
+        </h1>
       </div>
       <MDXEditorComponent
         readOnly={!isEditable}
         markdownUrl="/md/example.md"
-        previousVersionUrl={showPreviousVersion ? "/md/example.prev.md" : undefined}
+        previousVersionUrl={
+          showPreviousVersion ? "/md/example.prev.md" : undefined
+        }
       />
     </div>
   );

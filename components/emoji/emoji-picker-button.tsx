@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
+import { useState } from "react";
 import { CustomEmojiPicker } from "./emoji-picker";
 
 export interface EmojiPickerButtonProps {
@@ -26,6 +26,13 @@ export interface EmojiPickerButtonProps {
   size?: "sm" | "md" | "lg";
   showSearch?: boolean;
   containerPadding?: "none" | "small" | "medium" | "large";
+  placement?: "top" | "bottom" | "left" | "right";
+  offset?: number;
+  showArrow?: boolean;
+  /** Custom trigger element. If provided, buttonLabel and button styling props are ignored */
+  trigger?: React.ReactNode;
+  /** Custom trigger class for PopoverTrigger wrapper */
+  triggerClassName?: string;
 }
 
 export const EmojiPickerButton: React.FC<EmojiPickerButtonProps> = ({
@@ -37,6 +44,11 @@ export const EmojiPickerButton: React.FC<EmojiPickerButtonProps> = ({
   size = "md",
   showSearch = true,
   containerPadding = "medium",
+  placement = "bottom",
+  offset = 8,
+  showArrow = true,
+  trigger,
+  triggerClassName,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -49,20 +61,25 @@ export const EmojiPickerButton: React.FC<EmojiPickerButtonProps> = ({
     <Popover
       isOpen={isOpen}
       onOpenChange={setIsOpen}
-      placement="bottom"
-      offset={10}
+      placement={placement}
+      offset={offset}
+      showArrow={showArrow}
     >
-      <PopoverTrigger>
-        <Button
-          variant={variant}
-          color={color}
-          size={size}
-          className={buttonClassName}
-        >
-          {buttonLabel}
-        </Button>
+      <PopoverTrigger className={triggerClassName}>
+        {trigger ? (
+          trigger
+        ) : (
+          <Button
+            variant={variant}
+            color={color}
+            size={size}
+            className={buttonClassName}
+          >
+            {buttonLabel}
+          </Button>
+        )}
       </PopoverTrigger>
-      <PopoverContent className="p-0">
+      <PopoverContent className="p-2">
         <CustomEmojiPicker
           onEmojiSelect={handleEmojiSelect}
           showSearch={showSearch}

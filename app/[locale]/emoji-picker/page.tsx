@@ -1,6 +1,6 @@
 "use client";
 
-import { EmojiPickerButton } from "@/components/emoji-picker/emoji-picker-button";
+import { EmojiPickerButton } from "@/components/emoji/emoji-picker-button";
 import { useState } from "react";
 
 export default function EmojiPickerPage() {

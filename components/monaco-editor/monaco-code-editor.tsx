@@ -1,16 +1,16 @@
 "use client";
 
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   CodeBlockEditorDescriptor,
   useCodeBlockEditorContext,
 } from "@mdxeditor/editor";
-import { useState, useEffect } from "react";
-import { LanguageSelector } from "./language-selector";
-import { useMdxEditor } from "./mdx-editor-context";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { TrashBin2 } from "@solar-icons/react";
-import { MdxButton } from "./mdx-button";
-import { MonacoEditor } from "../monaco-editor/monaco-editor";
+import { useEffect, useState } from "react";
+import { MdxButton } from "../markdown/mdx-button";
+import { useMdxEditor } from "../markdown/mdx-editor-context";
+import { MonacoEditor } from "./monaco-editor";
+import { CodeLanguageSelect } from "./monaco-language-selector";
 
 const MonacoEditorComponent: React.FC<{
   code: string;
@@ -62,7 +62,7 @@ const MonacoEditorComponent: React.FC<{
 
   const header = !readOnly ? (
     <>
-      <LanguageSelector
+      <CodeLanguageSelect
         label=""
         className="max-w-32"
         value={currentLanguage}

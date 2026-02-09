@@ -14,3 +14,6 @@ export const selectTheme = {
   variant: "bordered",
   size: "md",
 } as const;
+
+export const buttonClasses =
+  "bg-default-100 text-default-700 hover:bg-default-200";

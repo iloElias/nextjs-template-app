@@ -63,7 +63,7 @@ import {
 } from "lexical";
 import { useCallback, useEffect, useState } from "react";
 import { Dialogue } from "../dialogue";
-import { CustomEmojiPicker } from "../emoji-picker/emoji-picker";
+import { EmojiPickerButton } from "../emoji/emoji-picker-button";
 import { NumberInput } from "../form/number-input";
 import { BulleList } from "../icons/bulle-list";
 import { NumberedList } from "../icons/numbered-list";
@@ -74,7 +74,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "../modal";
-import { SUPPORTED_LANGUAGES } from "./language-selector";
+import { SUPPORTED_LANGUAGES } from "../monaco-editor/monaco-language-selector";
 import { MdxButton } from "./mdx-button";
 import { MdxCodeBlockForm } from "./mdx-code-block-form";
 import { useMdxEditor } from "./mdx-editor-context";
@@ -724,10 +724,9 @@ export const HeroCodeLanguageSelect = () => {
 export const HeroInsertEmoji = () => {
   const tmdx = useScopedI18n("mdx-editor");
   const activeEditor = useCellValue(activeEditor$);
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleEmojiSelect = useCallback(
-    ({ emoji }: { emoji: string }) => {
+    (emoji: string) => {
       if (!activeEditor) return;
 
       activeEditor.update(() => {
@@ -736,32 +735,25 @@ export const HeroInsertEmoji = () => {
           selection.insertText(emoji);
         }
       });
-
-      setIsOpen(false);
     },
     [activeEditor],
   );
 
   return (
-    <Popover
-      isOpen={isOpen}
-      onOpenChange={setIsOpen}
+    <EmojiPickerButton
+      onEmojiSelect={handleEmojiSelect}
+      showSearch={true}
+      containerPadding="small"
       placement="bottom"
-      offset={10}
-    >
-      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
-        <MdxButton onPress={() => setIsOpen(true)} role={tmdx("toolbar.emoji")}>
+      offset={8}
+      showArrow
+      triggerClassName="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200"
+      trigger={
+        <MdxButton role={tmdx("toolbar.emoji")}>
           <SmileCircle />
         </MdxButton>
-      </PopoverTrigger>
-      <PopoverContent>
-        <CustomEmojiPicker
-          onEmojiSelect={handleEmojiSelect}
-          showSearch={true}
-          containerPadding="small"
-        />
-      </PopoverContent>
-    </Popover>
+      }
+    />
   );
 };
 

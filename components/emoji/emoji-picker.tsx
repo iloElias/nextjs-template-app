@@ -2,7 +2,7 @@
 
 import { normalizeLocale } from "@/lib/utils";
 import { useScopedI18n } from "@/locales/client";
-import { cn } from "@heroui/react";
+import { cn, ScrollShadow } from "@heroui/react";
 import { EmojiPicker as FrimousseEmojiPicker } from "frimousse";
 import { useParams } from "next/navigation";
 import { ComponentPropsWithoutRef } from "react";
@@ -33,7 +33,7 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
 
   return (
     <EmojiPickerContainer
-      className="border-none bg-transparent shadow-none"
+      className="border-none bg-transparent p-0! shadow-none"
       padding={containerPadding}
     >
       <FrimousseEmojiPicker.Root
@@ -43,12 +43,10 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
         {...props}
       >
         {showSearch && <EmojiPickerSearch />}
-
-        <FrimousseEmojiPicker.Viewport className="relative mt-3 flex-1 outline-none">
+        <FrimousseEmojiPicker.Viewport className="relative mt-2 flex-1 outline-none">
           <FrimousseEmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-sm text-default-400">
             {tmdx("emojiPicker.loading")}
           </FrimousseEmojiPicker.Loading>
-
           <FrimousseEmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-sm text-default-400">
             {({ search }) =>
               search
@@ -56,7 +54,6 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
                 : tmdx("emojiPicker.noEmojiFound")
             }
           </FrimousseEmojiPicker.Empty>
-
           <FrimousseEmojiPicker.List
             className="pb-1.5 select-none"
             components={{
@@ -76,7 +73,7 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
               Emoji: ({ emoji, ...emojiProps }) => (
                 <button
                   className={cn(
-                    "flex size-8.5 m-0.5 items-center justify-center rounded-large text-xl transition-all duration-75",
+                    "m-0.5 flex size-8.5 items-center justify-center rounded-large text-xl transition-all duration-75",
                     "data-active:bg-default-100 data-active:ring-2 data-active:ring-primary-400",
                   )}
                   {...emojiProps}
@@ -87,8 +84,7 @@ export const CustomEmojiPicker: React.FC<CustomEmojiPickerProps> = ({
             }}
           />
         </FrimousseEmojiPicker.Viewport>
-
-        <div className="mt-3 flex items-center justify-between border-t border-default-200 pt-3">
+        <div className="mt-2 flex items-center justify-between border-t border-default-200 pt-2">
           <FrimousseEmojiPicker.ActiveEmoji>
             {({ emoji }) => (
               <div className="min-h-5 text-sm text-default-600">

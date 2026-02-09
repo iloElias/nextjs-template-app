@@ -1,4 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+"use client";
+
+import { createContext, useEffect, useState } from "react";
 
 export interface AppContextValue {
   mounted: boolean;
@@ -8,7 +10,7 @@ export interface AppProviderProps {
   children: React.ReactNode;
 }
 
-const AppContext = createContext<AppContextValue | undefined>(undefined);
+export const AppContext = createContext<AppContextValue | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -23,12 +25,4 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <AppContext.Provider value={{ mounted }}>{children}</AppContext.Provider>
   );
-};
-
-export const useAppContext = (): AppContextValue => {
-  const context = useContext(AppContext);
-  if (context === undefined) {
-    throw new Error("useAppContext must be used within an AppProvider");
-  }
-  return context;
 };

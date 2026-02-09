@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@heroui/react";
-import { ModalBody, ModalFooter } from "../modal";
-import { usePublisher } from "@mdxeditor/editor";
-import { insertCodeBlock$ } from "@mdxeditor/editor";
-import { LanguageSelector } from "./language-selector";
-import { TextArea } from "../form/textarea";
-import { useMdxEditor } from "./mdx-editor-context";
+import { insertCodeBlock$, usePublisher } from "@mdxeditor/editor";
+import { useState } from "react";
 import { LANGUAGE_EXAMPLES } from "../../lib/language-examples";
+import { TextArea } from "../form/textarea";
+import { ModalBody, ModalFooter } from "../modal";
+import { CodeLanguageSelect } from "../monaco-editor/monaco-language-selector";
+import { useMdxEditor } from "./mdx-editor-context";
 
 interface MdxCodeBlockFormProps {
   onClose: (cancelled?: boolean) => void;
@@ -42,7 +41,7 @@ export const MdxCodeBlockForm: React.FC<MdxCodeBlockFormProps> = ({
   return (
     <>
       <ModalBody>
-        <LanguageSelector
+        <CodeLanguageSelect
           value={language || ""}
           onChange={handleLanguageChange}
           className="w-full"

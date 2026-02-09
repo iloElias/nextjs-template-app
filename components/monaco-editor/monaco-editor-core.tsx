@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppContext } from "@/contexts/app-context";
+import { useApp } from "@/hooks/use-app";
 import { cn } from "@heroui/react";
 import Editor, { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
@@ -101,7 +101,7 @@ export const MonacoEditorCore: React.FC<MonacoEditorCoreProps> = ({
   className,
 }) => {
   const { resolvedTheme } = useTheme();
-  const { mounted } = useAppContext();
+  const { mounted } = useApp();
   const editorInstanceRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const themesDefinedRef = useRef(false);
 

@@ -1,4 +1,14 @@
 export default {
+  metadata: {
+    "mdx-editor": {
+      title: "Editor MDX Demo",
+      description: "Editor de markdown interativo com visualização ao vivo",
+    },
+    home: {
+      title: "Início",
+      description: "Template Next.js com internacionalização",
+    },
+  },
   "mdx-editor": {
     frontmatterEditor: {
       title: "Editar frontmatter do documento",
@@ -145,6 +155,33 @@ export default {
     "not-found": {
       title: "Página não encontrada",
       description: "Desculpe, a página que você está procurando não existe.",
+      "go-home": "Ir para Início",
+      "go-back": "Voltar",
+    },
+    "resource-not-found": {
+      title: "Recurso Não Encontrado",
+      description:
+        "O recurso ou registro que você está procurando não foi encontrado.",
+      "go-back": "Voltar",
+    },
+    error: {
+      title: "Algo Deu Errado",
+      description:
+        "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.",
+      "try-again": "Tentar Novamente",
+      "go-home": "Ir para Início",
+    },
+    unauthorized: {
+      title: "Não Autorizado",
+      description: "Você precisa estar logado para acessar esta página.",
+      "go-home": "Ir para Início",
+      login: "Entrar",
+    },
+    forbidden: {
+      title: "Acesso Proibido",
+      description: "Você não tem permissão para acessar este recurso.",
+      "go-home": "Ir para Início",
+      "go-back": "Voltar",
     },
     home: {
       title: "Bem-vindo",

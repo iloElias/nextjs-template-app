@@ -1,12 +1,19 @@
-import type { Metadata } from "next";
+import { getScopedI18n, getStaticParams } from "@/locales/server";
 import { Providers } from "@/providers/providers";
-import { getStaticParams } from "@/locales/server";
+import type { Metadata } from "next";
 import { setStaticParamsLocale } from "next-international/server";
 
-export const metadata: Metadata = {
-  title: "Murilo's Next.js Template App",
-  description: "This is a template app for Next.js",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getScopedI18n("metadata.home");
+
+  return {
+    title: {
+      template: "%s | Murilo's Next.js Template App",
+      default: t("title"),
+    },
+    description: t("description"),
+  };
+}
 
 export const generateStaticParams = getStaticParams;
 

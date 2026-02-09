@@ -1,4 +1,14 @@
 export default {
+  metadata: {
+    "mdx-editor": {
+      title: "MDX Editor Demo",
+      description: "Interactive markdown editor with live preview",
+    },
+    home: {
+      title: "Home",
+      description: "Next.js template with internationalization",
+    },
+  },
   "mdx-editor": {
     frontmatterEditor: {
       title: "Edit document frontmatter",
@@ -145,6 +155,32 @@ export default {
     "not-found": {
       title: "Page not found",
       description: "Sorry, the page you are looking for does not exist.",
+      "go-home": "Go to Home",
+      "go-back": "Go Back",
+    },
+    "resource-not-found": {
+      title: "Resource Not Found",
+      description:
+        "The resource or register you are looking for could not be found.",
+      "go-back": "Go Back",
+    },
+    error: {
+      title: "Something Went Wrong",
+      description: "An unexpected error occurred. Please try again later.",
+      "try-again": "Try Again",
+      "go-home": "Go to Home",
+    },
+    unauthorized: {
+      title: "Unauthorized",
+      description: "You need to be logged in to access this page.",
+      "go-home": "Go to Home",
+      login: "Log In",
+    },
+    forbidden: {
+      title: "Access Forbidden",
+      description: "You don't have permission to access this resource.",
+      "go-home": "Go to Home",
+      "go-back": "Go Back",
     },
     home: {
       title: "Welcome",

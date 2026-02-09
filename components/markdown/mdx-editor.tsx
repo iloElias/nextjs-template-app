@@ -25,13 +25,13 @@ import { useTheme } from "next-themes";
 import { useMemo } from "react";
 import { getCodeMirrorExtensions } from "../../lib/codemirror-extensions";
 import { convertReferenceLinksToInline } from "../../lib/markdown-utils";
+import { emojiAutocompletePlugin } from "../emoji/emoji-autocomplete-plugin-wrapper";
 import { Loading } from "../loading";
-import { emojiAutocompletePlugin } from "./emoji-autocomplete-plugin-wrapper";
+import { createMonacoCodeEditorDescriptor } from "../monaco-editor/monaco-code-editor";
 import { MdxEditorProvider } from "./mdx-editor-context";
 import { MdxImageEditToolbar } from "./mdx-image-edit-toolbar";
 import { MdxLinkPreview } from "./mdx-link-preview";
 import { MdxToolbar } from "./mdx-toolbar";
-import { createMonacoCodeEditorDescriptor } from "./monaco-code-editor";
 
 const imageUploadHandler = async (image: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -175,7 +175,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
       >
         <MdxLinkPreview />
         {isLoading && (
-          <Card className="flex items-center justify-center rounded-large p-8">
+          <Card className="flex items-center justify-center rounded-large p-8 shadow-small">
             <CardBody>
               <Loading label={loadingLabel} />
             </CardBody>
@@ -228,7 +228,9 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
                 ],
               }),
               toolbarPlugin({
-                toolbarClassName: "scrollbar",
+                toolbarClassName: cn(
+                  "scrollbar top-2! mb-2 overflow-x-auto! rounded-xl! border-default-200! bg-background! p-2! dark:bg-default-50! shadow-small!",
+                ),
                 toolbarContents: () =>
                   !readOnly && (
                     <MdxToolbar hasPrevioesVersion={!!previousVersion} />
