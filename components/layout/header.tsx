@@ -16,6 +16,7 @@ import { LanguageSelect } from "../ui/language-select";
 import { ThemeToggle } from "../ui/theme-toggle";
 import { UserNotificationButton } from "../ux/user-notifications-button";
 import { useDebounce } from "ilias-use-debounce";
+import { MenuOpenerButton } from "./menu-opener-button";
 
 export interface HeaderProps {
   hidden?: boolean;
@@ -48,12 +49,13 @@ export const Header: React.FC<HeaderProps> = ({
       onScrollPositionChange={debounce}
       isMenuOpen={hidden}
     >
-      <NavbarBrand className="flex flex-1 flex-row items-center justify-start gap-4">
+      <NavbarBrand className="flex flex-1 flex-row items-center justify-start gap-2">
+        <MenuOpenerButton />
         <Link href="/">
           <Image
             src="/favicon.ico"
             alt="App icon"
-            className="flex h-10 w-10 sm:hidden"
+            className="flex size-8"
           />
         </Link>
       </NavbarBrand>

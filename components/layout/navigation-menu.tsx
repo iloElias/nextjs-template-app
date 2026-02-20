@@ -1,31 +1,27 @@
 "use client";
 
+import { Accordion, AccordionGroup } from "@/components/ui/accordion";
+import { MenuItem, MenuItemGroup } from "@/components/ui/menu-item";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useApp } from "@/hooks/use-app";
 import {
-  Button,
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  DrawerFooter,
-  useDisclosure,
   Divider,
-  Select,
-  SelectItem,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
 } from "@heroui/react";
 import {
   Code,
   Document,
   Gamepad,
   Home,
-  MenuDots,
-  Widget,
-  Translation,
   Palette,
+  Translation,
+  Widget,
 } from "@solar-icons/react";
-import { useChangeLocale, useCurrentLocale } from "@/locales/client";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Accordion, AccordionGroup } from "@/components/ui/accordion";
-import { MenuItem, MenuItemGroup } from "@/components/ui/menu-item";
+import { Button } from "../button";
 import { LanguageSelect } from "../ui/language-select";
 
 interface MenuItem {
@@ -36,8 +32,8 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
-export function NavigationMenu() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+export const NavigationMenu: React.FC = () => {
+  const { menuOpen, setMenuOpen } = useApp();
 
   const menuStructure: MenuItem[] = [
     {
@@ -136,66 +132,61 @@ export function NavigationMenu() {
     return null;
   };
 
+  const handleOpenChange = (open: boolean) => {
+    setMenuOpen(open);
+  };
+
   return (
-    <>
-      <div className="fixed right-0 bottom-0 z-50 m-2">
-        <Button
-          color="primary"
-          isIconOnly
-          size="lg"
-          onPress={onOpen}
-          className="rounded-full"
-        >
-          <MenuDots size={24} />
-        </Button>
-      </div>
-      <Drawer isOpen={isOpen} onOpenChange={onOpenChange} placement="left">
-        <DrawerContent>
-          {(onClose) => (
-            <>
-              <DrawerHeader className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <Code size={24} />
-                  <h2 className="text-xl font-semibold">Navigation</h2>
-                </div>
-              </DrawerHeader>
-              <DrawerBody>
-                <div className="flex flex-col gap-2">
+    <Drawer isOpen={menuOpen} onOpenChange={handleOpenChange} placement="left">
+      <DrawerContent>
+        {() => (
+          <>
+            <DrawerHeader className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <Code size={24} />
+                <h2 className="text-xl font-semibold">Navigation</h2>
+              </div>
+            </DrawerHeader>
+            <DrawerBody>
+              <div className="flex flex-col gap-2">
+                {menuStructure
+                  .filter((item) => !item.children)
+                  .map((item) => renderMenuItem(item))}
+                <AccordionGroup>
                   {menuStructure
-                    .filter((item) => !item.children)
-                    .map((item) => renderMenuItem(item))}
-                  <AccordionGroup>
-                    {menuStructure
-                      .filter((item) => item.children)
-                      .map((item) => renderAccordionItem(item))}
-                  </AccordionGroup>
+                    .filter((item) => item.children)
+                    .map((item) => renderAccordionItem(item))}
+                </AccordionGroup>
+              </div>
+
+              <Divider className="mt-4" />
+
+              <div className="mt-4 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <Translation size={20} />
+                  <LanguageSelect className="flex-1" />
                 </div>
-
-                <Divider className="mt-4" />
-
-                <div className="mt-4 flex flex-col gap-3">
+                <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <Translation size={20} />
-                    <LanguageSelect className="flex-1" />
+                    <Palette size={20} />
+                    <span className="text-sm">Theme</span>
                   </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <Palette size={20} />
-                      <span className="text-sm">Theme</span>
-                    </div>
-                    <ThemeToggle size="sm" />
-                  </div>
+                  <ThemeToggle size="sm" />
                 </div>
-              </DrawerBody>
-              <DrawerFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-              </DrawerFooter>
-            </>
-          )}
-        </DrawerContent>
-      </Drawer>
-    </>
+              </div>
+            </DrawerBody>
+            <DrawerFooter>
+              <Button
+                color="danger"
+                variant="light"
+                onPress={() => setMenuOpen(false)}
+              >
+                Close
+              </Button>
+            </DrawerFooter>
+          </>
+        )}
+      </DrawerContent>
+    </Drawer>
   );
 }

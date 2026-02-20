@@ -1,6 +1,5 @@
 "use client";
 
-import { NavigationMenu } from "@/components/layout/navigation-menu";
 import { Button, Checkbox, Input } from "@heroui/react";
 import { Magnifer, Refresh } from "@solar-icons/react";
 import dynamic from "next/dynamic";
@@ -26,7 +25,6 @@ export default function MdxEditor() {
   return (
     <div className="container mx-auto max-w-5xl p-6">
       <div className="mb-3 flex flex-col gap-3">
-        <NavigationMenu />
         <h1 className="text-3xl font-bold">Markdown Editor</h1>
         <Checkbox
           isSelected={isEditable}

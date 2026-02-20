@@ -4,7 +4,6 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Checkbox } from "@heroui/react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { NavigationMenu } from "@/components/layout/navigation-menu";
 
 const MDXEditorComponent = dynamic(
   () =>
@@ -20,7 +19,6 @@ export default function MdxEditor() {
   return (
     <div className="container mx-auto max-w-5xl p-6">
       <div className="mb-3 flex flex-col gap-3">
-        <NavigationMenu />
         <h1 className="text-3xl font-bold">Markdown Editor</h1>
         <Checkbox
           isSelected={isEditable}
@@ -30,7 +28,10 @@ export default function MdxEditor() {
         </Checkbox>
         <ThemeToggle />
       </div>
-      <MDXEditorComponent readOnly={!isEditable} markdownUrl="/md/table-example.md" />
+      <MDXEditorComponent
+        readOnly={!isEditable}
+        markdownUrl="/md/table-example.md"
+      />
     </div>
   );
 }
