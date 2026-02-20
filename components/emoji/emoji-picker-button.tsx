@@ -64,6 +64,7 @@ export const EmojiPickerButton: React.FC<EmojiPickerButtonProps> = ({
       placement={placement}
       offset={offset}
       showArrow={showArrow}
+      shouldCloseOnBlur={false}
     >
       <PopoverTrigger className={triggerClassName}>
         {trigger ? (

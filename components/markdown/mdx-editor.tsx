@@ -32,6 +32,7 @@ import { MdxEditorProvider } from "./mdx-editor-context";
 import { MdxImageEditToolbar } from "./mdx-image-edit-toolbar";
 import { MdxLinkPreview } from "./mdx-link-preview";
 import { MdxToolbar } from "./mdx-toolbar";
+import { useApp } from "@/hooks/use-app";
 
 const imageUploadHandler = async (image: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -132,6 +133,8 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
 }) => {
   const tmdx = useScopedI18n("mdx-editor");
   const { resolvedTheme } = useTheme();
+  const { headerOpen } = useApp();
+  
 
   const { data: fetchedMarkdown, isLoading: isLoadingMarkdown } = useQuery({
     queryKey: ["markdown", markdownUrl],
@@ -193,8 +196,8 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
             }}
             className={cn(readOnly && "disabled")}
             contentEditableClassName={cn(
-              "dark:prose-invert rounded-lg max-w-none min-h-125 text-default-700! prose prose-slate editor-content",
-              readOnly && "p-0! editor-readonly",
+              "dark:prose-invert p-0! pt-1! rounded-lg max-w-none min-h-125 text-default-700! prose prose-slate editor-content",
+              readOnly && "editor-readonly pt-0!",
             )}
             plugins={[
               diffSourcePlugin({
@@ -229,7 +232,8 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
               }),
               toolbarPlugin({
                 toolbarClassName: cn(
-                  "scrollbar top-2! mb-2 overflow-x-auto! rounded-xl! border-default-200! bg-background! p-2! dark:bg-default-50! shadow-small!",
+                  "scrollbar mb-2 overflow-x-auto! rounded-xl! border-default-200! bg-background! p-2! dark:bg-default-50! shadow-small! transition-[top] duration-400 ease-in-out",
+                  headerOpen ? "top-18!" :  "top-2!",
                 ),
                 toolbarContents: () =>
                   !readOnly && (
