@@ -1,6 +1,6 @@
 "use client";
-import { Section } from "../layout/section";
 import { useI18n } from "@/locales/client";
+import { Section } from "../layout/section";
 
 export default function Home() {
   const t = useI18n();

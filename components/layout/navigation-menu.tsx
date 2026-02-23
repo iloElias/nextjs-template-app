@@ -13,11 +13,13 @@ import {
   DrawerHeader,
 } from "@heroui/react";
 import {
+  CalendarMark,
   Code,
   Document,
   Gamepad,
   Home,
   Palette,
+  SmileCircle,
   Translation,
   Widget,
 } from "@solar-icons/react";
@@ -41,6 +43,18 @@ export const NavigationMenu: React.FC = () => {
       label: "Home",
       href: "/",
       icon: <Home size={20} />,
+    },
+    {
+      key: "agenda",
+      label: "Agenda",
+      href: "/agenda",
+      icon: <CalendarMark size={20} />,
+    },
+    {
+      key: "emoji-picker",
+      label: "Emoji Picker",
+      href: "/emoji-picker",
+      icon: <SmileCircle size={20} />,
     },
     {
       key: "layouts",
@@ -73,6 +87,11 @@ export const NavigationMenu: React.FC = () => {
           key: "markdown-table",
           label: "Markdown Table",
           href: "/markdown/table",
+        },
+        {
+          key: "markdown-fetch",
+          label: "Markdown Fetch",
+          href: "/markdown/fetch",
         },
       ],
     },
