@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Checkbox } from "@heroui/react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Section } from "@/components/layout/section";
 
 const MDXEditorComponent = dynamic(
   () =>
@@ -18,7 +19,7 @@ export default function MdxEditor() {
   const [isEditable, setIsEditable] = useState<boolean>(true);
 
   return (
-    <div className="container mx-auto max-w-5xl p-6">
+    <>
       <div className="mb-3 flex flex-col gap-3">
         <h1 className="text-3xl font-bold flex flex-row items-center gap-4">
           Markdown Editor
@@ -38,6 +39,6 @@ export default function MdxEditor() {
           showPreviousVersion ? "/md/example.prev.md" : undefined
         }
       />
-    </div>
+    </>
   );
 }

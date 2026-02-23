@@ -10,12 +10,12 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@heroui/react";
+import { useDebounce } from "ilias-use-debounce";
 import Link from "next/link";
 import React, { useId } from "react";
 import { LanguageSelect } from "../ui/language-select";
 import { ThemeToggle } from "../ui/theme-toggle";
 import { UserNotificationButton } from "../ux/user-notifications-button";
-import { useDebounce } from "ilias-use-debounce";
 import { MenuOpenerButton } from "./menu-opener-button";
 
 export interface HeaderProps {
@@ -33,9 +33,10 @@ export const Header: React.FC<HeaderProps> = ({
   const { mounted, headerDisclosure } = useApp();
 
   const [debounce] = useDebounce(() => {
-    const isHidden = document?.getElementById(id)?.getAttribute("data-hidden") === "true";
+    const isHidden =
+      document?.getElementById(id)?.getAttribute("data-hidden") === "true";
     const shouldBeOpen = !shouldHideOnScroll ? true : !isHidden;
-    
+
     if (shouldBeOpen && !headerDisclosure.isOpen) {
       headerDisclosure.onOpen();
     } else if (!shouldBeOpen && headerDisclosure.isOpen) {
@@ -47,19 +48,15 @@ export const Header: React.FC<HeaderProps> = ({
     <Navbar
       id={id}
       isBordered
-      className="w-full border-default-300 bg-default-50 shadow-sm backdrop-blur-sm transition-colors dark:border-default-100"
+      className="w-full border-default-300 bg-default-50 shadow-sm backdrop-blur-sm transition-colors dark:border-default-100 print:hidden"
       shouldHideOnScroll={shouldHideOnScroll}
       onScrollPositionChange={debounce}
       isMenuOpen={hidden}
     >
       <NavbarBrand className="flex flex-1 flex-row items-center justify-start gap-2">
-        <MenuOpenerButton />
+        <MenuOpenerButton size="md" />
         <Link href="/">
-          <Image
-            src="/favicon.ico"
-            alt="App icon"
-            className="flex size-8"
-          />
+          <Image src="/favicon.ico" alt="App icon" className="flex size-8" />
         </Link>
       </NavbarBrand>
       <NavbarContent className="hidden md:flex" justify="center">
@@ -69,13 +66,15 @@ export const Header: React.FC<HeaderProps> = ({
         className="flex flex-1 flex-row items-center gap-2"
         justify="end"
       >
-        <LanguageSelect size="sm" className="max-w-44" />
+        {/* <NavbarItem>
+          <LanguageSelect size="sm" className="max-w-44" />
+        </NavbarItem>
         <NavbarItem>
           <ThemeToggle
             size="sm"
             className={cn(user ? "hidden md:flex" : "flex")}
           />
-        </NavbarItem>
+        </NavbarItem> */}
         {mounted && user && (
           <NavbarItem className="flex items-center justify-center">
             <UserNotificationButton />

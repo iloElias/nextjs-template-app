@@ -1,5 +1,6 @@
 "use client";
 
+import { useApp } from "@/hooks/use-app";
 import { useScopedI18n } from "@/locales/client";
 import { Card, CardBody, cn } from "@heroui/react";
 import {
@@ -32,7 +33,6 @@ import { MdxEditorProvider } from "./mdx-editor-context";
 import { MdxImageEditToolbar } from "./mdx-image-edit-toolbar";
 import { MdxLinkPreview } from "./mdx-link-preview";
 import { MdxToolbar } from "./mdx-toolbar";
-import { useApp } from "@/hooks/use-app";
 
 const imageUploadHandler = async (image: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -134,7 +134,6 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
   const tmdx = useScopedI18n("mdx-editor");
   const { resolvedTheme } = useTheme();
   const { headerDisclosure } = useApp();
-  
 
   const { data: fetchedMarkdown, isLoading: isLoadingMarkdown } = useQuery({
     queryKey: ["markdown", markdownUrl],
@@ -233,7 +232,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
               toolbarPlugin({
                 toolbarClassName: cn(
                   "scrollbar mb-2 overflow-x-auto! rounded-xl! border-default-200! bg-background! p-2! dark:bg-default-50! shadow-small! transition-[top] duration-400 ease-in-out",
-                  headerDisclosure.isOpen ? "top-18!" :  "top-2!",
+                  headerDisclosure.isOpen ? "top-18!" : "top-2!",
                 ),
                 toolbarContents: () =>
                   !readOnly && (

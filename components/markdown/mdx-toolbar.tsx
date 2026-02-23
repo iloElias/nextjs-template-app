@@ -5,10 +5,14 @@ import { LinkDialogMonitor } from "./mdx-link-dialog-monitor";
 import {
   HeroBasicTextFormattingButtons,
   HeroBlockTypeSelect,
+  HeroCreateLinkModal,
   HeroDiffMode,
   HeroHistoryButtons,
+  HeroInsertCodeBlockModal,
   HeroInsertEmoji,
+  HeroInsertImageModal,
   HeroInsertMenu,
+  HeroInsertTableModal,
   HeroLinkImageButtons,
   HeroListMenu,
   HeroMiscellaneousMenu,
@@ -33,6 +37,10 @@ export const MdxToolbar: React.FC<MdxToolbarProps> = ({
   return (
     <>
       <LinkDialogMonitor />
+      <HeroCreateLinkModal />
+      <HeroInsertImageModal />
+      <HeroInsertTableModal />
+      <HeroInsertCodeBlockModal />
       {viewMode === "rich-text" && (
         <>
           <HeroHistoryButtons />

@@ -133,7 +133,12 @@ export const NavigationMenu: React.FC = () => {
   };
 
   return (
-    <Drawer isOpen={menuDisclosure.isOpen} onOpenChange={menuDisclosure.onOpenChange} placement="left">
+    <Drawer
+      isOpen={menuDisclosure.isOpen}
+      onOpenChange={menuDisclosure.onOpenChange}
+      placement="left"
+      className="print:hidden"
+    >
       <DrawerContent>
         {() => (
           <>
@@ -185,4 +190,4 @@ export const NavigationMenu: React.FC = () => {
       </DrawerContent>
     </Drawer>
   );
-}
+};

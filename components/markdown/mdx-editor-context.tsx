@@ -2,10 +2,10 @@
 
 import React, {
   createContext,
-  useContext,
-  useState,
   useCallback,
+  useContext,
   useEffect,
+  useState,
 } from "react";
 
 interface LinkPreviewData {
@@ -52,6 +52,14 @@ interface MdxEditorContextValue {
   openImageDialog: () => void;
   closeImageDialog: () => void;
 
+  isTableDialogOpen: boolean;
+  openTableDialog: () => void;
+  closeTableDialog: () => void;
+
+  isCodeBlockDialogOpen: boolean;
+  openCodeBlockDialog: () => void;
+  closeCodeBlockDialog: () => void;
+
   currentCodeLanguage?: string;
   setCurrentCodeLanguage: (language?: string) => void;
 
@@ -87,6 +95,8 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({
   );
   const [imageEdit, setImageEdit] = useState<ImageEditData | null>(null);
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+  const [isTableDialogOpen, setIsTableDialogOpen] = useState(false);
+  const [isCodeBlockDialogOpen, setIsCodeBlockDialogOpen] = useState(false);
   const [currentCodeLanguage, setCurrentCodeLanguage] = useState<
     string | undefined
   >("javascript");
@@ -108,6 +118,22 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({
   const closeImageDialog = useCallback(() => {
     setIsImageDialogOpen(false);
     setImageEdit(null);
+  }, []);
+
+  const openTableDialog = useCallback(() => {
+    setIsTableDialogOpen(true);
+  }, []);
+
+  const closeTableDialog = useCallback(() => {
+    setIsTableDialogOpen(false);
+  }, []);
+
+  const openCodeBlockDialog = useCallback(() => {
+    setIsCodeBlockDialogOpen(true);
+  }, []);
+
+  const closeCodeBlockDialog = useCallback(() => {
+    setIsCodeBlockDialogOpen(false);
   }, []);
 
   useEffect(() => {
@@ -132,6 +158,12 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({
         isImageDialogOpen,
         openImageDialog,
         closeImageDialog,
+        isTableDialogOpen,
+        openTableDialog,
+        closeTableDialog,
+        isCodeBlockDialogOpen,
+        openCodeBlockDialog,
+        closeCodeBlockDialog,
         currentCodeLanguage,
         setCurrentCodeLanguage,
         readOnly,

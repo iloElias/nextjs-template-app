@@ -5,7 +5,7 @@ export const Section: React.FC<{
   children?: React.ReactNode;
 }> = ({ className, children }) => {
   return (
-    <section className={cn("container mx-auto px-4 py-8", className)}>
+    <section className={cn("container mx-auto max-w-5xl px-6 py-4", className)}>
       {children}
     </section>
   );

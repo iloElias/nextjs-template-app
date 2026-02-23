@@ -1,16 +1,7 @@
 "use client";
 
 import { useScopedI18n } from "@/locales/client";
-import {
-  Button,
-  ButtonGroup,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Select,
-  SelectItem,
-  useDisclosure,
-} from "@heroui/react";
+import { Button, ButtonGroup, Select, SelectItem } from "@heroui/react";
 import { $isCodeNode } from "@lexical/code";
 import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import {
@@ -62,7 +53,6 @@ import {
   UNDO_COMMAND,
 } from "lexical";
 import { useCallback, useEffect, useState } from "react";
-import { Dialogue } from "../dialogue";
 import { EmojiPickerButton } from "../emoji/emoji-picker-button";
 import { NumberInput } from "../form/number-input";
 import { BulleList } from "../icons/bulle-list";
@@ -80,6 +70,7 @@ import { MdxCodeBlockForm } from "./mdx-code-block-form";
 import { useMdxEditor } from "./mdx-editor-context";
 import { MdxImageForm } from "./mdx-image-form";
 import { MdxLinkForm } from "./mdx-link-form";
+import { MdxToolbarPopover } from "./mdx-toolbar-popover";
 
 export const HeroBlockTypeSelect = () => {
   const tmdx = useScopedI18n("mdx-editor");
@@ -321,24 +312,7 @@ export const HeroSubscript = () => {
 export const HeroCreateLink = () => {
   const tmdx = useScopedI18n("mdx-editor");
   const activeEditor = useCellValue(activeEditor$);
-  const cancelEdit = usePublisher(cancelLinkEdit$);
-  const {
-    linkEdit,
-    isLinkDialogOpen,
-    openLinkDialog,
-    closeLinkDialog,
-    setLinkEdit,
-  } = useMdxEditor();
-  const disclosure = useDisclosure();
-
-  // Sync context state with disclosure state
-  useEffect(() => {
-    if (isLinkDialogOpen && !disclosure.isOpen) {
-      disclosure.onOpen();
-    } else if (!isLinkDialogOpen && disclosure.isOpen) {
-      disclosure.onClose();
-    }
-  }, [isLinkDialogOpen, disclosure]);
+  const { openLinkDialog, setLinkEdit } = useMdxEditor();
 
   const handleOpenDialog = useCallback(() => {
     if (activeEditor) {
@@ -354,48 +328,52 @@ export const HeroCreateLink = () => {
     openLinkDialog();
   }, [activeEditor, openLinkDialog, setLinkEdit]);
 
+  return (
+    <MdxButton onPress={handleOpenDialog} role={tmdx("toolbar.link")}>
+      <Link />
+    </MdxButton>
+  );
+};
+
+export const HeroCreateLinkModal = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const cancelEdit = usePublisher(cancelLinkEdit$);
+  const { linkEdit, isLinkDialogOpen, closeLinkDialog } = useMdxEditor();
+
   const handleClose = useCallback(
     (cancelled: boolean = true) => {
       const wasEditing = linkEdit?.isEditing === true;
       closeLinkDialog();
-      disclosure.onClose();
       // Only call cancelEdit if we're cancelling (not submitting) an edit
       if (cancelled && wasEditing) {
         cancelEdit();
       }
     },
-    [linkEdit, cancelEdit, closeLinkDialog, disclosure],
+    [linkEdit, cancelEdit, closeLinkDialog],
   );
 
   return (
-    <>
-      <Modal
-        isOpen={disclosure.isOpen}
-        onClose={() => handleClose(true)}
-        size="sm"
-        placement="center"
+    <Modal
+      isOpen={isLinkDialogOpen}
+      onClose={() => handleClose(true)}
+      size="sm"
+      placement="center"
+    >
+      <ModalContent
+        key={linkEdit ? `${linkEdit.isEditing}-${linkEdit.url}` : "new"}
       >
-        <ModalContent
-          key={linkEdit ? `${linkEdit.isEditing}-${linkEdit.url}` : "new"}
-        >
-          <ModalHeader>
-            {linkEdit?.isEditing
-              ? tmdx("createLink.url")
-              : tmdx("toolbar.link")}
-          </ModalHeader>
-          <MdxLinkForm
-            selectedText={linkEdit?.text || ""}
-            existingUrl={linkEdit?.url || ""}
-            existingTitle={linkEdit?.title || ""}
-            isEditing={linkEdit?.isEditing || false}
-            onClose={handleClose}
-          />
-        </ModalContent>
-      </Modal>
-      <MdxButton onPress={handleOpenDialog} role={tmdx("toolbar.link")}>
-        <Link />
-      </MdxButton>
-    </>
+        <ModalHeader>
+          {linkEdit?.isEditing ? tmdx("createLink.url") : tmdx("toolbar.link")}
+        </ModalHeader>
+        <MdxLinkForm
+          selectedText={linkEdit?.text || ""}
+          existingUrl={linkEdit?.url || ""}
+          existingTitle={linkEdit?.title || ""}
+          isEditing={linkEdit?.isEditing || false}
+          onClose={handleClose}
+        />
+      </ModalContent>
+    </Modal>
   );
 };
 
@@ -452,82 +430,95 @@ export const HeroCheckList = () => {
 
 export const HeroInsertImage = () => {
   const tmdx = useScopedI18n("mdx-editor");
-  const cancelEdit = usePublisher(closeImageDialog$);
-  const {
-    imageEdit,
-    isImageDialogOpen,
-    openImageDialog,
-    closeImageDialog,
-    setImageEdit,
-  } = useMdxEditor();
-  const disclosure = useDisclosure();
-
-  useEffect(() => {
-    if (isImageDialogOpen && !disclosure.isOpen) {
-      disclosure.onOpen();
-    } else if (!isImageDialogOpen && disclosure.isOpen) {
-      disclosure.onClose();
-    }
-  }, [isImageDialogOpen, disclosure]);
+  const { openImageDialog, setImageEdit } = useMdxEditor();
 
   const handleOpenDialog = useCallback(() => {
     setImageEdit({ src: "", altText: "", title: "", isEditing: false });
     openImageDialog();
   }, [openImageDialog, setImageEdit]);
 
+  return (
+    <MdxButton onPress={handleOpenDialog} role={tmdx("toolbar.image")}>
+      <Gallery />
+    </MdxButton>
+  );
+};
+
+export const HeroInsertImageModal = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const cancelEdit = usePublisher(closeImageDialog$);
+  const { imageEdit, isImageDialogOpen, closeImageDialog } = useMdxEditor();
+
   const handleClose = useCallback(
     (cancelled: boolean = true) => {
       const wasEditing = imageEdit?.isEditing === true;
       closeImageDialog();
-      disclosure.onClose();
       if (cancelled && wasEditing) {
         cancelEdit();
       }
     },
-    [cancelEdit, closeImageDialog, disclosure, imageEdit],
+    [cancelEdit, closeImageDialog, imageEdit],
   );
 
   return (
-    <>
-      <Modal
-        isOpen={disclosure.isOpen}
-        onClose={() => handleClose(true)}
-        size="sm"
-        placement="center"
+    <Modal
+      isOpen={isImageDialogOpen}
+      onClose={() => handleClose(true)}
+      size="sm"
+      placement="center"
+    >
+      <ModalContent
+        key={imageEdit ? `${imageEdit.isEditing}-${imageEdit.src}` : "new"}
       >
-        <ModalContent
-          key={imageEdit ? `${imageEdit.isEditing}-${imageEdit.src}` : "new"}
-        >
-          <ModalHeader>{tmdx("uploadImage.dialogTitle")}</ModalHeader>
-          <MdxImageForm
-            existingSrc={imageEdit?.src || ""}
-            existingAltText={imageEdit?.altText || ""}
-            existingTitle={imageEdit?.title || ""}
-            isEditing={imageEdit?.isEditing || false}
-            imageNodeKey={imageEdit?.imageNodeKey}
-            onClose={handleClose}
-          />
-        </ModalContent>
-      </Modal>
-      <MdxButton onPress={handleOpenDialog} role={tmdx("toolbar.image")}>
-        <Gallery />
-      </MdxButton>
-    </>
+        <ModalHeader>{tmdx("uploadImage.dialogTitle")}</ModalHeader>
+        <MdxImageForm
+          existingSrc={imageEdit?.src || ""}
+          existingAltText={imageEdit?.altText || ""}
+          existingTitle={imageEdit?.title || ""}
+          isEditing={imageEdit?.isEditing || false}
+          imageNodeKey={imageEdit?.imageNodeKey}
+          onClose={handleClose}
+        />
+      </ModalContent>
+    </Modal>
   );
 };
 
-export const HeroInsertTable = () => {
+export const HeroInsertTable = ({
+  onPopoverClose,
+}: {
+  onPopoverClose?: () => void;
+}) => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const { openTableDialog } = useMdxEditor();
+
+  const handleOpen = () => {
+    onPopoverClose?.();
+    openTableDialog();
+  };
+
+  return (
+    <MdxButton onPress={handleOpen} role={tmdx("toolbar.table")}>
+      <SidebarMinimalistic className="-rotate-90" />
+    </MdxButton>
+  );
+};
+
+export const HeroInsertTableModal = () => {
   const tmdx = useScopedI18n("mdx-editor");
   const insertTable = usePublisher(insertTable$);
-
-  const disclosure = useDisclosure();
-
+  const { isTableDialogOpen, closeTableDialog } = useMdxEditor();
   const [rows, setRows] = useState<number>(3);
   const [columns, setColumns] = useState<number>(3);
 
   return (
-    <>
-      <Dialogue disclosure={disclosure} size="sm" placement="center">
+    <Modal
+      isOpen={isTableDialogOpen}
+      onClose={closeTableDialog}
+      size="sm"
+      placement="center"
+    >
+      <ModalContent>
         <ModalHeader>{tmdx("toolbar.table")}</ModalHeader>
         <ModalBody>
           <NumberInput
@@ -546,21 +537,18 @@ export const HeroInsertTable = () => {
             color="primary"
             className="flex-1 rounded-xl!"
             onPress={() => {
-              disclosure.onClose();
+              closeTableDialog();
               insertTable({ rows, columns });
             }}
           >
             {tmdx("dialogControls.save")}
           </Button>
-          <Button className="flex-1 rounded-xl!" onPress={disclosure.onClose}>
+          <Button className="flex-1 rounded-xl!" onPress={closeTableDialog}>
             {tmdx("dialogControls.cancel")}
           </Button>
         </ModalFooter>
-      </Dialogue>
-      <MdxButton onPress={disclosure.onOpen} role={tmdx("toolbar.table")}>
-        <SidebarMinimalistic className="-rotate-90" />
-      </MdxButton>
-    </>
+      </ModalContent>
+    </Modal>
   );
 };
 
@@ -578,27 +566,42 @@ export const HeroInsertThematicBreak = () => {
   );
 };
 
-export const HeroInsertCodeBlock = () => {
+export const HeroInsertCodeBlock = ({
+  onPopoverClose,
+}: {
+  onPopoverClose?: () => void;
+}) => {
   const tmdx = useScopedI18n("mdx-editor");
-  const disclosure = useDisclosure();
+  const { openCodeBlockDialog } = useMdxEditor();
+
+  const handleOpen = () => {
+    onPopoverClose?.();
+    openCodeBlockDialog();
+  };
 
   return (
-    <>
-      <Modal
-        isOpen={disclosure.isOpen}
-        onClose={disclosure.onClose}
-        size="md"
-        placement="center"
-      >
-        <ModalContent>
-          <ModalHeader>{tmdx("toolbar.codeBlock")}</ModalHeader>
-          <MdxCodeBlockForm onClose={disclosure.onClose} />
-        </ModalContent>
-      </Modal>
-      <MdxButton onPress={disclosure.onOpen} role={tmdx("toolbar.codeBlock")}>
-        <CodeSquare />
-      </MdxButton>
-    </>
+    <MdxButton onPress={handleOpen} role={tmdx("toolbar.codeBlock")}>
+      <CodeSquare />
+    </MdxButton>
+  );
+};
+
+export const HeroInsertCodeBlockModal = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const { isCodeBlockDialogOpen, closeCodeBlockDialog } = useMdxEditor();
+
+  return (
+    <Modal
+      isOpen={isCodeBlockDialogOpen}
+      onClose={closeCodeBlockDialog}
+      size="md"
+      placement="center"
+    >
+      <ModalContent>
+        <ModalHeader>{tmdx("toolbar.codeBlock")}</ModalHeader>
+        <MdxCodeBlockForm onClose={closeCodeBlockDialog} />
+      </ModalContent>
+    </Modal>
   );
 };
 
@@ -763,44 +766,43 @@ export const HeroListMenu = () => {
   const currentListType = useCellValue(currentListType$);
 
   return (
-    <Popover placement="bottom" offset={8} showArrow>
-      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
+    <MdxToolbarPopover
+      trigger={
         <MdxButton role={tmdx("toolbar.listMenu")}>
           <BulleList />
         </MdxButton>
-      </PopoverTrigger>
-      <PopoverContent className="rounded-xl p-1">
-        <ButtonGroup>
-          <MdxButton
-            active={currentListType === "bullet"}
-            onPress={() =>
-              applyListType(currentListType === "bullet" ? "" : "bullet")
-            }
-            role={tmdx("toolbar.bulletedList")}
-          >
-            <BulleList />
-          </MdxButton>
-          <MdxButton
-            active={currentListType === "number"}
-            onPress={() =>
-              applyListType(currentListType === "number" ? "" : "number")
-            }
-            role={tmdx("toolbar.numberedList")}
-          >
-            <NumberedList />
-          </MdxButton>
-          <MdxButton
-            active={currentListType === "check"}
-            onPress={() =>
-              applyListType(currentListType === "check" ? "" : "check")
-            }
-            role={tmdx("toolbar.checkList")}
-          >
-            <Checklist />
-          </MdxButton>
-        </ButtonGroup>
-      </PopoverContent>
-    </Popover>
+      }
+    >
+      <ButtonGroup>
+        <MdxButton
+          active={currentListType === "bullet"}
+          onPress={() =>
+            applyListType(currentListType === "bullet" ? "" : "bullet")
+          }
+          role={tmdx("toolbar.bulletedList")}
+        >
+          <BulleList />
+        </MdxButton>
+        <MdxButton
+          active={currentListType === "number"}
+          onPress={() =>
+            applyListType(currentListType === "number" ? "" : "number")
+          }
+          role={tmdx("toolbar.numberedList")}
+        >
+          <NumberedList />
+        </MdxButton>
+        <MdxButton
+          active={currentListType === "check"}
+          onPress={() =>
+            applyListType(currentListType === "check" ? "" : "check")
+          }
+          role={tmdx("toolbar.checkList")}
+        >
+          <Checklist />
+        </MdxButton>
+      </ButtonGroup>
+    </MdxToolbarPopover>
   );
 };
 
@@ -808,20 +810,23 @@ export const HeroInsertMenu = () => {
   const tmdx = useScopedI18n("mdx-editor");
 
   return (
-    <Popover placement="bottom" offset={8} showArrow>
-      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
+    <MdxToolbarPopover
+      trigger={
         <MdxButton role={tmdx("toolbar.insertMenu")}>
           <MenuDots weight="BoldDuotone" />
         </MdxButton>
-      </PopoverTrigger>
-      <PopoverContent className="flex flex-row gap-1 rounded-xl p-1">
-        <ButtonGroup>
-          <HeroInsertTable />
-          <HeroInsertThematicBreak />
-          <HeroInsertCodeBlock />
-        </ButtonGroup>
-      </PopoverContent>
-    </Popover>
+      }
+    >
+      {(onClose) => (
+        <div className="flex flex-row gap-1">
+          <ButtonGroup>
+            <HeroInsertTable onPopoverClose={onClose} />
+            <HeroInsertThematicBreak />
+            <HeroInsertCodeBlock onPopoverClose={onClose} />
+          </ButtonGroup>
+        </div>
+      )}
+    </MdxToolbarPopover>
   );
 };
 
@@ -890,20 +895,21 @@ export const HeroResponsiveToolbarMenu = () => {
   const tmdx = useScopedI18n("mdx-editor");
 
   return (
-    <Popover placement="bottom" offset={8} showArrow>
-      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
+    <MdxToolbarPopover
+      trigger={
         <MdxButton role={tmdx("toolbar.textFormattingMenu")}>
           <Text />
         </MdxButton>
-      </PopoverTrigger>
-      <PopoverContent className="flex flex-row gap-1 rounded-xl p-1">
+      }
+    >
+      <div className="flex flex-row gap-1">
         <HeroTextFormattingButtons />
         <Separator />
         <HeroScriptButtons />
         <Separator />
         <HeroCode />
-      </PopoverContent>
-    </Popover>
+      </div>
+    </MdxToolbarPopover>
   );
 };
 
@@ -911,20 +917,21 @@ export const HeroMiscellaneousMenu = () => {
   const tmdx = useScopedI18n("mdx-editor");
 
   return (
-    <Popover placement="bottom" offset={8} showArrow>
-      <PopoverTrigger className="h-8 bg-default-100 text-default-800! duration-75! hover:bg-default-200">
+    <MdxToolbarPopover
+      trigger={
         <MdxButton role={tmdx("toolbar.miscellaneousMenu")}>
           <Text />
         </MdxButton>
-      </PopoverTrigger>
-      <PopoverContent className="flex flex-row gap-1 rounded-xl p-1">
+      }
+    >
+      <div className="flex flex-row gap-1">
         <HeroStrikethrough />
         <Separator />
         <HeroScriptButtons />
         <Separator />
         <HeroCode />
-      </PopoverContent>
-    </Popover>
+      </div>
+    </MdxToolbarPopover>
   );
 };
 

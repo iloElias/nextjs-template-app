@@ -17,7 +17,7 @@ export default function MdxEditor() {
   const [isEditable, setIsEditable] = useState<boolean>(true);
 
   return (
-    <div className="container mx-auto max-w-5xl p-6">
+    <>
       <div className="mb-3 flex flex-col gap-3">
         <h1 className="text-3xl font-bold">Markdown Editor</h1>
         <Checkbox
@@ -32,6 +32,6 @@ export default function MdxEditor() {
         readOnly={!isEditable}
         markdownUrl="/md/table-example.md"
       />
-    </div>
+    </>
   );
 }
