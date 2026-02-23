@@ -1,9 +1,8 @@
 "use client";
 
-import { useApp } from "@/hooks/use-app";
+import { useApp } from "@/hooks/use-app"
 import { useSession } from "@/hooks/use-session";
 import {
-  cn,
   Image,
   Navbar,
   NavbarBrand,
@@ -13,8 +12,6 @@ import {
 import { useDebounce } from "ilias-use-debounce";
 import Link from "next/link";
 import React, { useId } from "react";
-import { LanguageSelect } from "../ui/language-select";
-import { ThemeToggle } from "../ui/theme-toggle";
 import { UserNotificationButton } from "../ux/user-notifications-button";
 import { MenuOpenerButton } from "./menu-opener-button";
 
