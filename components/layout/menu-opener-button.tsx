@@ -3,7 +3,7 @@
 import { Button } from "@/components/button";
 import { useApp } from "@/hooks/use-app";
 import { cn } from "@heroui/react";
-import { HamburgerMenu, MenuDots } from "@solar-icons/react";
+import { HamburgerMenu } from "@solar-icons/react";
 import { ComponentPropsWithoutRef } from "react";
 
 export interface MenuOpenerButtonProps extends Omit<
@@ -21,17 +21,13 @@ export const MenuOpenerButton: React.FC<MenuOpenerButtonProps> = ({
   className,
   ...buttonProps
 }) => {
-  const { setMenuOpen } = useApp();
-
-  const handleOpen = () => {
-    setMenuOpen(true);
-  };
+  const { menuDisclosure } = useApp();
 
   return (
     <Button
       size="sm"
       isIconOnly
-      onPress={handleOpen}
+      onPress={menuDisclosure.onOpen}
       className={cn(className)}
       color="primary"
       {...buttonProps}

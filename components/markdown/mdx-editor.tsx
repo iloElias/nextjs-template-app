@@ -133,7 +133,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
 }) => {
   const tmdx = useScopedI18n("mdx-editor");
   const { resolvedTheme } = useTheme();
-  const { headerOpen } = useApp();
+  const { headerDisclosure } = useApp();
   
 
   const { data: fetchedMarkdown, isLoading: isLoadingMarkdown } = useQuery({
@@ -233,7 +233,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
               toolbarPlugin({
                 toolbarClassName: cn(
                   "scrollbar mb-2 overflow-x-auto! rounded-xl! border-default-200! bg-background! p-2! dark:bg-default-50! shadow-small! transition-[top] duration-400 ease-in-out",
-                  headerOpen ? "top-18!" :  "top-2!",
+                  headerDisclosure.isOpen ? "top-18!" :  "top-2!",
                 ),
                 toolbarContents: () =>
                   !readOnly && (

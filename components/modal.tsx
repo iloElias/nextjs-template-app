@@ -15,7 +15,7 @@ import {
 export const Modal: React.FC<HeroUIModalProps> = ({ className, ...props }) => {
   return (
     <HeroUIModal
-      className={cn("overflow-hidden text-default-700", className)}
+      className={cn("overflow-hidden", className)}
       {...props}
     />
   );
@@ -27,7 +27,7 @@ export const ModalContent: React.FC<HeroUIModalContentProps> = ({
 }) => {
   return (
     <HeroUIModalContent
-      className={cn("text-default-700", className)}
+      className={cn("", className)}
       {...props}
     />
   );

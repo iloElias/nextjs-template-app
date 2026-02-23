@@ -30,14 +30,17 @@ export const Header: React.FC<HeaderProps> = ({
   const id = useId();
 
   const { user } = useSession();
-  const { mounted, setHeaderOpen } = useApp();
+  const { mounted, headerDisclosure } = useApp();
 
   const [debounce] = useDebounce(() => {
-    setHeaderOpen(
-      !shouldHideOnScroll
-        ? true
-        : document?.getElementById(id)?.getAttribute("data-hidden") !== "true",
-    );
+    const isHidden = document?.getElementById(id)?.getAttribute("data-hidden") === "true";
+    const shouldBeOpen = !shouldHideOnScroll ? true : !isHidden;
+    
+    if (shouldBeOpen && !headerDisclosure.isOpen) {
+      headerDisclosure.onOpen();
+    } else if (!shouldBeOpen && headerDisclosure.isOpen) {
+      headerDisclosure.onClose();
+    }
   }, 1);
 
   return (

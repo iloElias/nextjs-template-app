@@ -3,7 +3,7 @@
    =================================== */
 
 html {
-  @apply max-h-screen min-h-screen overflow-auto! bg-background text-foreground dark:bg-default-50;
+  @apply max-h-screen min-h-screen overflow-auto! bg-background text-default-700 dark:bg-default-50;
 }
 
 * {

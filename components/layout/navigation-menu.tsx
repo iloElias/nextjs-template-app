@@ -33,7 +33,7 @@ interface MenuItem {
 }
 
 export const NavigationMenu: React.FC = () => {
-  const { menuOpen, setMenuOpen } = useApp();
+  const { menuDisclosure } = useApp();
 
   const menuStructure: MenuItem[] = [
     {
@@ -132,12 +132,8 @@ export const NavigationMenu: React.FC = () => {
     return null;
   };
 
-  const handleOpenChange = (open: boolean) => {
-    setMenuOpen(open);
-  };
-
   return (
-    <Drawer isOpen={menuOpen} onOpenChange={handleOpenChange} placement="left">
+    <Drawer isOpen={menuDisclosure.isOpen} onOpenChange={menuDisclosure.onOpenChange} placement="left">
       <DrawerContent>
         {() => (
           <>
@@ -179,7 +175,7 @@ export const NavigationMenu: React.FC = () => {
               <Button
                 color="danger"
                 variant="light"
-                onPress={() => setMenuOpen(false)}
+                onPress={menuDisclosure.onClose}
               >
                 Close
               </Button>

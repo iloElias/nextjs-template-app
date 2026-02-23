@@ -1,13 +1,14 @@
 "use client";
 
+import { useDisclosure } from "@heroui/react";
 import { createContext, useEffect, useState } from "react";
+
+type UseDisclosureReturn = ReturnType<typeof useDisclosure>;
 
 export interface AppContextValue {
   mounted: boolean;
-  headerOpen: boolean;
-  setHeaderOpen: (open: boolean) => void;
-  menuOpen: boolean;
-  setMenuOpen: (open: boolean) => void;
+  headerDisclosure: UseDisclosureReturn;
+  menuDisclosure: UseDisclosureReturn;
 }
 
 export interface AppProviderProps {
@@ -20,8 +21,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [mounted, setMounted] = useState<boolean>(false);
-  const [headerOpen, setHeaderOpen] = useState<boolean>(false);
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+  const headerDisclosure = useDisclosure();
+  const menuDisclosure = useDisclosure();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -32,10 +34,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     <AppContext.Provider
       value={{
         mounted,
-        headerOpen,
-        setHeaderOpen,
-        menuOpen,
-        setMenuOpen,
+        headerDisclosure,
+        menuDisclosure,
       }}
     >
       {children}
