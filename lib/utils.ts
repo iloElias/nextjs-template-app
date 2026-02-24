@@ -1,4 +1,7 @@
-import { cn, SlotsToClasses } from "@heroui/react";
+import { cn as heroUIcn, SlotsToClasses } from "@heroui/react";
+
+// Re-export cn utility for use in other components
+export const cn = heroUIcn;
 
 export const mergeClassNames = <
   T extends SlotsToClasses<string> | undefined = SlotsToClasses<string>,
@@ -12,7 +15,7 @@ export const mergeClassNames = <
   return Object.entries(classNames).reduce((acc, [key, value]) => {
     return {
       ...acc,
-      [key]: cn(baseClassNames[key], value),
+      [key]: heroUIcn(baseClassNames[key], value),
     };
   }, baseClassNames);
 };
