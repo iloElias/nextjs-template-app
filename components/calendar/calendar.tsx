@@ -1,302 +1,138 @@
 "use client";
 
-import { useSafeI18n } from "@/hooks/use-safe-i18n";
-import {
-  addDays,
-  addMonths,
-  addWeeks,
-  calculateAllOccurrences,
-  endOfMonth,
-  endOfYear,
-  startOfMonth,
-  startOfWeek,
-  startOfYear,
-} from "@/lib/calendar";
-import { cn } from "@/lib/utils";
-import type { CalendarViewProps, ViewMode } from "@/types/calendar";
-import { Button } from "@heroui/react";
-import React from "react";
-import { DayView } from "./day-view";
-import { MonthView } from "./month-view";
-import { WeekView } from "./week-view";
-import { YearView } from "./year-view";
+import { useLocale } from "@react-aria/i18n";
+import React, { createContext, useCallback, useMemo, useState } from "react";
 
-// Import Solar Icons
-import {
-  AltArrowLeft,
-  AltArrowRight,
-  CalendarDate,
-  Calendar as CalendarIcon,
-  CalendarMinimalistic,
-  CalendarSearch,
-} from "@solar-icons/react";
+export type CalendarFocusType =
+  | "year" // Priority: low
+  | "month" // Priority: medium low
+  | "week" // Priority: medium
+  | "day"; // Priority: high
 
-/**
- * Main Calendar Component
- * Orchestrates all views and handles navigation
- */
-export function Calendar({
-  data,
-  viewMode: initialViewMode = "month",
-  selectedDate: initialSelectedDate = new Date(),
-  onViewModeChange,
-  onDateSelect,
-  onEventClick,
-  className,
-}: CalendarViewProps) {
-  const t = useSafeI18n();
+export interface CalendarContextType {
+  today: Date;
+  selectedDate: Date;
+  weekDaysOff: number[];
 
-  // Internal state
-  const [viewMode, setViewMode] = React.useState<ViewMode>(initialViewMode);
-  const [selectedDate, setSelectedDate] = React.useState(initialSelectedDate);
+  setSelectedDate: (date: Date) => void;
+  clearSelectedDate: () => void;
+  selectedWeek: number;
+  setSelectedWeek: (week: number) => void;
+  selectedMonth: number;
+  setSelectedMonth: (month: number) => void;
+  selectedYear: number;
+  setSelectedYear: (year: number) => void;
 
-  // Handle view mode change
-  const handleViewModeChange = React.useCallback(
-    (mode: ViewMode) => {
-      setViewMode(mode);
-      onViewModeChange?.(mode);
-    },
-    [onViewModeChange],
-  );
+  calendarFocus: CalendarFocusType;
+  setCalendarFocus: (focus: CalendarFocusType) => void;
+}
 
-  // Handle date selection
-  const handleDateSelect = React.useCallback(
-    (date: Date) => {
-      setSelectedDate(date);
-      onDateSelect?.(date);
-    },
-    [onDateSelect],
-  );
+export const CalendarContext = createContext<CalendarContextType | undefined>(
+  undefined,
+);
 
-  // Navigation handlers
-  const goToToday = React.useCallback(() => {
-    handleDateSelect(new Date());
-  }, [handleDateSelect]);
+export interface CalendarProps {
+  children?: React.ReactNode;
+  startingDate?: Date;
+  weekDaysOff?: number[];
+}
 
-  const goToPrevious = React.useCallback(() => {
-    switch (viewMode) {
-      case "year":
-        handleDateSelect(new Date(selectedDate.getFullYear() - 1, 0, 1));
-        break;
-      case "month":
-        handleDateSelect(addMonths(selectedDate, -1));
-        break;
-      case "week":
-        handleDateSelect(addWeeks(selectedDate, -1));
-        break;
-      case "day":
-        handleDateSelect(addDays(selectedDate, -1));
-        break;
-    }
-  }, [viewMode, selectedDate, handleDateSelect]);
+export const Calendar: React.FC<CalendarProps> = ({
+  children,
+  startingDate = new Date(),
+  weekDaysOff: initialWeekDaysOff,
+}) => {
+  const today = useMemo(() => {
+    return new Date();
+  }, []);
 
-  const goToNext = React.useCallback(() => {
-    switch (viewMode) {
-      case "year":
-        handleDateSelect(new Date(selectedDate.getFullYear() + 1, 0, 1));
-        break;
-      case "month":
-        handleDateSelect(addMonths(selectedDate, 1));
-        break;
-      case "week":
-        handleDateSelect(addWeeks(selectedDate, 1));
-        break;
-      case "day":
-        handleDateSelect(addDays(selectedDate, 1));
-        break;
-    }
-  }, [viewMode, selectedDate, handleDateSelect]);
+  const [selectedWeek, setSelectedWeekState] = useState<number>(0);
+  const [selectedDate, setSelectedDateState] = useState<Date>(startingDate);
+  const [weekDaysOff] = useState<number[]>(initialWeekDaysOff || [0, 6]);
 
-  // Calculate visible date range based on view mode
-  const visibleRange = React.useMemo(() => {
-    switch (viewMode) {
-      case "year":
-        return {
-          start: startOfYear(selectedDate),
-          end: endOfYear(selectedDate),
-        };
+  const [calendarFocus, setCalendarFocus] =
+    useState<CalendarFocusType>("month");
 
-      case "month":
-        return {
-          start: startOfMonth(selectedDate),
-          end: endOfMonth(selectedDate),
-        };
+  const clearSelectedDate = useCallback(() => {
+    setSelectedDateState(today);
+  }, [today]);
 
-      case "week": {
-        const weekStart = startOfWeek(selectedDate, 0);
-        return {
-          start: weekStart,
-          end: addDays(weekStart, 6),
-        };
-      }
+  const setSelectedYear = (year: number) => {
+    setSelectedDateState((prev) => {
+      const newDate = new Date(prev);
+      newDate.setFullYear(year);
+      return newDate;
+    });
+  };
 
-      case "day":
-        return {
-          start: new Date(
-            selectedDate.getFullYear(),
-            selectedDate.getMonth(),
-            selectedDate.getDate(),
-            0,
-            0,
-            0,
-          ),
-          end: new Date(
-            selectedDate.getFullYear(),
-            selectedDate.getMonth(),
-            selectedDate.getDate(),
-            23,
-            59,
-            59,
-          ),
-        };
-    }
-  }, [viewMode, selectedDate]);
+  const setSelectedMonth = (month: number) => {
+    setSelectedDateState((prev) => {
+      const newDate = new Date(prev);
+      newDate.setMonth(month);
+      return newDate;
+    });
+  };
 
-  // Calculate occurrences for visible range
-  const visibleOccurrences = React.useMemo(() => {
-    return calculateAllOccurrences(data.events, visibleRange);
-  }, [data.events, visibleRange]);
-
-  // Handle month click from year view
-  const handleMonthClick = React.useCallback(
-    (month: number) => {
-      const newDate = new Date(selectedDate.getFullYear(), month, 1);
-      handleDateSelect(newDate);
-      handleViewModeChange("month");
-    },
-    [selectedDate, handleDateSelect, handleViewModeChange],
-  );
-
-  // Handle day click from month view
-  const handleDayClick = React.useCallback(
-    (date: Date) => {
-      handleDateSelect(date);
-      handleViewModeChange("day");
-    },
-    [handleDateSelect, handleViewModeChange],
-  );
-
-  // Handle day click from week view
-  const handleWeekDayClick = React.useCallback(
-    (date: Date) => {
-      handleDateSelect(date);
-      handleViewModeChange("day");
-    },
-    [handleDateSelect, handleViewModeChange],
-  );
+  const setSelectedDate = (date: Date) => {
+    setSelectedDateState(date);
+  };
 
   return (
-    <div
-      className={cn("flex h-full w-full flex-col bg-default-100", className)}
+    <CalendarContext.Provider
+      value={{
+        today,
+        selectedDate,
+        weekDaysOff,
+
+        setSelectedDate,
+        clearSelectedDate,
+        selectedWeek,
+        setSelectedWeek: setSelectedWeekState,
+        selectedMonth: selectedDate.getMonth(),
+        setSelectedMonth,
+        selectedYear: selectedDate.getFullYear(),
+        setSelectedYear,
+
+        calendarFocus,
+        setCalendarFocus,
+      }}
     >
-      {/* Header / Toolbar */}
-      <div className="border-b border-default-200 bg-white px-6 py-4 shadow-sm">
-        <div className="flex items-center justify-between">
-          {/* Navigation */}
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="flat" onClick={goToToday}>
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {t ? t("calendar.today" as any, {}) : "Today"}
-            </Button>
+      {children}
+    </CalendarContext.Provider>
+  );
+};
 
-            <div className="ml-4 flex items-center gap-1">
-              <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                onClick={goToPrevious}
-              >
-                <AltArrowLeft size={20} />
-              </Button>
-              <Button isIconOnly size="sm" variant="light" onClick={goToNext}>
-                <AltArrowRight size={20} />
-              </Button>
-            </div>
-          </div>
+export interface CalendarWrapperProps {
+  children?: React.ReactNode;
+}
 
-          {/* View Mode Selector */}
-          <div className="flex items-center gap-1 rounded-lg bg-default-100 p-1">
-            <Button
-              size="sm"
-              variant={viewMode === "year" ? "solid" : "light"}
-              onClick={() => handleViewModeChange("year")}
-              startContent={<CalendarMinimalistic size={18} />}
-            >
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {t ? t("calendar.year" as any, {}) : "Year"}
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === "month" ? "solid" : "light"}
-              onClick={() => handleViewModeChange("month")}
-              startContent={<CalendarDate size={18} />}
-            >
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {t ? t("calendar.month" as any, {}) : "Month"}
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === "week" ? "solid" : "light"}
-              onClick={() => handleViewModeChange("week")}
-              startContent={<CalendarSearch size={18} />}
-            >
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {t ? t("calendar.week" as any, {}) : "Week"}
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === "day" ? "solid" : "light"}
-              onClick={() => handleViewModeChange("day")}
-              startContent={<CalendarIcon size={18} />}
-            >
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {t ? t("calendar.day" as any, {}) : "Day"}
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* View Container */}
-      <div className="flex-1 overflow-hidden">
-        {viewMode === "year" && (
-          <YearView
-            year={selectedDate.getFullYear()}
-            events={data.events}
-            selectedDate={selectedDate}
-            onMonthClick={handleMonthClick}
-          />
-        )}
-
-        {viewMode === "month" && (
-          <MonthView
-            month={selectedDate.getMonth()}
-            year={selectedDate.getFullYear()}
-            occurrences={visibleOccurrences}
-            selectedDate={selectedDate}
-            onDateClick={handleDayClick}
-          />
-        )}
-
-        {viewMode === "week" && (
-          <WeekView
-            weekStart={startOfWeek(selectedDate, 0)}
-            occurrences={visibleOccurrences}
-            timeSlotGroups={data.timeSlotGroups}
-            selectedDate={selectedDate}
-            onDateClick={handleWeekDayClick}
-            onEventClick={onEventClick}
-          />
-        )}
-
-        {viewMode === "day" && (
-          <DayView
-            date={selectedDate}
-            occurrences={visibleOccurrences}
-            timeSlotGroups={data.timeSlotGroups}
-            onEventClick={onEventClick}
-          />
-        )}
-      </div>
+export const CalendarWrapper: React.FC<CalendarWrapperProps> = ({
+  children,
+}) => {
+  return (
+    <div className="interpolate *:-transition h-auto w-full overflow-x-auto rounded-large border border-default-200 bg-content1 p-4 shadow-small">
+      {children}
     </div>
   );
+};
+
+export interface CalendarSelectedDateProps {
+  className?: string;
 }
+
+export const CalendarSelectedDate: React.FC<CalendarSelectedDateProps> = ({
+  className,
+}) => {
+  const { locale } = useLocale();
+  const { selectedDate } = React.useContext(CalendarContext)!;
+
+  return (
+    <div className={className}>
+      {selectedDate.toLocaleDateString(locale, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}
+    </div>
+  );
+};
