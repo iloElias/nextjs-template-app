@@ -2,14 +2,13 @@
 
 import { useCalendar } from "@/hooks/use-calendar";
 import React from "react";
+import { DateNavButton } from "./date-nav-button";
 import { DaySelect } from "./day-select";
-import { MonthAndYearPicker } from "./month-and-year-picker";
-import { DateNavButton } from "./month-nav-button";
-import { MonthPicker } from "./month-picker";
 import { MonthSelect } from "./month-select";
-import { YearPicker } from "./year-picker";
+import { MonthPicker, YearPicker } from "./month-view-components";
+import { DatePicker } from "./picker/date-picker";
+import { DayPicker } from "./picker/day-picker";
 import { YearSelect } from "./year-select";
-import { DayPicker } from "./day-picker";
 
 export const MonthViewNavigation: React.FC = () => {
   const { selectedDate, setSelectedDay } = useCalendar();
@@ -40,8 +39,7 @@ export const MonthViewNavigationAlt: React.FC = () => {
         direction="prev"
         onPress={() => setSelectedDay(selectedDate.getDate() - 1)}
       />
-      <DayPicker />
-      <MonthAndYearPicker showMonthControls />
+      <DatePicker />
       <DateNavButton
         direction="next"
         onPress={() => setSelectedDay(selectedDate.getDate() + 1)}
