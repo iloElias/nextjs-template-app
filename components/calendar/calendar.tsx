@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@heroui/react";
 import { useLocale } from "@react-aria/i18n";
 import React, { createContext, useCallback, useMemo, useState } from "react";
 
@@ -13,9 +14,13 @@ export interface CalendarContextType {
   today: Date;
   selectedDate: Date;
   weekDaysOff: number[];
+  daysInMonth: number;
 
   setSelectedDate: (date: Date) => void;
   clearSelectedDate: () => void;
+
+  selectedDay: number;
+  setSelectedDay: (date: number) => void;
   selectedWeek: number;
   setSelectedWeek: (week: number) => void;
   selectedMonth: number;
@@ -50,6 +55,14 @@ export const Calendar: React.FC<CalendarProps> = ({
   const [selectedDate, setSelectedDateState] = useState<Date>(startingDate);
   const [weekDaysOff] = useState<number[]>(initialWeekDaysOff || [0, 6]);
 
+  const daysInMonth = React.useMemo(() => {
+    return new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth() + 1,
+      0,
+    ).getDate();
+  }, [selectedDate]);
+
   const [calendarFocus, setCalendarFocus] =
     useState<CalendarFocusType>("month");
 
@@ -57,20 +70,41 @@ export const Calendar: React.FC<CalendarProps> = ({
     setSelectedDateState(today);
   }, [today]);
 
-  const setSelectedYear = (year: number) => {
+  const updateDateWithClamping = useCallback(
+    (prev: Date, apply: (date: Date) => void): Date => {
+      const targetDay = prev.getDate();
+      const newDate = new Date(prev);
+      newDate.setDate(1);
+      apply(newDate);
+      const lastDayOfMonth = new Date(
+        newDate.getFullYear(),
+        newDate.getMonth() + 1,
+        0,
+      ).getDate();
+      newDate.setDate(Math.min(targetDay, lastDayOfMonth));
+      return newDate;
+    },
+    [],
+  );
+
+  const setSelectedDay = (day: number) => {
     setSelectedDateState((prev) => {
       const newDate = new Date(prev);
-      newDate.setFullYear(year);
+      newDate.setDate(day);
       return newDate;
     });
   };
 
   const setSelectedMonth = (month: number) => {
-    setSelectedDateState((prev) => {
-      const newDate = new Date(prev);
-      newDate.setMonth(month);
-      return newDate;
-    });
+    setSelectedDateState((prev) =>
+      updateDateWithClamping(prev, (date) => date.setMonth(month)),
+    );
+  };
+
+  const setSelectedYear = (year: number) => {
+    setSelectedDateState((prev) =>
+      updateDateWithClamping(prev, (date) => date.setFullYear(year)),
+    );
   };
 
   const setSelectedDate = (date: Date) => {
@@ -83,9 +117,12 @@ export const Calendar: React.FC<CalendarProps> = ({
         today,
         selectedDate,
         weekDaysOff,
+        daysInMonth,
 
         setSelectedDate,
         clearSelectedDate,
+        selectedDay: selectedDate.getDate(),
+        setSelectedDay,
         selectedWeek,
         setSelectedWeek: setSelectedWeekState,
         selectedMonth: selectedDate.getMonth(),
@@ -127,7 +164,7 @@ export const CalendarSelectedDate: React.FC<CalendarSelectedDateProps> = ({
   const { selectedDate } = React.useContext(CalendarContext)!;
 
   return (
-    <div className={className}>
+    <div className={cn("p-1", className)}>
       {selectedDate.toLocaleDateString(locale, {
         year: "numeric",
         month: "long",

@@ -15,5 +15,9 @@ export const selectTheme = {
   size: "md",
 } as const;
 
-export const buttonClasses =
-  "bg-default-100 text-default-700 hover:bg-default-200";
+export const textBgHighlightClasses = "bg-default-100 text-default-700";
+
+export const buttonClasses = {
+  [textBgHighlightClasses]: true,
+  "hover:bg-default-200": true,
+};

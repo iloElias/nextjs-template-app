@@ -62,7 +62,7 @@ export const MonthDayButton: React.FC<MonthDayButtonProps> = ({ day }) => {
 
   const handleDateClick = () => {
     if (selectedDate && isSameDay(day, selectedDate)) {
-      setCalendarFocus("day");
+      setCalendarFocus("day"); 
     }
     setSelectedDate(day);
   };
@@ -75,9 +75,10 @@ export const MonthDayButton: React.FC<MonthDayButtonProps> = ({ day }) => {
       size="sm"
       className={cn(
         "relative h-full w-full min-w-0 text-sm font-medium",
-        isTodayDate && "font-bold text-default-100!",
+        isTodayDate && "font-bold text-white!",
         isSelected && !isTodayDate && "font-semibold",
         weekDaysOff.includes(day.getDay()) && "text-default-400",
+        weekDaysOff.includes(day.getDay()) && isSelected && !isTodayDate && "text-primary/85",
       )}
     >
       <span
