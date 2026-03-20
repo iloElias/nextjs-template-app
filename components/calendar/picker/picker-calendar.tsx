@@ -19,7 +19,10 @@ export const PickerCalendar: React.FC<PickerCalendarProps> = ({
           base: "shadow-none bg-transparent! max-w-full",
           content: "max-w-full",
           headerWrapper: "hidden",
-          pickerHighlight: "w-full rounded-none bg-transparent border-default border-y-2 border-x-0",
+          pickerHighlight: cn(
+            "w-full",
+            // "rounded-none bg-transparent border-default border-y-2 border-x-0",
+          ),
           pickerItem: cn("text-md capitalize truncate", {
             "justify-start text-left": align === "start",
             "justify-center text-center": align === "center",

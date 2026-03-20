@@ -83,7 +83,7 @@ export const DatePickerHeader: React.FC<DatePickerHeaderProps> = ({
   return (
     <Button
       ref={buttonRef}
-      className={cn(className, "flex-1", showControls && "justify-between")}
+      className={cn("w-full", className, showControls && "justify-between")}
       {...props}
     >
       {!hiddenPickers?.month && showControls && (

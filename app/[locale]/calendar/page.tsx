@@ -18,14 +18,12 @@ export default function CalendarPage() {
   return (
     <DefaultLayout>
       <Section>
-        <Calendar startingDate={new Date("2026-01-01")} weekDaysOff={[0, 6]}>
-          <CalendarWrapper>
-            <CalendarSelectedDate />
-            <MonthViewNavigation />
-            <MonthViewNavigationAlt />
-            <MonthViewNavigationAltExpanded />
-            <MonthView />
-          </CalendarWrapper>
+        <Calendar startingDate={new Date("2026-3-15")} weekDaysOff={[0, 6]}>
+          <CalendarSelectedDate />
+          <MonthViewNavigation />
+          <MonthViewNavigationAlt />
+          <MonthViewNavigationAltExpanded />
+          <MonthView />
         </Calendar>
       </Section>
     </DefaultLayout>

@@ -77,13 +77,13 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
 
   const minMaxMonthYearPicker = React.useMemo(() => {
     return {
-      minValue: calendarDate(selectedDate.getFullYear() - 20, 1, 1),
-      maxValue: calendarDate(selectedDate.getFullYear() + 20, 12, 31),
+      minValue: calendarDate(selectedDate.getFullYear() - 250, 1, 1),
+      maxValue: calendarDate(selectedDate.getFullYear() + 250, 12, 31),
     };
   }, [selectedDate, calendarDate]);
 
   return (
-    <div className={cn("flex items-center max-w-full", className)}>
+    <div className={cn("flex max-w-full items-center", className)}>
       {!hiddenPickers?.day && (
         <PickerCalendar
           aria-label="day picker"
@@ -93,6 +93,9 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
           value={calendarDayValue}
           onFocusChange={handleDayChange}
           classNames={{
+            pickerHighlight: cn({
+              "rounded-r-none": !hiddenPickers?.month && !hiddenPickers?.year,
+            }),
             pickerMonthList: "hidden",
           }}
         />
@@ -106,6 +109,10 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
           value={calendarMonthYearValue}
           onFocusChange={handleMonthYearChange}
           classNames={{
+            pickerHighlight: cn({
+              "rounded-r-none": !hiddenPickers?.year,
+              "rounded-l-none": !hiddenPickers?.day,
+            }),
             pickerYearList: "hidden",
           }}
         />
@@ -119,6 +126,9 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
           value={calendarMonthYearValue}
           onFocusChange={handleMonthYearChange}
           classNames={{
+            pickerHighlight: cn({
+              "rounded-l-none": !hiddenPickers?.day,
+            }),
             pickerMonthList: "hidden",
           }}
         />

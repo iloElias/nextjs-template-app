@@ -38,7 +38,25 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         <DatePickerHeader
           ref={buttonRef}
           hiddenPickers={hiddenPickers}
-          className={className}
+          className={cn(
+            {
+              "flex-2!":
+                !hiddenPickers?.day &&
+                hiddenPickers?.month &&
+                hiddenPickers?.year,
+
+              "flex-5!":
+                hiddenPickers?.day &&
+                !hiddenPickers?.month &&
+                hiddenPickers?.year,
+
+              "flex-3!":
+                hiddenPickers?.day &&
+                hiddenPickers?.month &&
+                !hiddenPickers?.year,
+            },
+            className,
+          )}
           isPopoverOpen={isPopoverOpen}
           {...props}
         />
@@ -55,9 +73,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             hiddenPickers?.day && !hiddenPickers?.month && hiddenPickers?.year,
           "w-60":
             !hiddenPickers?.day && !hiddenPickers?.month && hiddenPickers?.year,
-          "w-76":
+          "w-70":
             hiddenPickers?.day && !hiddenPickers?.month && !hiddenPickers?.year,
-          "w-84":
+          "w-76":
             !hiddenPickers?.day &&
             !hiddenPickers?.month &&
             !hiddenPickers?.year,
