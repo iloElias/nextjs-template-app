@@ -1,8 +1,10 @@
 "use client";
 
 import { useCalendar } from "@/hooks/use-calendar";
+import { getDateComponentOrder } from "@/lib/get-date-component-order";
 import { cn } from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";
+import { useLocale } from "@react-aria/i18n";
 import React, { useCallback } from "react";
 import { PickerCalendar } from "./picker-calendar";
 
@@ -21,6 +23,7 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
   className,
   hiddenPickers,
 }) => {
+  const { locale } = useLocale();
   const {
     daysInMonth,
     selectedDate,
@@ -28,6 +31,10 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
     setSelectedMonth,
     setSelectedYear,
   } = useCalendar();
+
+  const dateComponentOrder = React.useMemo(() => {
+    return getDateComponentOrder(locale);
+  }, [locale]);
 
   const calendarDayValue = React.useMemo(() => {
     return new CalendarDate(
@@ -82,57 +89,123 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
     };
   }, [selectedDate, calendarDate]);
 
+  const componentProperties = React.useMemo(() => {
+    return {
+      day: {
+        align: "start" as const,
+        className: "flex-2",
+        isHidden: hiddenPickers?.day,
+        handler: setSelectedDay,
+        minMaxKey: "minMaxDayPicker",
+      },
+      month: {
+        align: "center" as const,
+        className: "flex-5",
+        isHidden: hiddenPickers?.month,
+        handler: setSelectedMonth,
+        minMaxKey: "minMaxMonthYearPicker",
+      },
+      year: {
+        align: "end" as const,
+        className: "flex-3",
+        isHidden: hiddenPickers?.year,
+        handler: setSelectedYear,
+        minMaxKey: "minMaxMonthYearPicker",
+      },
+    };
+  }, [hiddenPickers, setSelectedDay, setSelectedMonth, setSelectedYear]);
+
+  const pickerConfig: Record<
+    "day" | "month" | "year",
+    {
+      ariaLabel: string;
+      minMaxValue: { minValue: CalendarDate; maxValue: CalendarDate };
+      calendarValue: CalendarDate;
+      onChange: (date: CalendarDate) => void;
+      classNames: Record<string, string>;
+    }
+  > = React.useMemo(
+    () => ({
+      day: {
+        ariaLabel: "day picker",
+        minMaxValue: minMaxDayPicker,
+        calendarValue: calendarDayValue,
+        onChange: handleDayChange,
+        classNames: { pickerMonthList: "hidden" },
+      },
+      month: {
+        ariaLabel: "month picker",
+        minMaxValue: minMaxMonthYearPicker,
+        calendarValue: calendarMonthYearValue,
+        onChange: handleMonthYearChange,
+        classNames: { pickerYearList: "hidden" },
+      },
+      year: {
+        ariaLabel: "year picker",
+        minMaxValue: minMaxMonthYearPicker,
+        calendarValue: calendarMonthYearValue,
+        onChange: handleMonthYearChange,
+        classNames: { pickerMonthList: "hidden" },
+      },
+    }),
+    [
+      minMaxDayPicker,
+      calendarDayValue,
+      handleDayChange,
+      minMaxMonthYearPicker,
+      calendarMonthYearValue,
+      handleMonthYearChange,
+    ],
+  );
+
+  // Get visible components in order
+  const visibleComponentsInOrder = React.useMemo(
+    () =>
+      dateComponentOrder.filter(
+        (componentType) =>
+          !hiddenPickers?.[componentType as keyof DatePickerHidden],
+      ),
+    [dateComponentOrder, hiddenPickers],
+  );
+
+  // Function to get rounded corner classes based on position in visible order
+  const getRoundedCornerClasses = (componentType: "day" | "month" | "year") => {
+    const index = visibleComponentsInOrder.indexOf(componentType);
+    const isFirst = index === 0;
+    const isLast = index === visibleComponentsInOrder.length - 1;
+
+    return cn({
+      "rounded-r-none": !isLast,
+      "rounded-l-none": !isFirst,
+    });
+  };
+
   return (
     <div className={cn("flex max-w-full items-center", className)}>
-      {!hiddenPickers?.day && (
-        <PickerCalendar
-          aria-label="day picker"
-          className="flex-2"
-          align="start"
-          {...minMaxDayPicker}
-          value={calendarDayValue}
-          onFocusChange={handleDayChange}
-          classNames={{
-            pickerHighlight: cn({
-              "rounded-r-none": !hiddenPickers?.month && !hiddenPickers?.year,
-            }),
-            pickerMonthList: "hidden",
-          }}
-        />
-      )}
-      {!hiddenPickers?.month && (
-        <PickerCalendar
-          aria-label="month picker"
-          className="flex-5"
-          align="center"
-          {...minMaxMonthYearPicker}
-          value={calendarMonthYearValue}
-          onFocusChange={handleMonthYearChange}
-          classNames={{
-            pickerHighlight: cn({
-              "rounded-r-none": !hiddenPickers?.year,
-              "rounded-l-none": !hiddenPickers?.day,
-            }),
-            pickerYearList: "hidden",
-          }}
-        />
-      )}
-      {!hiddenPickers?.year && (
-        <PickerCalendar
-          aria-label="year picker"
-          className="flex-3"
-          align="end"
-          {...minMaxMonthYearPicker}
-          value={calendarMonthYearValue}
-          onFocusChange={handleMonthYearChange}
-          classNames={{
-            pickerHighlight: cn({
-              "rounded-l-none": !hiddenPickers?.day,
-            }),
-            pickerMonthList: "hidden",
-          }}
-        />
-      )}
+      {dateComponentOrder.map((componentType) => {
+        if (hiddenPickers?.[componentType as keyof DatePickerHidden]) {
+          return null;
+        }
+
+        const config = pickerConfig[componentType];
+        const props = componentProperties[componentType];
+
+        return (
+          <PickerCalendar
+            key={componentType}
+            aria-label={config.ariaLabel}
+            className={props.className}
+            align={props.align}
+            {...config.minMaxValue}
+            value={config.calendarValue}
+            onFocusChange={config.onChange}
+            classNames={{
+              ...config.classNames,
+              pickerHighlight: getRoundedCornerClasses(componentType),
+            }}
+          />
+        );
+      })}
     </div>
   );
 };
