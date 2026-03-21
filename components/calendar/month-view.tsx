@@ -47,7 +47,7 @@ export const MonthView: React.FC = () => {
             >
               <Button
                 isDisabled
-                className="h-full w-full max-w-full! min-w-12! justify-start truncate!"
+                className="h-full w-full max-w-full! min-w-12! truncate! sm:justify-start sm:px-4"
               >
                 {name}.
               </Button>

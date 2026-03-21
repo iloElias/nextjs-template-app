@@ -28,6 +28,32 @@ export const MonthViewNavigationAlt: React.FC = () => {
   );
 };
 
+export const MonthViewNavigationAltMonthYear: React.FC = () => {
+  return (
+    <div className="flex items-center gap-2 p-1">
+      <DayPicker />
+      <DatePicker
+        hiddenPickers={{
+          day: true,
+        }}
+      />
+    </div>
+  );
+};
+
+export const MonthViewNavigationAltDayMonth: React.FC = () => {
+  return (
+    <div className="flex items-center gap-2 p-1">
+      <DatePicker
+        hiddenPickers={{
+          year: true,
+        }}
+      />
+      <YearPicker />
+    </div>
+  );
+};
+
 export const MonthViewNavigationAltExpanded: React.FC = () => {
   return (
     <div className="flex items-center gap-2 p-1">

@@ -2,11 +2,10 @@ import { mergeClassNames } from "@/lib/utils";
 import { Calendar, CalendarProps, cn } from "@heroui/react";
 
 export interface PickerCalendarProps extends CalendarProps {
-  align?: "start" | "center" | "end";
+  showMonthAndYearPickers?: boolean;
 }
 
 export const PickerCalendar: React.FC<PickerCalendarProps> = ({
-  align,
   classNames,
   ...props
 }) => {
@@ -23,11 +22,7 @@ export const PickerCalendar: React.FC<PickerCalendarProps> = ({
             "w-full",
             // "rounded-none bg-transparent border-default border-y-2 border-x-0",
           ),
-          pickerItem: cn("text-md capitalize truncate", {
-            "justify-start text-left": align === "start",
-            "justify-center text-center": align === "center",
-            "justify-end text-right": align === "end",
-          }),
+          pickerItem: "text-md capitalize truncate justify-center text-center",
         },
         classNames,
       )}

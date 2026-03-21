@@ -92,21 +92,18 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
   const componentProperties = React.useMemo(() => {
     return {
       day: {
-        align: "start" as const,
         className: "flex-2",
         isHidden: hiddenPickers?.day,
         handler: setSelectedDay,
         minMaxKey: "minMaxDayPicker",
       },
       month: {
-        align: "center" as const,
         className: "flex-5",
         isHidden: hiddenPickers?.month,
         handler: setSelectedMonth,
         minMaxKey: "minMaxMonthYearPicker",
       },
       year: {
-        align: "end" as const,
         className: "flex-3",
         isHidden: hiddenPickers?.year,
         handler: setSelectedYear,
@@ -195,7 +192,6 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
             key={componentType}
             aria-label={config.ariaLabel}
             className={props.className}
-            align={props.align}
             {...config.minMaxValue}
             value={config.calendarValue}
             onFocusChange={config.onChange}

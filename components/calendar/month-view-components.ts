@@ -29,5 +29,7 @@ export { YearSelect as YearInput } from "./year-select";
 export {
   MonthViewNavigation,
   MonthViewNavigationAlt,
+  MonthViewNavigationAltMonthYear,
+  MonthViewNavigationAltDayMonth,
   MonthViewNavigationAltExpanded,
 } from "./month-view-navigation";
