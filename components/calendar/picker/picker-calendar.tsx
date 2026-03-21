@@ -6,16 +6,19 @@ export interface PickerCalendarProps extends CalendarProps {
 }
 
 export const PickerCalendar: React.FC<PickerCalendarProps> = ({
+  className,
   classNames,
   ...props
 }) => {
   return (
     <Calendar
+      className={cn("picker-calendar", className)}
       {...props}
       showMonthAndYearPickers
       classNames={mergeClassNames(
         {
           base: "shadow-none bg-transparent! max-w-full",
+          
           content: "max-w-full",
           headerWrapper: "hidden",
           pickerHighlight: cn(

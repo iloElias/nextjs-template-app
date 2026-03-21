@@ -19,6 +19,7 @@
 
 /* Component Styles */
 @import "./styles/components/editor-header.css";
+@import "./styles/components/calendar.css";
 
 /* Utilities */
 @import "./styles/utilities/print.css";

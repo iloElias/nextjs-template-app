@@ -1,0 +1,3 @@
+.picker-calendar>div:has(div[data-slot="content"]) {
+  width: auto !important;
+}
