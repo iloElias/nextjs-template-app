@@ -556,7 +556,7 @@ interface PlanetParams {
 
 function generatePlanetParams(seed: [number, number, number]): PlanetParams {
   const baseSeed = seed[0] + seed[1] * 1000 + seed[2] * 1000000;
-  
+
   return {
     radius: 2.2 + seededRandom(baseSeed) * 1.0,
     terrainDisplacement: 0.06 + seededRandom(baseSeed + 1) * 0.08,
@@ -603,7 +603,7 @@ export default function PlanetPage() {
     // Generate planet parameters from seed
     const planetParams = generatePlanetParams(seed);
     const terrainRadius = planetParams.radius;
-    
+
     // Position camera relative to planet size
     const cameraDistance = terrainRadius * 3.5;
     camera.position.set(0, 0, cameraDistance);
@@ -701,7 +701,10 @@ export default function PlanetPage() {
 
     // Atmosphere sphere
     const atmosphereRadius = terrainRadius * 1.05;
-    const atmosphereGeometry = new THREE.IcosahedronGeometry(atmosphereRadius, 20);
+    const atmosphereGeometry = new THREE.IcosahedronGeometry(
+      atmosphereRadius,
+      20,
+    );
     const atmosphereMaterial = new THREE.ShaderMaterial({
       vertexShader: atmosphereVertexShader,
       fragmentShader: atmosphereFragmentShader,
