@@ -27,9 +27,9 @@ export { YearSelect as YearInput } from "./year-select";
 
 // Navigation composite
 export {
-  MonthViewNavigation,
-  MonthViewNavigationAlt,
-  MonthViewNavigationAltMonthYear,
-  MonthViewNavigationAltDayMonth,
-  MonthViewNavigationAltExpanded,
+  MonthViewNavigation as MonthViewNavigation,
+  MonthViewNavigation as MonthViewNavigationAlt,
+  MonthViewNavigationDayMonth as MonthViewNavigationAltDayMonth,
+  MonthViewNavigationExpanded as MonthViewNavigationAltExpanded,
+  MonthViewNavigationMonthYear as MonthViewNavigationAltMonthYear,
 } from "./month-view-navigation";

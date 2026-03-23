@@ -14,7 +14,7 @@ export { YearView } from "./year-view";
 export { DateNavButton as MonthNavButton } from "./date-nav-button";
 export { DaySelect } from "./day-select";
 export { MonthSelect } from "./month-select";
-export { MonthViewNavigation } from "./month-view-navigation";
+export { MonthViewNavigation as MonthViewNavigation } from "./month-view-navigation";
 
 /**
  * Picker Components

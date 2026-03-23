@@ -1,8 +1,6 @@
 "use client";
 
-import { useCalendar } from "@/hooks/use-calendar";
 import React from "react";
-import { DateNavButton } from "./date-nav-button";
 import { DaySelect } from "./day-select";
 import { MonthSelect } from "./month-select";
 import { MonthPicker, YearPicker } from "./month-view-components";
@@ -10,7 +8,7 @@ import { DatePicker } from "./picker/date-picker";
 import { DayPicker } from "./picker/day-picker";
 import { YearSelect } from "./year-select";
 
-export const MonthViewNavigation: React.FC = () => {
+export const MonthViewNavigationAlt: React.FC = () => {
   return (
     <div className="flex items-center gap-2 p-1">
       <DaySelect />
@@ -20,7 +18,7 @@ export const MonthViewNavigation: React.FC = () => {
   );
 };
 
-export const MonthViewNavigationAlt: React.FC = () => {
+export const MonthViewNavigation: React.FC = () => {
   return (
     <div className="flex items-center gap-2 p-1">
       <DatePicker />
@@ -28,7 +26,7 @@ export const MonthViewNavigationAlt: React.FC = () => {
   );
 };
 
-export const MonthViewNavigationAltMonthYear: React.FC = () => {
+export const MonthViewNavigationMonthYear: React.FC = () => {
   return (
     <div className="flex items-center gap-2 p-1">
       <DayPicker />
@@ -41,7 +39,7 @@ export const MonthViewNavigationAltMonthYear: React.FC = () => {
   );
 };
 
-export const MonthViewNavigationAltDayMonth: React.FC = () => {
+export const MonthViewNavigationDayMonth: React.FC = () => {
   return (
     <div className="flex items-center gap-2 p-1">
       <DatePicker
@@ -54,7 +52,7 @@ export const MonthViewNavigationAltDayMonth: React.FC = () => {
   );
 };
 
-export const MonthViewNavigationAltExpanded: React.FC = () => {
+export const MonthViewNavigationExpanded: React.FC = () => {
   return (
     <div className="flex items-center gap-2 p-1">
       <DayPicker />

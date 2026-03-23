@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  DateComponent,
+  getDateComponentOrder,
+} from "@/lib/get-date-component-order";
 import { cn } from "@heroui/react";
 import { useLocale } from "@react-aria/i18n";
 import React, { createContext, useCallback, useMemo, useState } from "react";
@@ -15,6 +19,7 @@ export interface CalendarContextType {
   selectedDate: Date;
   weekDaysOff: number[];
   daysInMonth: number;
+  dateComponentOrder: DateComponent[];
 
   setSelectedDate: (date: Date) => void;
   clearSelectedDate: () => void;
@@ -47,6 +52,8 @@ export const Calendar: React.FC<CalendarProps> = ({
   startingDate = new Date(),
   weekDaysOff: initialWeekDaysOff,
 }) => {
+  const { locale } = useLocale();
+
   const today = useMemo(() => {
     return new Date();
   }, []);
@@ -54,6 +61,12 @@ export const Calendar: React.FC<CalendarProps> = ({
   const [selectedWeek, setSelectedWeekState] = useState<number>(0);
   const [selectedDate, setSelectedDateState] = useState<Date>(startingDate);
   const [weekDaysOff] = useState<number[]>(initialWeekDaysOff || [0, 6]);
+
+  // Calculate date component order based on locale (cached in context)
+  const dateComponentOrder = useMemo(
+    () => getDateComponentOrder(locale),
+    [locale],
+  );
 
   const daysInMonth = React.useMemo(() => {
     return new Date(
@@ -118,6 +131,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         selectedDate,
         weekDaysOff,
         daysInMonth,
+        dateComponentOrder,
 
         setSelectedDate,
         clearSelectedDate,
@@ -155,21 +169,25 @@ export const CalendarWrapper: React.FC<CalendarWrapperProps> = ({
 
 export interface CalendarSelectedDateProps {
   className?: string;
+  format?: (date: Date) => React.ReactNode;
 }
 
 export const CalendarSelectedDate: React.FC<CalendarSelectedDateProps> = ({
   className,
+  format,
 }) => {
   const { locale } = useLocale();
   const { selectedDate } = React.useContext(CalendarContext)!;
 
   return (
     <div className={cn("p-1", className)}>
-      {selectedDate.toLocaleDateString(locale, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })}
+      {format
+        ? format(selectedDate)
+        : selectedDate.toLocaleDateString(locale, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
     </div>
   );
 };

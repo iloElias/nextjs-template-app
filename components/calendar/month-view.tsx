@@ -38,7 +38,7 @@ export const MonthView: React.FC = () => {
   return (
     <table className="calendar-table w-full border-collapse">
       <thead>
-        <tr className="border-b border-default-200">
+        <tr>
           {weekdayNames.map((name, index) => (
             <th
               key={index}
@@ -49,7 +49,7 @@ export const MonthView: React.FC = () => {
                 isDisabled
                 className="h-full w-full max-w-full! min-w-12! truncate! sm:justify-start sm:px-4"
               >
-                {name}.
+                {name}
               </Button>
             </th>
           ))}

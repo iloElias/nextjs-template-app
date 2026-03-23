@@ -21,3 +21,6 @@ export const buttonClasses = {
   [textBgHighlightClasses]: true,
   "hover:bg-default-200": true,
 };
+
+export const controlButtonClasses =
+  "bg-transparent! text-default-400! data-[hover=true]:bg-default/40! data-[hover=true]:opacity-100!";

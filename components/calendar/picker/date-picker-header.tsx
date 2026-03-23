@@ -8,6 +8,7 @@ import React from "react";
 import { Button } from "../../button";
 import { DateNavButton } from "../date-nav-button";
 import { DatePickerHidden } from "./date-picker-calendar";
+import { DateComponent } from "@/lib/get-date-component-order";
 
 export interface DatePickerHeaderProps extends Omit<
   Omit<
@@ -20,7 +21,7 @@ export interface DatePickerHeaderProps extends Omit<
   hiddenPickers?: DatePickerHidden;
   showControls?: boolean;
   isPopoverOpen: boolean;
-  buttonJump?: "day" | "month" | "year";
+  buttonJump?: DateComponent;
   onControlPrev?: () => void;
   onControlNext?: () => void;
   buttonRef?: React.RefObject<HTMLButtonElement>;

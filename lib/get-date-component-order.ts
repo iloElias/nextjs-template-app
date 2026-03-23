@@ -1,3 +1,5 @@
+export type DateComponent = "day" | "month" | "year";
+
 /**
  * Get the date component order (day, month, year) based on locale
  * Uses Intl.DateTimeFormat to determine the locale-specific date format
@@ -6,7 +8,7 @@
  */
 export function getDateComponentOrder(
   locale: string,
-): ("day" | "month" | "year")[] {
+): (DateComponent)[] {
   const testDate = new Date(2024, 0, 15); // January 15, 2024
 
   const formatter = new Intl.DateTimeFormat(locale, {
@@ -16,7 +18,7 @@ export function getDateComponentOrder(
   });
 
   const parts = formatter.formatToParts(testDate);
-  const componentOrder: ("day" | "month" | "year")[] = [];
+  const componentOrder: (DateComponent)[] = [];
 
   for (const part of parts) {
     if (part.type === "year" && !componentOrder.includes("year")) {

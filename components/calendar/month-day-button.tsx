@@ -74,7 +74,7 @@ export const MonthDayButton: React.FC<MonthDayButtonProps> = ({ day }) => {
       color={color}
       size="sm"
       className={cn(
-        "relative h-full w-full min-w-0 text-sm font-medium",
+        "relative h-full w-full min-w-0 text-sm font-light",
         isTodayDate && "font-bold text-white!",
         isSelected && !isTodayDate && "font-semibold",
         weekDaysOff.includes(day.getDay()) && "text-default-400",

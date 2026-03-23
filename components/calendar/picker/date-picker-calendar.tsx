@@ -1,10 +1,9 @@
 "use client";
 
 import { useCalendar } from "@/hooks/use-calendar";
-import { getDateComponentOrder } from "@/lib/get-date-component-order";
+import { DateComponent } from "@/lib/get-date-component-order";
 import { cn } from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";
-import { useLocale } from "@react-aria/i18n";
 import React, { useCallback } from "react";
 import { PickerCalendar } from "./picker-calendar";
 
@@ -23,18 +22,14 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
   className,
   hiddenPickers,
 }) => {
-  const { locale } = useLocale();
   const {
+    dateComponentOrder,
     daysInMonth,
     selectedDate,
     setSelectedDay,
     setSelectedMonth,
     setSelectedYear,
   } = useCalendar();
-
-  const dateComponentOrder = React.useMemo(() => {
-    return getDateComponentOrder(locale);
-  }, [locale]);
 
   const calendarDayValue = React.useMemo(() => {
     return new CalendarDate(
@@ -113,7 +108,7 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
   }, [hiddenPickers, setSelectedDay, setSelectedMonth, setSelectedYear]);
 
   const pickerConfig: Record<
-    "day" | "month" | "year",
+    DateComponent,
     {
       ariaLabel: string;
       minMaxValue: { minValue: CalendarDate; maxValue: CalendarDate };
@@ -166,7 +161,7 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
   );
 
   // Function to get rounded corner classes based on position in visible order
-  const getRoundedCornerClasses = (componentType: "day" | "month" | "year") => {
+  const getRoundedCornerClasses = (componentType: DateComponent) => {
     const index = visibleComponentsInOrder.indexOf(componentType);
     const isFirst = index === 0;
     const isLast = index === visibleComponentsInOrder.length - 1;
