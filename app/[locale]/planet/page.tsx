@@ -215,18 +215,24 @@ const terrainVertexShader = `
   uniform float uTime;
   uniform float uRadius;
   uniform vec3 uNoiseOffset;
+  uniform float uTerrainDisplacement;
+  uniform float uContinentCoverage;
+  uniform float uContinentFrequency;
+  uniform float uPlanetOblateness;
   
   varying float vElevation;
+  varying float vContinentMask;
   varying vec3 vNormal;
   varying vec3 vPosition;
+  varying float vLatitude;
 
-  float fbm(vec3 p) {
+  float fbm(vec3 p, int octaves) {
     float value = 0.0;
     float amplitude = 1.0;
     float frequency = 1.0;
     float maxValue = 0.0;
     
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < octaves; i++) {
       value += amplitude * simplex3d(p * frequency + uNoiseOffset);
       maxValue += amplitude;
       amplitude *= 0.5;
@@ -239,18 +245,35 @@ const terrainVertexShader = `
   void main() {
     vec3 pos = normalize(position);
     
-    // Layered noise for terrain - larger landmasses
-    float noise1 = fbm(pos * 1.0) * 1.0;
-    float noise2 = fbm(pos * 2.0) * 0.5;
-    float noise3 = fbm(pos * 4.0) * 0.25;
+    // Latitude for biome calculation
+    vLatitude = abs(pos.y);
     
-    float elevation = noise1 + noise2 + noise3;
+    // Two-layer continent generation
+    // Layer 1: Low-frequency continent mask (defines continents vs ocean)
+    float continentNoise1 = simplex3d(pos * uContinentFrequency + uNoiseOffset);
+    float continentNoise2 = simplex3d(pos * (uContinentFrequency + 0.3) + uNoiseOffset * 0.7);
+    float continentMask = continentNoise1 * 0.6 + continentNoise2 * 0.4;
+    continentMask = smoothstep(1.0 - uContinentCoverage, 1.0 - uContinentCoverage + 0.15, continentMask);
+    vContinentMask = continentMask;
+    
+    // Layer 2: High-frequency terrain detail (only on land)
+    float terrainDetail = fbm(pos * 4.0, 5) * 0.5 + fbm(pos * 8.0, 3) * 0.25;
+    terrainDetail = mix(terrainDetail * 0.3, terrainDetail * 0.8, continentMask);
+    
+    // Ocean floor has subtle noise variation
+    float oceanFloor = simplex3d(pos * 2.5 + uNoiseOffset * 0.5) * 0.1 + 0.05;
+    
+    // Combine elevation: continents rise above sea level, oceans below
+    float elevation = mix(oceanFloor - 0.3, continentMask + terrainDetail, continentMask);
     elevation = elevation * 0.5 + 0.5;
-    
     vElevation = elevation;
     
-    // Displace vertex
-    vec3 displaced = pos * (uRadius + elevation * 0.5);
+    // Displace vertex with randomized terrain amplitude
+    float displacement = mix(-uTerrainDisplacement * 0.5, uTerrainDisplacement, elevation);
+    vec3 displaced = pos * (uRadius + displacement);
+    
+    // Apply subtle planet oblateness (equatorial bulge)
+    displaced.y *= uPlanetOblateness;
     
     vNormal = normalize(displaced);
     vPosition = displaced;
@@ -261,35 +284,84 @@ const terrainVertexShader = `
 
 // Terrain Fragment Shader
 const terrainFragmentShader = `
+  ${SIMPLEX_NOISE_GLSL}
+  
+  uniform float uPolarIceThreshold;
   varying float vElevation;
+  varying float vContinentMask;
   varying vec3 vNormal;
   varying vec3 vPosition;
+  varying float vLatitude;
 
   void main() {
+    vec3 normalizedPos = normalize(vPosition);
+    float latitude = vLatitude;
+    
+    // Natural ice cap boundary with noise perturbation
+    float iceBoundaryNoise = simplex3d(normalizedPos * 3.0) * 0.15;
+    float noisyLatitude = latitude + iceBoundaryNoise;
+    float iceCover = smoothstep(uPolarIceThreshold - 0.05, uPolarIceThreshold + 0.1, noisyLatitude);
+    
     vec3 color;
     
-    if (vElevation < 0.3) {
-      // Deep ocean blue
-      color = mix(vec3(0.0, 0.2, 0.5), vec3(0.1, 0.3, 0.6), vElevation / 0.3);
-    } else if (vElevation < 0.4) {
-      // Sandy beach
-      color = mix(vec3(0.76, 0.70, 0.50), vec3(0.5, 0.4, 0.2), (vElevation - 0.3) / 0.1);
-    } else if (vElevation < 0.6) {
-      // Green grass/vegetation
-      color = mix(vec3(0.2, 0.5, 0.2), vec3(0.4, 0.35, 0.2), (vElevation - 0.4) / 0.2);
-    } else if (vElevation < 0.8) {
-      // Rocky grey
-      color = mix(vec3(0.4, 0.4, 0.45), vec3(0.6, 0.6, 0.65), (vElevation - 0.6) / 0.2);
-    } else {
-      // White snow
-      color = mix(vec3(0.8, 0.85, 0.9), vec3(1.0, 1.0, 1.0), (vElevation - 0.8) / 0.2);
+    // Polar ice caps (override all other coloring)
+    if (iceCover > 0.1) {
+      color = mix(vec3(0.85, 0.90, 1.0), vec3(1.0, 1.0, 1.0), min(iceCover, 1.0));
+    }
+    // Deep ocean (always below certain elevation regardless of latitude)
+    else if (vElevation < 0.25) {
+      color = mix(vec3(0.0, 0.1, 0.3), vec3(0.05, 0.15, 0.4), vElevation / 0.25);
+    }
+    // Shallow coastal water
+    else if (vElevation < 0.35) {
+      float coastFade = (vElevation - 0.25) / 0.1;
+      vec3 shallowWater = mix(vec3(0.2, 0.5, 0.7), vec3(0.3, 0.6, 0.8), coastFade);
+      color = shallowWater;
+    }
+    // Equatorial land (hot regions: latitude < 0.3)
+    else if (latitude < 0.3) {
+      if (vElevation < 0.45) {
+        // Tropical sandy/desert
+        color = mix(vec3(0.8, 0.75, 0.6), vec3(0.85, 0.80, 0.65), (vElevation - 0.35) / 0.1);
+      } else if (vElevation < 0.6) {
+        // Tropical jungle/forest
+        color = mix(vec3(0.2, 0.5, 0.15), vec3(0.15, 0.45, 0.1), (vElevation - 0.45) / 0.15);
+      } else {
+        // Equatorial mountains
+        color = mix(vec3(0.5, 0.45, 0.4), vec3(0.9, 0.88, 0.85), (vElevation - 0.6) / 0.2);
+      }
+    }
+    // Temperate land (mid latitudes: 0.3-0.6)
+    else if (latitude < 0.6) {
+      if (vElevation < 0.45) {
+        // Rolling plains and grasslands
+        color = mix(vec3(0.35, 0.55, 0.2), vec3(0.4, 0.5, 0.15), (vElevation - 0.35) / 0.1);
+      } else if (vElevation < 0.7) {
+        // Forests and highlands
+        color = mix(vec3(0.25, 0.45, 0.15), vec3(0.4, 0.4, 0.35), (vElevation - 0.45) / 0.25);
+      } else {
+        // Mountain peaks
+        color = mix(vec3(0.5, 0.5, 0.48), vec3(0.95, 0.93, 0.92), (vElevation - 0.7) / 0.2);
+      }
+    }
+    // Cold land (high latitudes: 0.6-0.8)
+    else {
+      if (vElevation < 0.45) {
+        // Tundra
+        color = mix(vec3(0.45, 0.40, 0.35), vec3(0.55, 0.48, 0.42), (vElevation - 0.35) / 0.1);
+      } else if (vElevation < 0.65) {
+        // Subarctic terrain
+        color = mix(vec3(0.35, 0.35, 0.3), vec3(0.5, 0.45, 0.4), (vElevation - 0.45) / 0.2);
+      } else {
+        // Arctic peaks and ice-covered mountains
+        color = mix(vec3(0.65, 0.65, 0.7), vec3(0.98, 0.98, 1.0), (vElevation - 0.65) / 0.2);
+      }
     }
     
     // Basic lighting
-    vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+    vec3 lightDir = normalize(vec3(1.0, 1.0, 0.5));
     float diffuse = max(dot(vNormal, lightDir), 0.0);
-    
-    color *= diffuse * 0.7 + 0.3;
+    color *= diffuse * 0.8 + 0.2;
     
     gl_FragColor = vec4(color, 1.0);
   }
@@ -302,9 +374,11 @@ const oceanVertexShader = `
   uniform float uTime;
   uniform float uRadius;
   uniform vec3 uNoiseOffset;
+  uniform float uPlanetOblateness;
   
   varying vec3 vNormal;
   varying vec3 vPosition;
+  varying float vLatitude;
 
   float fbm(vec3 p) {
     float value = 0.0;
@@ -328,7 +402,7 @@ const oceanVertexShader = `
     // Wave animation
     float wave = fbm(pos * 5.0);
     
-    vec3 displaced = pos * (uRadius * 1.02 + wave * 0.02);
+    vec3 displaced = pos * (uRadius * 1.02 + wave * 0.01);
     
     vNormal = normalize(displaced);
     vPosition = displaced;
@@ -339,26 +413,55 @@ const oceanVertexShader = `
 
 // Ocean Fragment Shader
 const oceanFragmentShader = `
+  ${SIMPLEX_NOISE_GLSL}
+  
+  uniform float uPolarIceThreshold;
   varying vec3 vNormal;
   varying vec3 vPosition;
+  varying float vLatitude;
 
   void main() {
+    vec3 normalizedPos = normalize(vPosition);
+    float latitude = vLatitude;
+    
+    // Natural ice cap boundary with noise perturbation
+    float iceBoundaryNoise = simplex3d(normalizedPos * 3.0) * 0.15;
+    float noisyLatitude = latitude + iceBoundaryNoise;
+    float iceCover = smoothstep(uPolarIceThreshold - 0.05, uPolarIceThreshold + 0.1, noisyLatitude);
+    
     // View direction for Fresnel effect
     vec3 viewDir = normalize(cameraPosition - vPosition);
     float fresnel = pow(1.0 - dot(viewDir, vNormal), 2.0);
     
-    // Ocean color
-    vec3 oceanColor = vec3(0.1, 0.4, 0.8);
+    vec3 oceanColor;
+    float oceanAlpha = 0.6;
+    
+    // Polar ice on ocean
+    if (iceCover > 0.1) {
+      oceanColor = mix(vec3(0.85, 0.90, 1.0), vec3(1.0, 1.0, 1.0), min(iceCover, 1.0));
+      oceanAlpha = mix(0.6, 0.85, iceCover);
+    }
+    // Temperature-based ocean coloring
+    else if (latitude < 0.3) {
+      // Equatorial oceans: warm, turquoise-green
+      oceanColor = mix(vec3(0.2, 0.5, 0.7), vec3(0.3, 0.6, 0.6), 0.5);
+    } else if (latitude < 0.6) {
+      // Temperate oceans: medium blue
+      oceanColor = mix(vec3(0.1, 0.35, 0.65), vec3(0.15, 0.45, 0.75), 0.5);
+    } else {
+      // Polar oceans: deep cold blue
+      oceanColor = mix(vec3(0.05, 0.15, 0.4), vec3(0.1, 0.25, 0.5), 0.5);
+    }
     
     // Add shimmer based on fresnel
-    vec3 color = oceanColor + vec3(0.3, 0.5, 0.7) * fresnel * 0.5;
+    vec3 color = oceanColor + vec3(0.3, 0.5, 0.7) * fresnel * 0.4;
     
     // Basic lighting
     vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
     float diffuse = max(dot(vNormal, lightDir), 0.2);
     color *= diffuse;
     
-    gl_FragColor = vec4(color, 0.6);
+    gl_FragColor = vec4(color, oceanAlpha);
   }
 `;
 
@@ -436,6 +539,34 @@ const atmosphereFragmentShader = `
   }
 `;
 
+// Helper function to generate deterministic random values from seed
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+interface PlanetParams {
+  radius: number;
+  terrainDisplacement: number;
+  continentCoverage: number;
+  continentFrequency: number;
+  polarIceThreshold: number;
+  planetOblateness: number;
+}
+
+function generatePlanetParams(seed: [number, number, number]): PlanetParams {
+  const baseSeed = seed[0] + seed[1] * 1000 + seed[2] * 1000000;
+  
+  return {
+    radius: 2.2 + seededRandom(baseSeed) * 1.0,
+    terrainDisplacement: 0.06 + seededRandom(baseSeed + 1) * 0.08,
+    continentCoverage: 0.25 + seededRandom(baseSeed + 2) * 0.25,
+    continentFrequency: 0.7 + seededRandom(baseSeed + 3) * 0.7,
+    polarIceThreshold: 0.65 + seededRandom(baseSeed + 4) * 0.2,
+    planetOblateness: 0.96 + seededRandom(baseSeed + 5) * 0.03,
+  };
+}
+
 export default function PlanetPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [seed, setSeed] = useState<[number, number, number]>(() => [
@@ -461,7 +592,6 @@ export default function PlanetPage() {
 
     // Camera
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10000);
-    camera.position.set(0, 0, 80);
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -470,11 +600,21 @@ export default function PlanetPage() {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
 
+    // Generate planet parameters from seed
+    const planetParams = generatePlanetParams(seed);
+    const terrainRadius = planetParams.radius;
+    
+    // Position camera relative to planet size
+    const cameraDistance = terrainRadius * 3.5;
+    camera.position.set(0, 0, cameraDistance);
+
     // OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0);
     controls.autoRotate = true;
     controls.autoRotateSpeed = 2;
+    controls.minDistance = terrainRadius * 1.5;
+    controls.maxDistance = terrainRadius * 15;
 
     // Create star field
     const starGeometry = new THREE.BufferGeometry();
@@ -505,28 +645,36 @@ export default function PlanetPage() {
     const noiseOffset = new THREE.Vector3(seed[0], seed[1], seed[2]);
 
     // Terrain sphere
-    const terrainGeometry = new THREE.IcosahedronGeometry(60, 60);
+    const terrainGeometry = new THREE.IcosahedronGeometry(terrainRadius, 60);
     const terrainMaterial = new THREE.ShaderMaterial({
       vertexShader: terrainVertexShader,
       fragmentShader: terrainFragmentShader,
       uniforms: {
         uTime: { value: 0 },
-        uRadius: { value: 60 },
+        uRadius: { value: terrainRadius },
         uNoiseOffset: { value: noiseOffset },
+        uTerrainDisplacement: { value: planetParams.terrainDisplacement },
+        uContinentCoverage: { value: planetParams.continentCoverage },
+        uContinentFrequency: { value: planetParams.continentFrequency },
+        uPolarIceThreshold: { value: planetParams.polarIceThreshold },
+        uPlanetOblateness: { value: planetParams.planetOblateness },
       },
     });
     const terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
     scene.add(terrain);
 
     // Ocean sphere
-    const oceanGeometry = new THREE.IcosahedronGeometry(61.2, 40);
+    const oceanRadius = terrainRadius * 1.02;
+    const oceanGeometry = new THREE.IcosahedronGeometry(oceanRadius, 40);
     const oceanMaterial = new THREE.ShaderMaterial({
       vertexShader: oceanVertexShader,
       fragmentShader: oceanFragmentShader,
       uniforms: {
         uTime: { value: 0 },
-        uRadius: { value: 61.2 },
+        uRadius: { value: oceanRadius },
         uNoiseOffset: { value: noiseOffset },
+        uPolarIceThreshold: { value: planetParams.polarIceThreshold },
+        uPlanetOblateness: { value: planetParams.planetOblateness },
       },
       blending: THREE.NormalBlending,
       transparent: true,
@@ -535,13 +683,14 @@ export default function PlanetPage() {
     scene.add(ocean);
 
     // Cloud sphere
-    const cloudGeometry = new THREE.IcosahedronGeometry(62.4, 30);
+    const cloudRadius = terrainRadius * 1.05;
+    const cloudGeometry = new THREE.IcosahedronGeometry(cloudRadius, 30);
     const cloudMaterial = new THREE.ShaderMaterial({
       vertexShader: cloudVertexShader,
       fragmentShader: cloudFragmentShader,
       uniforms: {
         uTime: { value: 0 },
-        uRadius: { value: 62.4 },
+        uRadius: { value: cloudRadius },
         uNoiseOffset: { value: noiseOffset },
       },
       blending: THREE.NormalBlending,
@@ -551,7 +700,8 @@ export default function PlanetPage() {
     scene.add(clouds);
 
     // Atmosphere sphere
-    const atmosphereGeometry = new THREE.IcosahedronGeometry(63.6, 20);
+    const atmosphereRadius = terrainRadius * 1.05;
+    const atmosphereGeometry = new THREE.IcosahedronGeometry(atmosphereRadius, 20);
     const atmosphereMaterial = new THREE.ShaderMaterial({
       vertexShader: atmosphereVertexShader,
       fragmentShader: atmosphereFragmentShader,
@@ -655,7 +805,8 @@ export default function PlanetPage() {
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLButtonElement).style.backgroundColor =
             "rgba(255, 255, 255, 1)";
-          (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.05)";
+          (e.currentTarget as HTMLButtonElement).style.transform =
+            "scale(1.05)";
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLButtonElement).style.backgroundColor =
