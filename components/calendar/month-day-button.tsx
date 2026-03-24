@@ -3,7 +3,7 @@
 import { useCalendar } from "@/hooks/use-calendar";
 import { isSameDay, isSameMonth, isToday } from "@/lib/calendar";
 import { cn } from "@/lib/utils";
-import { Button } from "@heroui/react";
+import { Button, ButtonProps } from "@heroui/react";
 import React, { useMemo } from "react";
 
 export interface MonthDayEventDotProps {
@@ -37,11 +37,15 @@ export const MonthDayEventDot: React.FC<MonthDayEventDotProps> = ({
   );
 };
 
-export interface MonthDayButtonProps {
+export interface MonthDayButtonProps extends ButtonProps {
   day: Date;
 }
 
-export const MonthDayButton: React.FC<MonthDayButtonProps> = ({ day }) => {
+export const MonthDayButton: React.FC<MonthDayButtonProps> = ({
+  day,
+  className,
+  ...props
+}) => {
   const { weekDaysOff, selectedDate, setSelectedDate, setCalendarFocus } =
     useCalendar();
 
@@ -62,23 +66,29 @@ export const MonthDayButton: React.FC<MonthDayButtonProps> = ({ day }) => {
 
   const handleDateClick = () => {
     if (selectedDate && isSameDay(day, selectedDate)) {
-      setCalendarFocus("day"); 
+      setCalendarFocus("day");
     }
     setSelectedDate(day);
   };
 
   return (
     <Button
+      {...props}
       onPress={handleDateClick}
       variant={variant}
       color={color}
       size="sm"
+      isIconOnly
       className={cn(
+        className,
         "relative h-full w-full min-w-0 text-sm font-light",
         isTodayDate && "font-bold text-white!",
         isSelected && !isTodayDate && "font-semibold",
         weekDaysOff.includes(day.getDay()) && "text-default-400",
-        weekDaysOff.includes(day.getDay()) && isSelected && !isTodayDate && "text-primary/85",
+        weekDaysOff.includes(day.getDay()) &&
+          isSelected &&
+          !isTodayDate &&
+          "text-primary/85",
       )}
     >
       <span

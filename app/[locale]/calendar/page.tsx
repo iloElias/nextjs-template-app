@@ -14,8 +14,8 @@ export default function CalendarPage() {
       <Section>
         <Calendar startingDate={new Date("2026-3-15")} weekDaysOff={[0, 6]}>
           <CalendarSelectedDate />
-          <div className="flex gap-1">
-            <DatePicker isDisabled isReadOnly  />
+          <div className="flex gap-2 p-1">
+            <DatePicker isDisabled isReadOnly />
             <TimeInput isDisabled isReadOnly expandable />
           </div>
           <MonthViewNavigation />

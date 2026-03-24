@@ -3,18 +3,53 @@
 import { useCalendar } from "@/hooks/use-calendar";
 import { useSafeI18n } from "@/hooks/use-safe-i18n";
 import { getCalendarGridDays } from "@/lib/calendar";
+import { cn } from "@heroui/react";
 import React from "react";
 import { Button } from "../button";
 import { MonthDayButton } from "./month-day-button";
 
-export const MonthView: React.FC = () => {
+export interface CalendarViewProps {
+  expanded?: boolean;
+}
+
+export const CalendarView: React.FC<CalendarViewProps> = ({
+  expanded = true,
+}) => {
+  const monthsInYear = React.useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => i);
+  }, []);
+
+  return (
+    <div
+      className={cn(
+        "relative grid gap-4",
+        expanded
+          ? "grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          : "grid-cols-1",
+      )}
+    >
+      {monthsInYear.map((_, index) => (
+        <MonthView key={index} month={index} expanded={expanded} />
+      ))}
+    </div>
+  );
+};
+
+export interface MonthViewProps {
+  expanded?: boolean;
+  month?: number;
+}
+
+export const MonthView: React.FC<MonthViewProps> = ({ expanded, month }) => {
   const { selectedDate } = useCalendar();
   const t = useSafeI18n();
 
-  const calendarDays = React.useMemo(
-    () => getCalendarGridDays(selectedDate, 0),
-    [selectedDate],
-  );
+  const calendarDays = React.useMemo(() => {
+    selectedDate.setMonth(month ?? selectedDate.getMonth());
+    return getCalendarGridDays(selectedDate, 0);
+  }, [selectedDate, month]);
+
+  const maxWeeksPerMonth = 6;
   const weeks = React.useMemo(() => {
     const result: Date[][] = [];
     for (let i = 0; i < calendarDays.length; i += 7) {
@@ -22,6 +57,7 @@ export const MonthView: React.FC = () => {
     }
     return result;
   }, [calendarDays]);
+
   const weekdayNames = React.useMemo(
     () => [
       t?.("calendar.weekdays.short.sunday") || "Sun",
@@ -47,9 +83,10 @@ export const MonthView: React.FC = () => {
             >
               <Button
                 isDisabled
-                className="h-full w-full max-w-full! min-w-12! truncate! sm:justify-start sm:px-4"
+                className="h-full w-full max-w-full! min-w-0 truncate! sm:px-4"
               >
-                {name}
+                <span className="hidden sm:block">{name}</span>
+                <span className="sm:hidden">{name.charAt(0)}</span>
               </Button>
             </th>
           ))}
@@ -65,6 +102,20 @@ export const MonthView: React.FC = () => {
             ))}
           </tr>
         ))}
+        {expanded &&
+          Array.from({ length: maxWeeksPerMonth - weeks.length }).map(
+            (_, idx) => (
+              <tr key={idx} className="hidden sm:block">
+                <td className="h-12 p-1">
+                  <MonthDayButton
+                    className="invisible"
+                    isDisabled
+                    day={new Date()}
+                  />
+                </td>
+              </tr>
+            ),
+          )}
       </tbody>
     </table>
   );

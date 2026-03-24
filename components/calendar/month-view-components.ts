@@ -1,5 +1,5 @@
 // Main calendar component
-export { MonthView } from "./month-view";
+export { CalendarView as MonthView } from "./calendar-view";
 
 // Navigation button
 export { DateNavButton as MonthNavButton } from "./date-nav-button";

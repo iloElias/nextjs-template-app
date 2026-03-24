@@ -3,9 +3,14 @@ import {
   DatePicker as HerouiDatePicker,
   DatePickerProps as HerouiDatePickerProps,
 } from "@heroui/react";
-import { getLocalTimeZone, now } from "@internationalized/date";
+import {
+  CalendarDate,
+  getLocalTimeZone,
+  now,
+  ZonedDateTime,
+} from "@internationalized/date";
 import { useForm } from "./form";
-import { useMemo } from "react";
+import { useCallback, useId, useMemo } from "react";
 
 export interface DatePickerProps extends HerouiDatePickerProps {
   label?: string;
@@ -18,13 +23,34 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const { initialData } = useForm();
 
+  const id = useId();
+
+  const name = useMemo(() => {
+    if (props.name) return props.name;
+    return id;
+  }, [props.name, id]);
+
+  const makeDefaultValue = useCallback(
+    (zonedDateTime: ZonedDateTime) => {
+      return timeField
+        ? zonedDateTime
+        : new CalendarDate(
+            zonedDateTime.year,
+            zonedDateTime.month,
+            zonedDateTime.day,
+          );
+    },
+    [timeField],
+  );
+
   const defaultValue = useMemo(() => {
-    if (initialData?.[props.name as string]) {
-      const date = new Date(initialData[props.name as string]);
-      return now(date.toISOString());
+    if (initialData?.[name]) {
+      const date = new Date(initialData[name]);
+      return makeDefaultValue(now(date.toISOString()));
     }
-    return now(getLocalTimeZone());
-  }, [initialData, props.name]);
+
+    return makeDefaultValue(now(getLocalTimeZone()));
+  }, [initialData, name, makeDefaultValue]);
 
   return (
     <HerouiDatePicker

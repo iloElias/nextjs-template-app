@@ -48,7 +48,8 @@ export const Header: React.FC<HeaderProps> = ({
       className="w-full border-default-300 bg-default-50 shadow-sm backdrop-blur-sm transition-colors dark:border-default-100 print:hidden"
       shouldHideOnScroll={shouldHideOnScroll}
       onScrollPositionChange={debounce}
-      isMenuOpen={hidden}
+      hidden={hidden}
+      isMenuOpen={true}
     >
       <NavbarBrand className="flex flex-1 flex-row items-center justify-start gap-2">
         <MenuOpenerButton size="md" />
