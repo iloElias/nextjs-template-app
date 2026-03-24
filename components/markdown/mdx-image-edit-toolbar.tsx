@@ -1,12 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button, ButtonGroup, Card, CardBody } from "@heroui/react";
-import { Link, Pen, TrashBin2 } from "@solar-icons/react";
 import { useScopedI18n } from "@/locales/client";
+import { Button, ButtonGroup, Card, CardBody } from "@heroui/react";
+import { $isImageNode, activeEditor$, useCellValue } from "@mdxeditor/editor";
+import { Link, Pen, TrashBin2 } from "@solar-icons/react";
+import {
+  $getNodeByKey,
+  $getSelection,
+  $isNodeSelection,
+  $setSelection,
+} from "lexical";
+import { useEffect, useRef, useState } from "react";
 import { useMdxEditor } from "./mdx-editor-context";
-import { activeEditor$, useCellValue, $isImageNode } from "@mdxeditor/editor";
-import { $getNodeByKey, $getSelection, $isNodeSelection } from "lexical";
 import { Separator } from "./mdx-toolbar-buttons";
 
 interface MdxImageEditToolbarProps {
@@ -29,6 +34,7 @@ export const MdxImageEditToolbar: React.FC<MdxImageEditToolbarProps> = ({
   const { setImageEdit, openImageDialog } = useMdxEditor();
   const activeEditor = useCellValue(activeEditor$);
   const [isSelected, setIsSelected] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!activeEditor) return;
@@ -37,17 +43,34 @@ export const MdxImageEditToolbar: React.FC<MdxImageEditToolbarProps> = ({
       activeEditor.getEditorState().read(() => {
         const selection = $getSelection();
         if ($isNodeSelection(selection)) {
-          const nodes = selection.getNodes();
-          const isThisImageSelected = nodes.some(
-            (node) => node.getKey() === nodeKey,
+          setIsSelected(
+            selection.getNodes().some((node) => node.getKey() === nodeKey),
           );
-          setIsSelected(isThisImageSelected);
         } else {
           setIsSelected(false);
         }
       });
     });
   }, [activeEditor, nodeKey]);
+
+  useEffect(() => {
+    if (!isSelected || !activeEditor) return;
+    const handleMouseDown = (e: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        activeEditor.update(() => $setSelection(null));
+      }
+    };
+    const handleScroll = () => activeEditor.update(() => $setSelection(null));
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("scroll", handleScroll, true);
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [isSelected, activeEditor]);
 
   if (!isSelected) {
     return null;
@@ -76,44 +99,49 @@ export const MdxImageEditToolbar: React.FC<MdxImageEditToolbarProps> = ({
   };
 
   return (
-    <Card className="absolute top-0 right-0 z-10 m-1.5! max-w-[calc(100%-12px)]">
-      <CardBody className="flex max-w-full flex-row items-center gap-1 rounded-lg bg-background p-1">
-        <a
-          href={imageSource}
-          title={imageSource}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-1.5! flex max-w-xs items-center gap-1 truncate text-primary! hover:underline!"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="min-w-4!">
-            <Link size={16} />
-          </div>
-          <span className="truncate">{imageSource}</span>
-        </a>
-        <Separator />
-        <ButtonGroup>
-          <Button
-            size="sm"
-            variant="flat"
-            isIconOnly
-            onPress={handleEdit}
-            aria-label={tmdx("imageEditor.editImage")}
+    <div
+      ref={containerRef}
+      className="absolute top-0 right-0 z-10 m-1.5 max-w-[calc(100%-12px)]"
+    >
+      <Card>
+        <CardBody className="flex max-w-full flex-row items-center gap-1 rounded-lg bg-background p-1">
+          <a
+            href={imageSource}
+            title={imageSource}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-1.5! flex max-w-xs items-center gap-1 truncate text-primary! hover:underline!"
+            onClick={(e) => e.stopPropagation()}
           >
-            <Pen />
-          </Button>
-          <Button
-            size="sm"
-            variant="flat"
-            color="danger"
-            isIconOnly
-            onPress={handleRemove}
-            aria-label={tmdx("imageEditor.deleteImage")}
-          >
-            <TrashBin2 />
-          </Button>
-        </ButtonGroup>
-      </CardBody>
-    </Card>
+            <div className="min-w-4!">
+              <Link size={16} />
+            </div>
+            <span className="truncate">{imageSource}</span>
+          </a>
+          <Separator />
+          <ButtonGroup>
+            <Button
+              size="sm"
+              variant="flat"
+              isIconOnly
+              onPress={handleEdit}
+              aria-label={tmdx("imageEditor.editImage")}
+            >
+              <Pen />
+            </Button>
+            <Button
+              size="sm"
+              variant="flat"
+              color="danger"
+              isIconOnly
+              onPress={handleRemove}
+              aria-label={tmdx("imageEditor.deleteImage")}
+            >
+              <TrashBin2 />
+            </Button>
+          </ButtonGroup>
+        </CardBody>
+      </Card>
+    </div>
   );
 };

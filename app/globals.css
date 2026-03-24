@@ -16,6 +16,8 @@
 
 @import "./styles/libraries/typography.css";
 @import "./styles/libraries/solar-icons.css";
+@import "katex/dist/katex.min.css";
+@import "./styles/libraries/katex.css";
 
 /* Component Styles */
 @import "./styles/components/editor-header.css";

@@ -1,0 +1,61 @@
+/* Math formula styling for MDX editor */
+
+/* Math display blocks */
+.math-display {
+  @apply my-4 block overflow-x-auto p-2 text-center;
+}
+
+.math-inline {
+  @apply mx-0.5 inline-block;
+}
+
+/* KaTeX rendered output */
+.katex-display {
+  @apply my-4 overflow-x-auto;
+}
+
+.katex {
+  @apply text-base;
+}
+
+/* Ensure math is visible in both themes */
+.math-inline .katex,
+.math-display .katex {
+  @apply text-inherit;
+}
+
+/* Readonly mode - enhance math visibility */
+.editor-readonly {
+  .math-inline,
+  .math-display {
+    @apply transition-opacity;
+  }
+
+  .math-inline:hover,
+  .math-display:hover {
+    @apply opacity-90;
+  }
+}
+
+/* Make contenteditable false for rendered math */
+[contenteditable="false"].math-inline,
+[contenteditable="false"].math-display {
+  @apply cursor-default select-none;
+}
+
+/* Scrollbar for long equations */
+.math-display::-webkit-scrollbar {
+  @apply h-2;
+}
+
+.math-display::-webkit-scrollbar-track {
+  @apply rounded bg-default-100;
+}
+
+.math-display::-webkit-scrollbar-thumb {
+  @apply rounded bg-default-300 dark:bg-default-600;
+}
+
+.math-display::-webkit-scrollbar-thumb:hover {
+  @apply bg-default-400 dark:bg-default-500;
+}

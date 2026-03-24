@@ -11,6 +11,7 @@ import {
   HeroInsertCodeBlockModal,
   HeroInsertEmoji,
   HeroInsertImageModal,
+  HeroInsertMathModal,
   HeroInsertMenu,
   HeroInsertTableModal,
   HeroLinkImageButtons,
@@ -39,6 +40,7 @@ export const MdxToolbar: React.FC<MdxToolbarProps> = ({
       <LinkDialogMonitor />
       <HeroCreateLinkModal />
       <HeroInsertImageModal />
+      <HeroInsertMathModal />
       <HeroInsertTableModal />
       <HeroInsertCodeBlockModal />
       {viewMode === "rich-text" && (

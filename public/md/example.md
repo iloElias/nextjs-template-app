@@ -231,6 +231,54 @@ Emojis: 🚀 ⭐ 💡 🎉 ✨ 🔥 💻 📝
 
 ---
 
+## Math Formulas
+
+Use the **f(x)** button in the toolbar to insert inline or block math formulas with LaTeX syntax.
+
+### Inline Math
+
+Inline formulas render within the line of text. Einstein's equation $E = mc^2$ and Euler's identity $e^{i\pi} + 1 = 0$ are classic examples.
+
+The quadratic formula gives the roots of $ax^2 + bx + c = 0$ as $x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$.
+
+You can also reference variables inline: the derivative of $f(x) = x^n$ is $f'(x) = nx^{n-1}$.
+
+### Block (Display) Math
+
+Block formulas are centered and on their own line, ideal for longer expressions.
+
+The Pythagorean theorem:
+
+$$a^2 + b^2 = c^2$$
+
+Euler's formula for a polyhedron:
+
+$$V - E + F = 2$$
+
+The Gaussian integral:
+
+$$\int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}$$
+
+Matrix multiplication:
+
+$$\begin{bmatrix} a & b \\ c & d \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} ax + by \\ cx + dy \end{bmatrix}$$
+
+A sum over a series:
+
+$$\sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}$$
+
+### Mixed Math and Text
+
+Formulas integrate naturally with prose. For example, the area of a circle with radius $r$ is $A = \pi r^2$ and its circumference is $C = 2\pi r$.
+
+The fundamental theorem of calculus connects differentiation and integration:
+
+$$\int_a^b f'(x) \, dx = f(b) - f(a)$$
+
+This is one of the most important results in all of mathematics.
+
+---
+
 ## Summary
 
 This comprehensive example demonstrates the MDX Editor's capabilities including:
@@ -242,6 +290,7 @@ This comprehensive example demonstrates the MDX Editor's capabilities including:
 - ✅ Tables (simple, complex, with alignment)
 - ✅ Blockquotes (simple, nested, with formatting)
 - ✅ Links (inline, reference, auto-linked)
+- ✅ Math formulas (inline and block via LaTeX)
 - ✅ Horizontal rules
 - ✅ Mixed and nested content structures
 

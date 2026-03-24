@@ -31,6 +31,13 @@ interface ImageEditData {
   isEditing: boolean;
 }
 
+interface MathEditData {
+  formula: string;
+  mathType: "inline" | "block";
+  isEditing: boolean;
+  mathNodeKey?: string;
+}
+
 interface MdxEditorContextValue {
   linkPreview: LinkPreviewData | null;
   setLinkPreview: (data: LinkPreviewData | null) => void;
@@ -59,6 +66,13 @@ interface MdxEditorContextValue {
   isCodeBlockDialogOpen: boolean;
   openCodeBlockDialog: () => void;
   closeCodeBlockDialog: () => void;
+
+  mathEdit: MathEditData | null;
+  setMathEdit: (data: MathEditData | null) => void;
+
+  isMathDialogOpen: boolean;
+  openMathDialog: () => void;
+  closeMathDialog: () => void;
 
   currentCodeLanguage?: string;
   setCurrentCodeLanguage: (language?: string) => void;
@@ -97,6 +111,8 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [isTableDialogOpen, setIsTableDialogOpen] = useState(false);
   const [isCodeBlockDialogOpen, setIsCodeBlockDialogOpen] = useState(false);
+  const [mathEdit, setMathEdit] = useState<MathEditData | null>(null);
+  const [isMathDialogOpen, setIsMathDialogOpen] = useState(false);
   const [currentCodeLanguage, setCurrentCodeLanguage] = useState<
     string | undefined
   >("javascript");
@@ -136,6 +152,15 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({
     setIsCodeBlockDialogOpen(false);
   }, []);
 
+  const openMathDialog = useCallback(() => {
+    setIsMathDialogOpen(true);
+  }, []);
+
+  const closeMathDialog = useCallback(() => {
+    setIsMathDialogOpen(false);
+    setMathEdit(null);
+  }, []);
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setReadOnly(!!editorReadOnly);
@@ -164,6 +189,11 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({
         isCodeBlockDialogOpen,
         openCodeBlockDialog,
         closeCodeBlockDialog,
+        mathEdit,
+        setMathEdit,
+        isMathDialogOpen,
+        openMathDialog,
+        closeMathDialog,
         currentCodeLanguage,
         setCurrentCodeLanguage,
         readOnly,

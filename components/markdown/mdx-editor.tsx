@@ -29,6 +29,7 @@ import { convertReferenceLinksToInline } from "../../lib/markdown-utils";
 import { emojiAutocompletePlugin } from "../emoji/emoji-autocomplete-plugin-wrapper";
 import { Loading } from "../loading";
 import { createMonacoCodeEditorDescriptor } from "../monaco-editor/monaco-code-editor";
+import { mathPlugin } from "./math-plugin";
 import { MdxEditorProvider } from "./mdx-editor-context";
 import { MdxImageEditToolbar } from "./mdx-image-edit-toolbar";
 import { MdxLinkPreview } from "./mdx-link-preview";
@@ -239,6 +240,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
                     <MdxToolbar hasPrevioesVersion={!!previousVersion} />
                   ),
               }),
+              mathPlugin(),
               ...(!readOnly ? [emojiAutocompletePlugin()] : []),
             ]}
           />

@@ -70,6 +70,7 @@ import { MdxCodeBlockForm } from "./mdx-code-block-form";
 import { useMdxEditor } from "./mdx-editor-context";
 import { MdxImageForm } from "./mdx-image-form";
 import { MdxLinkForm } from "./mdx-link-form";
+import { MdxMathForm } from "./mdx-math-form";
 import { MdxToolbarPopover } from "./mdx-toolbar-popover";
 
 export const HeroBlockTypeSelect = () => {
@@ -484,6 +485,59 @@ export const HeroInsertImageModal = () => {
   );
 };
 
+export const HeroInsertMath = ({
+  onPopoverClose,
+}: {
+  onPopoverClose?: () => void;
+}) => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const { openMathDialog, setMathEdit } = useMdxEditor();
+
+  const handleOpenDialog = useCallback(() => {
+    onPopoverClose?.();
+    setMathEdit({ formula: "", mathType: "inline", isEditing: false });
+    openMathDialog();
+  }, [openMathDialog, setMathEdit, onPopoverClose]);
+
+  return (
+    <MdxButton onPress={handleOpenDialog} role={tmdx("toolbar.math")}>
+      <span className="text-lg font-medium text-default-800/50 italic">
+        f
+        <span className="translate-y-1 text-sm font-semibold text-default-800 italic">
+          x
+        </span>
+      </span>
+    </MdxButton>
+  );
+};
+
+export const HeroInsertMathModal = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const { mathEdit, isMathDialogOpen, closeMathDialog } = useMdxEditor();
+
+  return (
+    <Modal
+      isOpen={isMathDialogOpen}
+      onClose={closeMathDialog}
+      size="md"
+      placement="center"
+    >
+      <ModalContent
+        key={mathEdit ? `${mathEdit.isEditing}-${mathEdit.formula}` : "new"}
+      >
+        <ModalHeader>{tmdx("toolbar.math")}</ModalHeader>
+        <MdxMathForm
+          existingFormula={mathEdit?.formula || ""}
+          existingType={mathEdit?.mathType || "inline"}
+          isEditing={mathEdit?.isEditing || false}
+          mathNodeKey={mathEdit?.mathNodeKey}
+          onClose={closeMathDialog}
+        />
+      </ModalContent>
+    </Modal>
+  );
+};
+
 export const HeroInsertTable = ({
   onPopoverClose,
 }: {
@@ -853,10 +907,13 @@ export const HeroBasicTextFormattingButtons = () => {
 
 export const HeroScriptButtons = () => {
   return (
-    <ButtonGroup>
-      <HeroSuperscript />
-      <HeroSubscript />
-    </ButtonGroup>
+    <>
+      <ButtonGroup>
+        <HeroSuperscript />
+        <HeroSubscript />
+      </ButtonGroup>
+      <HeroInsertMath />
+    </>
   );
 };
 
@@ -924,7 +981,7 @@ export const HeroMiscellaneousMenu = () => {
         </MdxButton>
       }
     >
-      <div className="flex flex-row gap-1">
+      <div className="flex flex-row gap-1 items-center">
         <HeroStrikethrough />
         <Separator />
         <HeroScriptButtons />
