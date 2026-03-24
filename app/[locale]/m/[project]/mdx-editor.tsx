@@ -1,9 +1,23 @@
 "use client";
 
-import { Button, Checkbox, Input } from "@heroui/react";
-import { Magnifer, Refresh } from "@solar-icons/react";
+import { Button } from "@/components/button";
+import { Input } from "@/components/form/input";
+import { useCurrentLocale, useScopedI18n } from "@/locales/client";
+import { Chip } from "@heroui/react";
+import { AltArrowLeft } from "@solar-icons/react";
+import { useLocalStorage } from "ilias-use-storage";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+interface MarkdownProject {
+  id: string;
+  title: string;
+  content: string;
+  color: string;
+  createdAt: number;
+  updatedAt: number;
+}
 
 const MDXEditorComponent = dynamic(
   () =>
@@ -13,43 +27,96 @@ const MDXEditorComponent = dynamic(
   { ssr: false },
 );
 
-export default function MdxEditor() {
-  const [markdownUrl, setMarkdownUrl] = useState<string>(
-    "https://gist.githubusercontent.com/allysonsilva/85fff14a22bbdf55485be947566cc09e/raw/fa8048a906ebed3c445d08b20c9173afd1b4a1e5/Full-Markdown.md",
-  );
-  const [searchMarkdownUrl, setSearchMarkdownUrl] =
-    useState<string>(markdownUrl);
+interface MdxEditorProps {
+  projectId: string;
+}
 
-  const [isEditable, setIsEditable] = useState<boolean>(true);
+export default function MdxEditor({ projectId }: MdxEditorProps) {
+  const t = useScopedI18n("markdown-projects");
+  const locale = useCurrentLocale();
+  const [projects, setProjects] = useLocalStorage<MarkdownProject[]>(
+    "mdx-projects",
+    [],
+  );
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
+    "idle",
+  );
+
+  useEffect(() => {
+    if (saveStatus === "saved") {
+      const timer = setTimeout(() => setSaveStatus("idle"), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveStatus]);
+
+  const project = projects.find((p) => p.id === projectId);
+
+  function updateProject(updates: Partial<MarkdownProject>) {
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === projectId ? { ...p, ...updates, updatedAt: Date.now() } : p,
+      ),
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="flex flex-col items-center gap-4 py-20 text-center">
+        <p>{t("projectNotFound")}</p>
+        <Button
+          as={Link}
+          href={`/${locale}/m`}
+          startContent={<AltArrowLeft />}
+          variant="flat"
+        >
+          {t("backToProjects")}
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div className="mb-3 flex flex-col gap-3">
-        <h1 className="text-3xl font-bold">Markdown Editor</h1>
-        <Checkbox
-          isSelected={isEditable}
-          onChange={(e) => setIsEditable(e.target.checked)}
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-3">
+        <Link href="/m">
+        <Button
+          isIconOnly
+          aria-label={t("backToProjects")}
         >
-          Manter editável
-        </Checkbox>
-        <div className="flex flex-row items-end gap-2">
-          <Button
-            onPress={() => setSearchMarkdownUrl(searchMarkdownUrl)}
-            isIconOnly
+          <AltArrowLeft />
+        </Button>
+        </Link>
+        <Input
+          value={project.title}
+          onChange={(e) => updateProject({ title: e.target.value })}
+          placeholder={t("titlePlaceholder")}
+          className="flex-1"
+        />
+        {saveStatus !== "idle" && (
+          <Chip
+            size="sm"
+            color={saveStatus === "saving" ? "warning" : "success"}
+            variant="flat"
           >
-            <Refresh />
-          </Button>
-          <Input
-            label=""
-            value={searchMarkdownUrl}
-            onChange={(e) => setSearchMarkdownUrl(e.target.value)}
-          />
-          <Button onPress={() => setMarkdownUrl(searchMarkdownUrl)} isIconOnly>
-            <Magnifer />
-          </Button>
-        </div>
+            {saveStatus === "saving" ? t("saving") : t("saved")}
+          </Chip>
+        )}
       </div>
-      <MDXEditorComponent readOnly={!isEditable} markdownUrl={markdownUrl} />
-    </>
+      <MDXEditorComponent
+        key={projectId}
+        markdown={project.content}
+        onChange={(markdown) => {
+          setSaveStatus("saving");
+          setProjects((prev) =>
+            prev.map((p) =>
+              p.id === projectId
+                ? { ...p, content: markdown, updatedAt: Date.now() }
+                : p,
+            ),
+          );
+          setSaveStatus("saved");
+        }}
+      />
+    </div>
   );
 }

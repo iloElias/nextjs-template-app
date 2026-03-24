@@ -1,12 +1,18 @@
 import { DefaultLayout } from "@/components/layout/layout";
-import MdxEditor from "./mdx-editor";
 import { Section } from "@/components/layout/section";
+import MdxEditor from "./mdx-editor";
 
-export default function Page() {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string; project: string }>;
+}) {
+  const { project } = await params;
+
   return (
     <DefaultLayout>
       <Section>
-        <MdxEditor />
+        <MdxEditor projectId={project} />
       </Section>
     </DefaultLayout>
   );
