@@ -51,11 +51,7 @@ export default function MdxEditor({
   useEffect(() => {
     if (project && isReady) {
       const timer = setTimeout(() => {
-        if (window.parent !== window) {
-          window.parent.postMessage({ type: "print-ready" }, "*");
-        } else {
-          window.print();
-        }
+        window.print();
       }, 3000);
       return () => clearTimeout(timer);
     }

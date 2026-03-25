@@ -1,6 +1,6 @@
 import { ModalContentProps, ModalProps } from "@heroui/react";
-import { Modal, ModalContent } from "./modal";
 import { UseDisclosureReturn } from "@heroui/use-disclosure";
+import { Modal, ModalContent } from "./modal";
 
 export interface DialogueProps extends Omit<ModalProps, "children"> {
   disclosure: UseDisclosureReturn;

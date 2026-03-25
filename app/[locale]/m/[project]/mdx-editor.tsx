@@ -58,6 +58,10 @@ export default function MdxEditor({ projectId }: MdxEditorProps) {
 
   const project = projects.find((p) => p.id === projectId);
 
+  useEffect(() => {
+    document.title = project?.title || t("untitled");
+  }, [project?.title, t]);
+
   function updateProject(updates: Partial<MarkdownProject>) {
     setProjects((prev) =>
       prev.map((p) =>
@@ -69,53 +73,9 @@ export default function MdxEditor({ projectId }: MdxEditorProps) {
   async function handleDownload(format: DownloadFormat) {
     if (!project) return;
 
-    // For PDF, use iframe to print without redirecting
     if (format === "pdf") {
-      setIsDownloading(true);
       const printUrl = `/${locale}/m/${projectId}/print`;
-
-      // Create hidden iframe
-      const iframe = document.createElement("iframe");
-      iframe.style.position = "fixed";
-      iframe.style.right = "0";
-      iframe.style.bottom = "0";
-      iframe.style.width = "0";
-      iframe.style.height = "0";
-      iframe.style.border = "none";
-
-      // Listen for ready message from iframe
-      const handleMessage = (event: MessageEvent) => {
-        if (event.data?.type === "print-ready") {
-          try {
-            iframe.contentWindow?.print();
-          } catch (error) {
-            console.error("Print failed:", error);
-          } finally {
-            // Clean up after print
-            setTimeout(() => {
-              window.removeEventListener("message", handleMessage);
-              if (document.body.contains(iframe)) {
-                document.body.removeChild(iframe);
-              }
-              setIsDownloading(false);
-            }, 1000);
-          }
-        }
-      };
-
-      window.addEventListener("message", handleMessage);
-
-      // Fallback: cleanup if message never arrives
-      setTimeout(() => {
-        window.removeEventListener("message", handleMessage);
-        if (document.body.contains(iframe)) {
-          document.body.removeChild(iframe);
-        }
-        setIsDownloading(false);
-      }, 10000);
-
-      iframe.src = printUrl;
-      document.body.appendChild(iframe);
+      window.open(printUrl, "_blank", "width=900,height=700");
       return;
     }
 

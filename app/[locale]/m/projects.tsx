@@ -117,7 +117,12 @@ export default function Projects() {
     const reader = new FileReader();
     reader.onload = () => {
       const content = reader.result as string;
-      const title = file.name.replace(/\.(md|markdown)$/i, "");
+      const title = file.name
+        .replace(/\.(md|markdown)$/i, "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s\-]+/g, "_")
+        .replace(/[^a-z0-9_]/g, "");
       const id = crypto.randomUUID();
       const now = Date.now();
       const newProject: MarkdownProject = {
@@ -282,7 +287,12 @@ export default function Projects() {
         </div>
       )}
 
-      <Dialogue placement="center" disclosure={createDisclosure} size="sm">
+      <Dialogue
+        placement="center"
+        disclosure={createDisclosure}
+        size="sm"
+        isDismissable={false}
+      >
         <ModalHeader>{t("newProject")}</ModalHeader>
         <ModalBody className="gap-4">
           <Input
@@ -307,7 +317,12 @@ export default function Projects() {
         </ModalFooter>
       </Dialogue>
 
-      <Dialogue placement="center" disclosure={editDisclosure} size="sm">
+      <Dialogue
+        placement="center"
+        disclosure={editDisclosure}
+        size="sm"
+        isDismissable={false}
+      >
         <ModalHeader>{t("editProject")}</ModalHeader>
         <ModalBody className="gap-4">
           <Input
