@@ -4,6 +4,7 @@ import { Accordion, AccordionGroup } from "@/components/ui/accordion";
 import { MenuItem, MenuItemGroup } from "@/components/ui/menu-item";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useApp } from "@/hooks/use-app";
+import { useScopedI18n } from "@/locales/client";
 import {
   Divider,
   Drawer,
@@ -36,73 +37,91 @@ interface MenuItem {
 
 export const NavigationMenu: React.FC = () => {
   const { menuDisclosure } = useApp();
+  const t = useScopedI18n("navigation");
 
   const menuStructure: MenuItem[] = [
     {
       key: "home",
-      label: "Home",
+      label: t("home"),
       href: "/",
       icon: <Home size={20} />,
     },
     {
-      key: "agenda",
-      label: "Agenda",
-      href: "/agenda",
+      key: "calendar",
+      label: t("calendar"),
       icon: <CalendarMark size={20} />,
+      children: [
+        {
+          key: "calendar-main",
+          label: t("calendar"),
+          href: "/calendar",
+        },
+        {
+          key: "calendar-view",
+          label: t("calendarView"),
+          href: "/calendar/view",
+        },
+      ],
     },
     {
       key: "emoji-picker",
-      label: "Emoji Picker",
+      label: t("emojiPicker"),
       href: "/emoji-picker",
       icon: <SmileCircle size={20} />,
     },
     {
       key: "layouts",
-      label: "Layouts",
+      label: t("layouts"),
       icon: <Widget size={20} />,
       children: [
         {
-          key: "dashboard",
-          label: "Dashboard Layout",
+          key: "layouts-dashboard",
+          label: t("layoutsDashboard"),
           href: "/layouts/dashboard",
         },
         {
-          key: "normal",
-          label: "Normal Layout",
+          key: "layouts-normal",
+          label: t("layoutsNormal"),
           href: "/layouts/normal",
         },
       ],
     },
     {
-      key: "markdown",
-      label: "Markdown Editors",
+      key: "markdown-projects",
+      label: t("markdownProjects"),
+      href: "/m",
       icon: <Document size={20} />,
+    },
+    {
+      key: "markdown",
+      label: t("markdownEditors"),
+      icon: <Code size={20} />,
       children: [
         {
           key: "markdown-editor",
-          label: "Markdown Editor",
+          label: t("markdownEditor"),
           href: "/markdown",
         },
         {
           key: "markdown-table",
-          label: "Markdown Table",
+          label: t("markdownTable"),
           href: "/markdown/table",
         },
         {
           key: "markdown-fetch",
-          label: "Markdown Fetch",
+          label: t("markdownFetch"),
           href: "/markdown/fetch",
         },
       ],
     },
     {
       key: "playground",
-      label: "Playground",
+      label: t("playground"),
       icon: <Gamepad size={20} />,
       children: [
         {
           key: "form",
-          label: "Form Playground",
+          label: t("formPlayground"),
           href: "/playground/form",
         },
       ],
@@ -164,7 +183,7 @@ export const NavigationMenu: React.FC = () => {
             <DrawerHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <Code size={24} />
-                <h2 className="text-xl font-semibold">Navigation</h2>
+                <h2 className="text-xl font-semibold">{t("title")}</h2>
               </div>
             </DrawerHeader>
             <DrawerBody>
@@ -189,7 +208,7 @@ export const NavigationMenu: React.FC = () => {
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <Palette size={20} />
-                    <span className="text-sm">Theme</span>
+                    <span className="text-sm">{t("theme")}</span>
                   </div>
                   <ThemeToggle size="sm" />
                 </div>
@@ -201,7 +220,7 @@ export const NavigationMenu: React.FC = () => {
                 variant="light"
                 onPress={menuDisclosure.onClose}
               >
-                Close
+                {t("close")}
               </Button>
             </DrawerFooter>
           </>

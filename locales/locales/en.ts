@@ -1,16 +1,59 @@
 export default {
   metadata: {
-    "mdx-editor": {
-      title: "MDX Editor Demo",
-      description: "Interactive markdown editor with live preview",
+    home: {
+      title: "Home",
+      description:
+        "Next.js template with internationalization, custom components, and modern development tools",
+    },
+    calendar: {
+      title: "Calendar",
+      description:
+        "Interactive calendar with date and time picker components, month/week/day views, and customizable weekday settings",
+    },
+    "calendar-view": {
+      title: "Calendar View",
+      description:
+        "Full calendar view with navigation controls and date selection features",
+    },
+    "emoji-picker": {
+      title: "Emoji Picker",
+      description:
+        "Custom emoji picker with search functionality, using Frimousse library with multiple button variants",
+    },
+    "layouts-normal": {
+      title: "Normal Layout",
+      description:
+        "Standard page layout with header navigation and default styling",
+    },
+    "layouts-dashboard": {
+      title: "Dashboard Layout",
+      description:
+        "Dashboard layout with sidebar navigation and content sections",
     },
     "markdown-projects": {
       title: "Markdown Projects",
-      description: "Manage and edit your markdown projects",
+      description:
+        "Manage and edit markdown projects with color-coded organization, local storage persistence, and CRUD operations",
     },
-    home: {
-      title: "Home",
-      description: "Next.js template with internationalization",
+    "mdx-editor": {
+      title: "Markdown Editor",
+      description:
+        "Interactive MDX editor with live preview, math formula support, code highlighting, and table editing",
+    },
+    "markdown-table": {
+      title: "Markdown Table Editor",
+      description:
+        "Specialized editor for creating and editing markdown tables with visual interface",
+    },
+    "markdown-fetch": {
+      title: "Markdown Fetch",
+      description:
+        "Load and display markdown content from external sources with live rendering",
+    },
+    "form-playground": {
+      title: "Form Playground",
+      description:
+        "Interactive form components showcase with validation, custom inputs, selects, and date/time pickers",
     },
   },
   "mdx-editor": {
@@ -294,5 +337,25 @@ export default {
     grayscale: "Grayscale",
     printBackgrounds: "Print Background Graphics",
     resetDefaults: "Reset to Defaults",
+  },
+  navigation: {
+    title: "Navigation",
+    home: "Home",
+    calendar: "Calendar",
+    calendarView: "Calendar View",
+    emojiPicker: "Emoji Picker",
+    layouts: "Layouts",
+    layoutsNormal: "Normal Layout",
+    layoutsDashboard: "Dashboard Layout",
+    markdownProjects: "Markdown Projects",
+    markdownEditors: "Markdown Editors",
+    markdownEditor: "Markdown Editor",
+    markdownTable: "Markdown Table",
+    markdownFetch: "Markdown Fetch",
+    playground: "Playground",
+    formPlayground: "Form Playground",
+    theme: "Theme",
+    language: "Language",
+    close: "Close",
   },
 } as const;

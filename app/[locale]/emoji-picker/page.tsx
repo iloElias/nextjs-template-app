@@ -2,11 +2,19 @@
 
 import { EmojiPickerButton } from "@/components/emoji/emoji-picker-button";
 import { DefaultLayout } from "@/components/layout/layout";
-import { useState } from "react";
+import { useSafeI18n } from "@/hooks/use-safe-i18n";
+import { useEffect, useState } from "react";
 
 export default function EmojiPickerPage() {
+  const t = useSafeI18n();
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
   const [emojiList, setEmojiList] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (t) {
+      document.title = t("metadata.emoji-picker.title");
+    }
+  }, [t]);
 
   const handleEmojiSelect = (emoji: string) => {
     setSelectedEmoji(emoji);

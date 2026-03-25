@@ -1,16 +1,59 @@
 export default {
   metadata: {
-    "mdx-editor": {
-      title: "Editor MDX Demo",
-      description: "Editor de markdown interativo com visualização ao vivo",
+    home: {
+      title: "Início",
+      description:
+        "Template Next.js com internacionalização, componentes personalizados e ferramentas modernas de desenvolvimento",
+    },
+    calendar: {
+      title: "Calendário",
+      description:
+        "Calendário interativo com seletores de data e hora, visualizações mensal/semanal/diária e configurações personalizáveis de dias úteis",
+    },
+    "calendar-view": {
+      title: "Visualização do Calendário",
+      description:
+        "Visualização completa do calendário com controles de navegação e recursos de seleção de data",
+    },
+    "emoji-picker": {
+      title: "Seletor de Emoji",
+      description:
+        "Seletor de emoji personalizado com funcionalidade de busca, usando biblioteca Frimousse com múltiplas variantes de botão",
+    },
+    "layouts-normal": {
+      title: "Layout Normal",
+      description:
+        "Layout de página padrão com navegação no cabeçalho e estilização padrão",
+    },
+    "layouts-dashboard": {
+      title: "Layout Dashboard",
+      description:
+        "Layout de dashboard com navegação lateral e seções de conteúdo",
     },
     "markdown-projects": {
       title: "Projetos Markdown",
-      description: "Gerencie e edite seus projetos markdown",
+      description:
+        "Gerencie e edite projetos markdown com organização por cores, persistência em armazenamento local e operações CRUD",
     },
-    home: {
-      title: "Início",
-      description: "Template Next.js com internacionalização",
+    "mdx-editor": {
+      title: "Editor Markdown",
+      description:
+        "Editor MDX interativo com visualização ao vivo, suporte a fórmulas matemáticas, destaque de código e edição de tabelas",
+    },
+    "markdown-table": {
+      title: "Editor de Tabelas Markdown",
+      description:
+        "Editor especializado para criar e editar tabelas markdown com interface visual",
+    },
+    "markdown-fetch": {
+      title: "Buscar Markdown",
+      description:
+        "Carregue e exiba conteúdo markdown de fontes externas com renderização ao vivo",
+    },
+    "form-playground": {
+      title: "Playground de Formulários",
+      description:
+        "Showcase de componentes de formulário interativos com validação, inputs personalizados, seletores e seletores de data/hora",
     },
   },
   "mdx-editor": {
@@ -296,5 +339,25 @@ export default {
     grayscale: "Escala de Cinza",
     printBackgrounds: "Imprimir Gráficos de Fundo",
     resetDefaults: "Restaurar Padrões",
+  },
+  navigation: {
+    title: "Navegação",
+    home: "Início",
+    calendar: "Calendário",
+    calendarView: "Visualização do Calendário",
+    emojiPicker: "Seletor de Emoji",
+    layouts: "Layouts",
+    layoutsNormal: "Layout Normal",
+    layoutsDashboard: "Layout Dashboard",
+    markdownProjects: "Projetos Markdown",
+    markdownEditors: "Editores Markdown",
+    markdownEditor: "Editor Markdown",
+    markdownTable: "Tabela Markdown",
+    markdownFetch: "Buscar Markdown",
+    playground: "Playground",
+    formPlayground: "Playground de Formulários",
+    theme: "Tema",
+    language: "Idioma",
+    close: "Fechar",
   },
 } as const;

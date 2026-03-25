@@ -7,8 +7,18 @@ import { DatePicker } from "@/components/form/date-picker";
 import { TimeInput } from "@/components/form/time-input";
 import { DefaultLayout } from "@/components/layout/layout";
 import { Section } from "@/components/layout/section";
+import { useSafeI18n } from "@/hooks/use-safe-i18n";
+import { useEffect } from "react";
 
 export default function CalendarPage() {
+  const t = useSafeI18n();
+
+  useEffect(() => {
+    if (t) {
+      document.title = t("metadata.calendar.title");
+    }
+  }, [t]);
+
   return (
     <DefaultLayout>
       <Section>
