@@ -59,8 +59,13 @@ export default function MdxEditor({ projectId }: MdxEditorProps) {
   const project = projects.find((p) => p.id === projectId);
 
   useEffect(() => {
-    document.title = project?.title || t("untitled");
-  }, [project?.title, t]);
+    if (project) {
+      const newTitle = project.title || t("untitled");
+      if (document.title !== newTitle) {
+        document.title = newTitle;
+      }
+    }
+  }, [project, t]);
 
   function updateProject(updates: Partial<MarkdownProject>) {
     setProjects((prev) =>
@@ -79,11 +84,12 @@ export default function MdxEditor({ projectId }: MdxEditorProps) {
 
       const iframe = document.createElement("iframe");
       iframe.style.position = "fixed";
-      iframe.style.right = "0";
-      iframe.style.bottom = "0";
-      iframe.style.width = "0";
-      iframe.style.height = "0";
+      iframe.style.left = "-9999px";
+      iframe.style.top = "0";
+      iframe.style.width = "21cm";
+      iframe.style.height = "29.7cm";
       iframe.style.border = "none";
+      iframe.style.visibility = "hidden";
 
       const handleMessage = (event: MessageEvent) => {
         if (event.data?.type === "print-ready") {
