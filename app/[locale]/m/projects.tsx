@@ -14,11 +14,17 @@ import {
   Divider,
   useDisclosure,
 } from "@heroui/react";
-import { Document, DocumentAdd, Pen, TrashBin2 } from "@solar-icons/react";
+import {
+  Document,
+  DocumentAdd,
+  Pen,
+  TrashBin2,
+  Upload,
+} from "@solar-icons/react";
 import { useLocalStorage } from "ilias-use-storage";
 import Link from "next/link";
 import { darken, getLuminance, lighten, readableColor } from "polished";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface MarkdownProject {
   id: string;
@@ -46,6 +52,7 @@ export default function Projects() {
   const [editingProject, setEditingProject] = useState<MarkdownProject | null>(
     null,
   );
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function openCreateModal() {
     setNewTitle("");
@@ -93,17 +100,70 @@ export default function Projects() {
     setProjects((prev) => prev.filter((p) => p.id !== id));
   }
 
+  function handleUploadClick() {
+    fileInputRef.current?.click();
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.match(/\.(md|markdown)$/i)) {
+      alert(t("uploadMarkdownError"));
+      e.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const content = reader.result as string;
+      const title = file.name.replace(/\.(md|markdown)$/i, "");
+      const id = crypto.randomUUID();
+      const now = Date.now();
+      const newProject: MarkdownProject = {
+        id,
+        title,
+        content,
+        color: DEFAULT_PROJECT_COLOR,
+        createdAt: now,
+        updatedAt: now,
+      };
+      setProjects((prev) => [...prev, newProject]);
+      window.location.href = `/${locale}/m/${id}`;
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  }
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".md,.markdown"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <Button
-          color="primary"
-          startContent={<DocumentAdd />}
-          onPress={openCreateModal}
-        >
-          {t("newProject")}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="flat"
+            startContent={<Upload />}
+            onPress={handleUploadClick}
+            className="flex-1 sm:flex-none"
+          >
+            {t("uploadMarkdown")}
+          </Button>
+          <Button
+            color="primary"
+            startContent={<DocumentAdd />}
+            onPress={openCreateModal}
+            className="flex-1 sm:flex-none"
+          >
+            {t("newProject")}
+          </Button>
+        </div>
       </div>
 
       {projects.length === 0 ? (

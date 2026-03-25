@@ -247,7 +247,7 @@ export default {
     },
   },
   "markdown-projects": {
-    title: "Meus Projetos",
+    title: "Projetos",
     newProject: "Novo Projeto",
     untitled: "Sem título",
     noProjects: "Nenhum projeto ainda",
@@ -262,6 +262,9 @@ export default {
     saved: "Salvo",
     projectNotFound: "Projeto não encontrado",
     colorLabel: "Cor do arquivo",
+    uploadMarkdown: "Enviar Markdown",
+    uploadMarkdownError:
+      "Arquivo inválido. Selecione um arquivo .md ou .markdown.",
     create: "Criar",
     edit: "Salvar",
     cancel: "Cancelar",
