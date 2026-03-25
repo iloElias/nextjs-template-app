@@ -7,6 +7,7 @@ import {
   HeroBlockTypeSelect,
   HeroCreateLinkModal,
   HeroDiffMode,
+  HeroDownloadButton,
   HeroHistoryButtons,
   HeroInsertCodeBlockModal,
   HeroInsertEmoji,
@@ -26,10 +27,14 @@ import {
 
 export interface MdxToolbarProps {
   hasPrevioesVersion?: boolean;
+  onDownload?: (format: "markdown" | "html" | "text" | "pdf") => void;
+  isDownloading?: boolean;
 }
 
 export const MdxToolbar: React.FC<MdxToolbarProps> = ({
   hasPrevioesVersion,
+  onDownload,
+  isDownloading = false,
 }) => {
   const [viewMode] = useCellValues(viewMode$);
 
@@ -69,6 +74,15 @@ export const MdxToolbar: React.FC<MdxToolbarProps> = ({
           <HeroListMenu />
           <Separator />
           <HeroInsertMenu />
+          {onDownload && (
+            <>
+              <Separator />
+              <HeroDownloadButton
+                onDownload={onDownload}
+                isDownloading={isDownloading}
+              />
+            </>
+          )}
         </>
       )}
       <span className={cn("flex-1", viewMode !== "rich-text" && "hidden")} />

@@ -122,6 +122,8 @@ interface MDXEditorComponentProps {
   previousVersionUrl?: string;
   onChange?: (markdown: string) => void;
   readOnly?: boolean;
+  onDownload?: (format: "markdown" | "html" | "text" | "pdf") => void;
+  isDownloading?: boolean;
 }
 
 export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
@@ -131,6 +133,8 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
   previousVersionUrl,
   onChange,
   readOnly = false,
+  onDownload,
+  isDownloading = false,
 }) => {
   const tmdx = useScopedI18n("mdx-editor");
   const { resolvedTheme } = useTheme();
@@ -237,7 +241,11 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
                 ),
                 toolbarContents: () =>
                   !readOnly && (
-                    <MdxToolbar hasPrevioesVersion={!!previousVersion} />
+                    <MdxToolbar
+                      hasPrevioesVersion={!!previousVersion}
+                      onDownload={onDownload}
+                      isDownloading={isDownloading}
+                    />
                   ),
               }),
               mathPlugin(),

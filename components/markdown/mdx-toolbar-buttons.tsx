@@ -1,7 +1,7 @@
 "use client";
 
 import { useScopedI18n } from "@/locales/client";
-import { Button, ButtonGroup, Select, SelectItem } from "@heroui/react";
+import { ButtonGroup, Select, SelectItem } from "@heroui/react";
 import { $isCodeNode } from "@lexical/code";
 import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import {
@@ -21,16 +21,19 @@ import {
   viewMode$,
 } from "@mdxeditor/editor";
 import {
+  AddCircle,
   AlignVerticalSpacing,
   Checklist,
   Code,
   CodeSquare,
+  Document,
   DocumentAdd,
+  DownloadMinimalistic,
+  FileText,
   Gallery,
   Link,
   List,
   ListArrowDownMinimalistic,
-  MenuDots,
   Notes,
   SidebarMinimalistic,
   SmileCircle,
@@ -53,6 +56,7 @@ import {
   UNDO_COMMAND,
 } from "lexical";
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "../button";
 import { EmojiPickerButton } from "../emoji/emoji-picker-button";
 import { NumberInput } from "../form/number-input";
 import { BulleList } from "../icons/bulle-list";
@@ -867,7 +871,7 @@ export const HeroInsertMenu = () => {
     <MdxToolbarPopover
       trigger={
         <MdxButton role={tmdx("toolbar.insertMenu")}>
-          <MenuDots weight="BoldDuotone" />
+          <AddCircle weight="LineDuotone" />
         </MdxButton>
       }
     >
@@ -981,7 +985,7 @@ export const HeroMiscellaneousMenu = () => {
         </MdxButton>
       }
     >
-      <div className="flex flex-row gap-1 items-center">
+      <div className="flex flex-row items-center gap-1">
         <HeroStrikethrough />
         <Separator />
         <HeroScriptButtons />
@@ -1007,5 +1011,82 @@ export const HeroLinkImageButtons = () => {
       <HeroCreateLink />
       <HeroInsertImage />
     </ButtonGroup>
+  );
+};
+
+export interface HeroDownloadButtonProps {
+  onDownload?: (format: "markdown" | "html" | "text" | "pdf") => void;
+  isDownloading?: boolean;
+}
+
+export const HeroDownloadButton: React.FC<HeroDownloadButtonProps> = ({
+  onDownload,
+  isDownloading = false,
+}) => {
+  const t = useScopedI18n("markdown-projects");
+
+  if (!onDownload) return null;
+
+  return (
+    <MdxToolbarPopover
+      trigger={
+        <MdxButton
+          isDisabled={isDownloading}
+          aria-label={t("download")}
+          title={t("download")}
+        >
+          <DownloadMinimalistic />
+        </MdxButton>
+      }
+    >
+      {(onClose) => (
+        <div className="flex flex-col gap-1">
+          <Button
+            size="sm"
+            onPress={() => {
+              onDownload("pdf");
+              onClose();
+            }}
+            className="justify-start"
+          >
+            <DocumentAdd />
+            {t("downloadPdf")}
+          </Button>
+          <Button
+            size="sm"
+            onPress={() => {
+              onDownload("markdown");
+              onClose();
+            }}
+            className="justify-start"
+          >
+            <Document />
+            {t("downloadMarkdown")}
+          </Button>
+          <Button
+            size="sm"
+            onPress={() => {
+              onDownload("text");
+              onClose();
+            }}
+            className="justify-start"
+          >
+            <FileText />
+            {t("downloadText")}
+          </Button>
+          <Button
+            size="sm"
+            onPress={() => {
+              onDownload("html");
+              onClose();
+            }}
+            className="justify-start"
+          >
+            <CodeSquare />
+            {t("downloadHtml")}
+          </Button>
+        </div>
+      )}
+    </MdxToolbarPopover>
   );
 };

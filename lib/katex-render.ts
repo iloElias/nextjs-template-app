@@ -24,7 +24,8 @@ export const renderMathInElement = (element: HTMLElement) => {
 
     // Match block math ($$...$$) first
     const blockMathRegex = /\$\$([^$]+)\$\$/g;
-    let match;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let match: any;
     const blockMatches: { start: number; end: number; formula: string }[] = [];
 
     while ((match = blockMathRegex.exec(text)) !== null) {

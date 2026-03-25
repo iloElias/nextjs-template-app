@@ -9,7 +9,6 @@ import {
 } from "@heroui/react";
 import { SelectMultiple, SelectMultipleProps } from "./select-multiple";
 import { useForm } from "./form";
-import { mergeClassNames } from "@/lib/utils";
 
 export interface SelectOption {
   label: string;
@@ -29,7 +28,6 @@ export type SelectProps = {
 
 export const Select: React.FC<SelectProps> = ({
   children,
-  classNames,
   ...props
 }) => {
   const { initialData } = useForm();
@@ -44,14 +42,6 @@ export const Select: React.FC<SelectProps> = ({
     <HerouiSelect
       {...(selectTheme as SelectProps)}
       defaultSelectedKeys={initialData?.[props.name as string]}
-      classNames={mergeClassNames(
-        {
-          trigger:
-            (!props.color || props.color === "default") &&
-            textBgHighlightClasses,
-        },
-        classNames,
-      )}
       {...props}
     >
       {children
