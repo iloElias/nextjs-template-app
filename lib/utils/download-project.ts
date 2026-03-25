@@ -172,7 +172,7 @@ function processMathInMarkdown(content: string): string {
 export async function downloadAsPdf(title: string, content: string) {
   // Dynamic import to avoid SSR issues
   const html2pdf = (await import("html2pdf.js")).default;
-  
+
   // Process math formulas first
   const processedContent = processMathInMarkdown(content);
 
