@@ -291,7 +291,9 @@ export default function Projects() {
         placement="center"
         disclosure={createDisclosure}
         size="sm"
-        isDismissable={false}
+        shouldCloseOnInteractOutside={(element) => {
+          return !element.closest('[data-slot="popover"]');
+        }}
       >
         <ModalHeader>{t("newProject")}</ModalHeader>
         <ModalBody className="gap-4">
@@ -321,7 +323,9 @@ export default function Projects() {
         placement="center"
         disclosure={editDisclosure}
         size="sm"
-        isDismissable={false}
+        shouldCloseOnInteractOutside={(element) => {
+          return !element.closest('[data-slot="popover"]');
+        }}
       >
         <ModalHeader>{t("editProject")}</ModalHeader>
         <ModalBody className="gap-4">

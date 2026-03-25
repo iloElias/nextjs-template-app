@@ -74,8 +74,43 @@ export default function MdxEditor({ projectId }: MdxEditorProps) {
     if (!project) return;
 
     if (format === "pdf") {
+      setIsDownloading(true);
       const printUrl = `/${locale}/m/${projectId}/print`;
-      window.open(printUrl, "_blank", "width=900,height=700");
+
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "fixed";
+      iframe.style.right = "0";
+      iframe.style.bottom = "0";
+      iframe.style.width = "0";
+      iframe.style.height = "0";
+      iframe.style.border = "none";
+
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data?.type === "print-ready") {
+          iframe.focus();
+          iframe.contentWindow?.print();
+          setTimeout(() => {
+            window.removeEventListener("message", handleMessage);
+            if (document.body.contains(iframe)) {
+              document.body.removeChild(iframe);
+            }
+            setIsDownloading(false);
+          }, 1000);
+        }
+      };
+
+      window.addEventListener("message", handleMessage);
+
+      setTimeout(() => {
+        window.removeEventListener("message", handleMessage);
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+        setIsDownloading(false);
+      }, 30000);
+
+      iframe.src = printUrl;
+      document.body.appendChild(iframe);
       return;
     }
 
