@@ -139,6 +139,7 @@ export default {
       richText: "Rich text",
       diffMode: "Diff mode",
       source: "Source mode",
+      preview: "Preview",
       admonition: "Insert Admonition",
       codeBlock: "Insert Code Block",
       editFrontmatter: "Edit frontmatter",
@@ -163,6 +164,10 @@ export default {
       subscript: "Subscript",
       strikethrough: "Strikethrough",
       removeStrikethrough: "Remove strikethrough",
+      alignLeft: "Align left",
+      alignCenter: "Align center",
+      alignRight: "Align right",
+      alignJustify: "Justify",
     },
     emojiPicker: {
       searchPlaceholder: "Search emoji...",

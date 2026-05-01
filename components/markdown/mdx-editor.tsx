@@ -23,7 +23,7 @@ import { SolarProvider } from "@solar-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useTheme } from "next-themes";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { getCodeMirrorExtensions } from "../../lib/codemirror-extensions";
 import { convertReferenceLinksToInline } from "../../lib/markdown-utils";
 import { emojiAutocompletePlugin } from "../emoji/emoji-autocomplete-plugin-wrapper";
@@ -122,6 +122,7 @@ interface MDXEditorComponentProps {
   previousVersionUrl?: string;
   onChange?: (markdown: string) => void;
   readOnly?: boolean;
+  onMount?: () => void;
   onDownload?: (format: "markdown" | "html" | "text" | "pdf") => void;
   isDownloading?: boolean;
 }
@@ -133,6 +134,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
   previousVersionUrl,
   onChange,
   readOnly = false,
+  onMount,
   onDownload,
   isDownloading = false,
 }) => {
@@ -156,6 +158,13 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
   const markdown = markdownProp ?? fetchedMarkdown ?? "";
   const previousVersion = previousVersionProp ?? fetchedPreviousVersion;
   const isLoading = isLoadingMarkdown || isLoadingPrevious;
+
+  useEffect(() => {
+    if (!isLoading) {
+      onMount?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   const loadingLabel = useMemo(() => {
     if (isLoadingMarkdown) return tmdx("loading.markdown");
@@ -236,7 +245,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
               }),
               toolbarPlugin({
                 toolbarClassName: cn(
-                  "scrollbar mb-2 overflow-x-auto! rounded-xl! border-default-200! bg-background! p-2! dark:bg-default-50! shadow-small! transition-[top] duration-400 ease-in-out",
+                  "scrollbar mb-2 flex-wrap! overflow-x-visible! rounded-xl! border-default-200! bg-background! p-2! dark:bg-default-50! shadow-small! transition-[top] duration-400 ease-in-out",
                   headerDisclosure.isOpen ? "top-18!" : "top-2!",
                 ),
                 toolbarContents: () =>

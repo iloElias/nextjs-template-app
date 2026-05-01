@@ -3,8 +3,12 @@
 import { useScopedI18n } from "@/locales/client";
 import { ButtonGroup, Select, SelectItem } from "@heroui/react";
 import { $isCodeNode } from "@lexical/code";
+import { $isListItemNode, $isListNode } from "@lexical/list";
 import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
+import { $isTableCellNode, $isTableNode } from "@lexical/table";
 import {
+  $createGenericHTMLNode,
+  $isGenericHTMLNode,
   activeEditor$,
   applyFormat$,
   applyListType$,
@@ -16,12 +20,16 @@ import {
   currentListType$,
   insertTable$,
   insertThematicBreak$,
+  readOnly$,
   useCellValue,
   usePublisher,
   viewMode$,
 } from "@mdxeditor/editor";
 import {
   AddCircle,
+  AlignHorizontalCenter,
+  AlignLeft,
+  AlignRight,
   AlignVerticalSpacing,
   Checklist,
   Code,
@@ -29,6 +37,7 @@ import {
   Document,
   DocumentAdd,
   DownloadMinimalistic,
+  Eye,
   FileText,
   Gallery,
   Link,
@@ -52,6 +61,8 @@ import {
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
+  type ElementFormatType,
+  FORMAT_ELEMENT_COMMAND,
   REDO_COMMAND,
   UNDO_COMMAND,
 } from "lexical";
@@ -663,6 +674,99 @@ export const HeroInsertCodeBlockModal = () => {
   );
 };
 
+export const HeroViewModeSelect = ({ hasDiff }: { hasDiff?: boolean }) => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const viewMode = useCellValue(viewMode$);
+  const setViewMode = usePublisher(viewMode$);
+  const setReadOnly = usePublisher(readOnly$);
+  const { readOnly, setReadOnly: setContextReadOnly } = useMdxEditor();
+
+  // Composite key: "preview" when readOnly, otherwise the viewMode value
+  const selectedKey = readOnly ? "preview" : viewMode;
+
+  const modes = [
+    {
+      key: "rich-text",
+      label: tmdx("toolbar.richText"),
+      icon: <DocumentAdd size={16} />,
+    },
+    ...(hasDiff
+      ? [
+          {
+            key: "diff",
+            label: tmdx("toolbar.diffMode"),
+            icon: <Notes size={16} />,
+          },
+        ]
+      : []),
+    {
+      key: "source",
+      label: tmdx("toolbar.source"),
+      icon: <CodeSquare size={16} />,
+    },
+    {
+      key: "preview",
+      label: tmdx("toolbar.preview"),
+      icon: <Eye size={16} />,
+    },
+  ];
+
+  const handleSelectionChange = (
+    keys: Parameters<
+      NonNullable<React.ComponentProps<typeof Select>["onSelectionChange"]>
+    >[0],
+  ) => {
+    const selected = Array.from(keys)[0] as string;
+    if (!selected) return;
+
+    if (selected === "preview") {
+      setReadOnly(true);
+      setContextReadOnly(true);
+    } else {
+      setReadOnly(false);
+      setContextReadOnly(false);
+      setViewMode(selected as "rich-text" | "diff" | "source");
+    }
+  };
+
+  return (
+    <Select
+      aria-label={tmdx("toolbar.richText")}
+      size="sm"
+      className="max-w-36 min-w-36"
+      classNames={{
+        innerWrapper: "w-full",
+        selectorIcon: "hidden!",
+      }}
+      selectedKeys={new Set([selectedKey])}
+      onSelectionChange={handleSelectionChange}
+      renderValue={(items) => {
+        const mode = modes.find((m) => m.key === items[0]?.key);
+        return mode ? (
+          <div className="flex items-center gap-1.5">
+            <span>{mode.icon}</span>
+            <span className="w-full flex-1 truncate text-small font-normal">
+              {mode.label}
+            </span>
+          </div>
+        ) : null;
+      }}
+    >
+      {modes.map((mode) => (
+        <SelectItem
+          classNames={{
+            selectedIcon: "hidden",
+          }}
+          key={mode.key}
+          startContent={mode.icon}
+        >
+          {mode.label}
+        </SelectItem>
+      ))}
+    </Select>
+  );
+};
+
 export const HeroRichTextMode = () => {
   const tmdx = useScopedI18n("mdx-editor");
   const viewMode = useCellValue(viewMode$);
@@ -993,6 +1097,160 @@ export const HeroMiscellaneousMenu = () => {
         <HeroCode />
       </div>
     </MdxToolbarPopover>
+  );
+};
+
+export const HeroTextAlignButtons = () => {
+  const tmdx = useScopedI18n("mdx-editor");
+  const activeEditor = useCellValue(activeEditor$);
+  const [currentAlignment, setCurrentAlignment] =
+    useState<ElementFormatType>("");
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  useEffect(() => {
+    if (!activeEditor) return;
+
+    const checkAlignment = () => {
+      activeEditor.getEditorState().read(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          const anchorNode = selection.anchor.getNode();
+          const element = anchorNode.getTopLevelElementOrThrow();
+
+          // Disable in contexts that don't support block-level alignment
+          const isInUnsupportedContext =
+            $isCodeNode(element) ||
+            $isTableNode(element) ||
+            $isTableCellNode(element) ||
+            $isListNode(element) ||
+            $isListItemNode(element) ||
+            $isCodeNode(anchorNode) ||
+            $isTableCellNode(anchorNode.getParent()) ||
+            $isTableNode(anchorNode.getParent());
+
+          setIsDisabled(!!isInUnsupportedContext);
+
+          if (isInUnsupportedContext) {
+            setCurrentAlignment("");
+            return;
+          }
+
+          // Check if the top-level element is a <div align="..."> wrapper
+          if ($isGenericHTMLNode(element)) {
+            const alignAttr = element
+              .getAttributes()
+              .find((a) => a.name === "align");
+            if (alignAttr && typeof alignAttr.value === "string") {
+              setCurrentAlignment(alignAttr.value as ElementFormatType);
+              return;
+            }
+          }
+
+          setCurrentAlignment("");
+        }
+      });
+    };
+
+    checkAlignment();
+    return activeEditor.registerUpdateListener(checkAlignment);
+  }, [activeEditor]);
+
+  const applyAlignment = (format: ElementFormatType) => {
+    if (!activeEditor) return;
+
+    activeEditor.update(() => {
+      const selection = $getSelection();
+      if (!$isRangeSelection(selection)) return;
+
+      const anchorNode = selection.anchor.getNode();
+      const element = anchorNode.getTopLevelElementOrThrow();
+
+      if ($isGenericHTMLNode(element)) {
+        if (format === "" || format === "left") {
+          // Unwrap: hoist children out of the <div align> wrapper
+          const children = element.getChildren();
+          children.forEach((child) => element.insertBefore(child));
+          element.remove();
+        } else {
+          // Update the existing align attribute in-place
+          const newAttrs = element.getAttributes().map((a) =>
+            a.name === "align"
+              ? ({
+                  type: "mdxJsxAttribute" as const,
+                  name: "align",
+                  value: format,
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any)
+              : a,
+          );
+          element.updateAttributes(newAttrs);
+        }
+      } else {
+        if (format === "" || format === "left") return;
+
+        // Wrap the current block in a <div align="..."> for markdown persistence
+        const divNode = $createGenericHTMLNode("div", "mdxJsxFlowElement", [
+          { type: "mdxJsxAttribute" as const, name: "align", value: format },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ] as any);
+        element.insertBefore(divNode);
+        divNode.append(element);
+      }
+    });
+
+    // Visual alignment in the editor (does not affect markdown output)
+    activeEditor.dispatchCommand(FORMAT_ELEMENT_COMMAND, format);
+  };
+
+  return (
+    <ButtonGroup>
+      <MdxButton
+        active={currentAlignment === "left" || currentAlignment === ""}
+        isDisabled={isDisabled}
+        onPress={() => applyAlignment("left")}
+        role={tmdx("toolbar.alignLeft")}
+      >
+        <AlignLeft />
+      </MdxButton>
+      <MdxButton
+        active={currentAlignment === "center"}
+        isDisabled={isDisabled}
+        onPress={() => applyAlignment("center")}
+        role={tmdx("toolbar.alignCenter")}
+      >
+        <AlignHorizontalCenter />
+      </MdxButton>
+      <MdxButton
+        active={currentAlignment === "right"}
+        isDisabled={isDisabled}
+        onPress={() => applyAlignment("right")}
+        role={tmdx("toolbar.alignRight")}
+      >
+        <AlignRight />
+      </MdxButton>
+      <MdxButton
+        active={currentAlignment === "justify"}
+        isDisabled={isDisabled}
+        onPress={() => applyAlignment("justify")}
+        role={tmdx("toolbar.alignJustify")}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        >
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+          <line x1="3" y1="14" x2="21" y2="14" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </MdxButton>
+    </ButtonGroup>
   );
 };
 

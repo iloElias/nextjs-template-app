@@ -78,6 +78,7 @@ interface MdxEditorContextValue {
   setCurrentCodeLanguage: (language?: string) => void;
 
   readOnly: boolean;
+  setReadOnly: (readOnly: boolean) => void;
 }
 
 const MdxEditorContext = createContext<MdxEditorContextValue | undefined>(
@@ -197,6 +198,7 @@ export const MdxEditorProvider: React.FC<MdxEditorProviderProps> = ({
         currentCodeLanguage,
         setCurrentCodeLanguage,
         readOnly,
+        setReadOnly,
       }}
     >
       {children}
