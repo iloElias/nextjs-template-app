@@ -1,19 +1,14 @@
 "use client";
 
-import { useApp } from "@/hooks/use-app"
+import { useApp } from "@/hooks/use-app";
 import { useSession } from "@/hooks/use-session";
-import {
-  Image,
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-} from "@heroui/react";
+import { Image, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/react";
 import { useDebounce } from "ilias-use-debounce";
 import Link from "next/link";
 import React, { useId } from "react";
 import { UserNotificationButton } from "../ux/user-notifications-button";
 import { MenuOpenerButton } from "./menu-opener-button";
+import { Navbar } from "./navbar";
 
 export interface HeaderProps {
   hidden?: boolean;
@@ -44,12 +39,10 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <Navbar
       id={id}
-      isBordered
-      className="w-full border-default-300 bg-default-50 shadow-sm backdrop-blur-sm transition-colors dark:border-default-100 print:hidden"
-      shouldHideOnScroll={shouldHideOnScroll}
       onScrollPositionChange={debounce}
-      hidden={hidden}
       isMenuOpen={true}
+      hidden={hidden}
+      shouldHideOnScroll={shouldHideOnScroll}
     >
       <NavbarBrand className="flex flex-1 flex-row items-center justify-start gap-2">
         <MenuOpenerButton size="md" />

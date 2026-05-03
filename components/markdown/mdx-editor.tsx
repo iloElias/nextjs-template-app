@@ -23,7 +23,7 @@ import { SolarProvider } from "@solar-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useTheme } from "next-themes";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getCodeMirrorExtensions } from "../../lib/codemirror-extensions";
 import { convertReferenceLinksToInline } from "../../lib/markdown-utils";
 import { emojiAutocompletePlugin } from "../emoji/emoji-autocomplete-plugin-wrapper";
@@ -125,6 +125,9 @@ interface MDXEditorComponentProps {
   onMount?: () => void;
   onDownload?: (format: "markdown" | "html" | "text" | "pdf") => void;
   isDownloading?: boolean;
+  className?: string;
+  contentEditableClassName?: string;
+  toolbarClassName?: string;
 }
 
 export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
@@ -137,6 +140,9 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
   onMount,
   onDownload,
   isDownloading = false,
+  className,
+  contentEditableClassName,
+  toolbarClassName,
 }) => {
   const tmdx = useScopedI18n("mdx-editor");
   const { resolvedTheme } = useTheme();
@@ -177,6 +183,8 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
     return getCodeMirrorExtensions(theme);
   }, [resolvedTheme]);
 
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
+
   return (
     <MdxEditorProvider readOnly={readOnly}>
       <SolarProvider
@@ -207,10 +215,12 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               return tmdx(key as any) || defaultValue;
             }}
-            className={cn(readOnly && "disabled")}
+            className={cn(readOnly && "disabled", className)}
             contentEditableClassName={cn(
-              "dark:prose-invert p-0! pt-1! rounded-lg max-w-none min-h-125 text-default-700! prose prose-slate editor-content",
+              "dark:prose-invert p-0! pt-1! rounded-lg max-w-none min-h-125 text-black! prose prose-slate editor-content print-content",
               readOnly && "editor-readonly pt-0!",
+              isPreviewMode && "pointer-events-none select-none",
+              contentEditableClassName,
             )}
             plugins={[
               diffSourcePlugin({
@@ -247,6 +257,7 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
                 toolbarClassName: cn(
                   "scrollbar mb-2 flex-wrap! overflow-x-visible! rounded-xl! border-default-200! bg-background! p-2! dark:bg-default-50! shadow-small! transition-[top] duration-400 ease-in-out",
                   headerDisclosure.isOpen ? "top-18!" : "top-2!",
+                  toolbarClassName,
                 ),
                 toolbarContents: () =>
                   !readOnly && (
@@ -254,6 +265,8 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
                       hasPrevioesVersion={!!previousVersion}
                       onDownload={onDownload}
                       isDownloading={isDownloading}
+                      isPreviewMode={isPreviewMode}
+                      onPreviewModeChange={setIsPreviewMode}
                     />
                   ),
               }),

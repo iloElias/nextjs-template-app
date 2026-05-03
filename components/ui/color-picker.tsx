@@ -14,6 +14,19 @@ interface ColorPickerDropdownProps extends ColorPickerProps {
 }
 
 const COLOR_PALETTE = [
+  // Grey
+  [
+    "#FAFAFA",
+    "#F5F5F5",
+    "#EEEEEE",
+    "#E0E0E0",
+    "#BDBDBD",
+    "#9E9E9E",
+    "#757575",
+    "#616161",
+    "#424242",
+    "#212121",
+  ],
   // Reds
   [
     "#FFEBEE",
@@ -235,19 +248,6 @@ const COLOR_PALETTE = [
     "#4E342E",
     "#3E2723",
   ],
-  // Grey
-  [
-    "#FAFAFA",
-    "#F5F5F5",
-    "#EEEEEE",
-    "#E0E0E0",
-    "#BDBDBD",
-    "#9E9E9E",
-    "#757575",
-    "#616161",
-    "#424242",
-    "#212121",
-  ],
 ];
 
 export const ColorPicker: React.FC<ColorPickerProps> = ({
@@ -265,7 +265,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               key={color}
               onPress={() => onChange(color)}
               className={cn(
-                "h-6 w-7 min-w-0 transition-all rounded-lg",
+                "h-6 w-7 min-w-0 rounded-lg transition-all",
                 value === color && "ring-2 ring-primary ring-offset-1",
               )}
               style={{ backgroundColor: color }}

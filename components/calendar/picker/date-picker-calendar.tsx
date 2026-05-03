@@ -2,8 +2,8 @@
 
 import { useCalendar } from "@/hooks/use-calendar";
 import { DateComponent } from "@/lib/get-date-component-order";
-import { cn } from "@heroui/react";
-import { CalendarDate } from "@internationalized/date";
+import { Calendar, cn } from "@heroui/react";
+import { CalendarDate, toCalendarDate } from "@internationalized/date";
 import React, { useCallback } from "react";
 import { PickerCalendar } from "./picker-calendar";
 
@@ -188,7 +188,8 @@ export const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
             aria-label={config.ariaLabel}
             className={props.className}
             {...config.minMaxValue}
-            value={config.calendarValue}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            value={config.calendarValue as any}
             onFocusChange={config.onChange}
             classNames={{
               ...config.classNames,

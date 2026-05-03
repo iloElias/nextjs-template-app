@@ -35,7 +35,7 @@ interface MarkdownProject {
   updatedAt: number;
 }
 
-const DEFAULT_PROJECT_COLOR = "#3b82f6"; // Tailwind blue-500
+const DEFAULT_PROJECT_COLOR = "#FAFAFA"; // Tailwind gray-50
 
 export default function Projects() {
   const t = useScopedI18n("markdown-projects");

@@ -20,7 +20,6 @@ import {
   currentListType$,
   insertTable$,
   insertThematicBreak$,
-  readOnly$,
   useCellValue,
   usePublisher,
   viewMode$,
@@ -674,15 +673,21 @@ export const HeroInsertCodeBlockModal = () => {
   );
 };
 
-export const HeroViewModeSelect = ({ hasDiff }: { hasDiff?: boolean }) => {
+export const HeroViewModeSelect = ({
+  hasDiff,
+  isPreviewMode = false,
+  onPreviewModeChange,
+}: {
+  hasDiff?: boolean;
+  isPreviewMode?: boolean;
+  onPreviewModeChange?: (value: boolean) => void;
+}) => {
   const tmdx = useScopedI18n("mdx-editor");
   const viewMode = useCellValue(viewMode$);
   const setViewMode = usePublisher(viewMode$);
-  const setReadOnly = usePublisher(readOnly$);
-  const { readOnly, setReadOnly: setContextReadOnly } = useMdxEditor();
 
-  // Composite key: "preview" when readOnly, otherwise the viewMode value
-  const selectedKey = readOnly ? "preview" : viewMode;
+  // Composite key: "preview" when isPreviewMode, otherwise the viewMode value
+  const selectedKey = isPreviewMode ? "preview" : viewMode;
 
   const modes = [
     {
@@ -720,11 +725,10 @@ export const HeroViewModeSelect = ({ hasDiff }: { hasDiff?: boolean }) => {
     if (!selected) return;
 
     if (selected === "preview") {
-      setReadOnly(true);
-      setContextReadOnly(true);
+      setViewMode("rich-text");
+      onPreviewModeChange?.(true);
     } else {
-      setReadOnly(false);
-      setContextReadOnly(false);
+      onPreviewModeChange?.(false);
       setViewMode(selected as "rich-text" | "diff" | "source");
     }
   };

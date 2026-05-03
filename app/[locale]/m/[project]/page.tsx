@@ -1,5 +1,4 @@
 import { DefaultLayout } from "@/components/layout/layout";
-import { Section } from "@/components/layout/section";
 import MdxEditor from "./mdx-editor";
 
 export default async function Page({
@@ -10,10 +9,10 @@ export default async function Page({
   const { project } = await params;
 
   return (
-    <DefaultLayout>
-      <Section>
+    <DefaultLayout hideHeader>
+      <section className="container mx-auto px-6 py-4">
         <MdxEditor projectId={project} />
-      </Section>
+      </section>
     </DefaultLayout>
   );
 }

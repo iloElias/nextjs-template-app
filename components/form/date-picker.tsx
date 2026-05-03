@@ -9,10 +9,11 @@ import {
   now,
   ZonedDateTime,
 } from "@internationalized/date";
-import { useForm } from "./form";
 import { useCallback, useId, useMemo } from "react";
+import { useForm } from "./form";
 
-export interface DatePickerProps extends HerouiDatePickerProps {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface DatePickerProps extends HerouiDatePickerProps<any> {
   label?: string;
   timeField?: boolean;
 }
@@ -57,7 +58,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       aria-label="heroui date picker"
       hideTimeZone
       showMonthAndYearPickers
-      defaultValue={defaultValue}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      defaultValue={defaultValue as any}
       hourCycle={!timeField ? undefined : 24}
       granularity={!timeField ? undefined : "second"}
       timeInputProps={{

@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/button";
 import { Input } from "@/components/form/input";
+import { MenuOpenerButton } from "@/components/layout/menu-opener-button";
 import { PrintSettingsModal } from "@/components/markdown/print-settings-modal";
 import {
   downloadProject,
@@ -9,7 +10,7 @@ import {
 } from "@/lib/utils/download-project";
 import { useCurrentLocale, useScopedI18n } from "@/locales/client";
 import { Chip } from "@heroui/react";
-import { AltArrowLeft, Settings } from "@solar-icons/react";
+import { AltArrowLeft, Settings, SolarProvider } from "@solar-icons/react";
 import { useLocalStorage } from "ilias-use-storage";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -134,75 +135,97 @@ export default function MdxEditor({ projectId }: MdxEditorProps) {
     }
   }
 
-  if (!project) {
-    return (
-      <div className="flex flex-col items-center gap-4 py-20 text-center">
-        <p>{t("projectNotFound")}</p>
-        <Button
-          as={Link}
-          href={`/${locale}/m`}
-          startContent={<AltArrowLeft />}
-          variant="flat"
-        >
-          {t("backToProjects")}
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <Link href="/m">
-          <Button isIconOnly aria-label={t("backToProjects")}>
-            <AltArrowLeft />
-          </Button>
-        </Link>
-        <Input
-          value={project.title}
-          onChange={(e) => updateProject({ title: e.target.value })}
-          placeholder={t("titlePlaceholder")}
-          className="flex-1"
-        />
-        {saveStatus !== "idle" && (
-          <Chip
-            size="sm"
-            color={saveStatus === "saving" ? "warning" : "success"}
+    <>
+      {!project ? (
+        <div className="flex flex-col items-center gap-4 py-20 text-center">
+          <p>{t("projectNotFound")}</p>
+          <Button
+            as={Link}
+            href={`/${locale}/m`}
+            startContent={<AltArrowLeft />}
             variant="flat"
           >
-            {saveStatus === "saving" ? t("saving") : t("saved")}
-          </Chip>
-        )}
-        <Button
-          isIconOnly
-          variant="flat"
-          aria-label={t("printSettings")}
-          onPress={() => setShowPrintSettings(true)}
-        >
-          <Settings />
-        </Button>
-      </div>
-      <PrintSettingsModal
-        isOpen={showPrintSettings}
-        onClose={() => setShowPrintSettings(false)}
-      />
-      <MDXEditorComponent
-        key={projectId}
-        markdown={project.content}
-        onChange={(markdown) => {
-          setSaveStatus("saving");
-          setProjects((prev) =>
-            prev.map((p) =>
-              p.id === projectId
-                ? { ...p, content: markdown, updatedAt: Date.now() }
-                : p,
-            ),
-          );
-          setSaveStatus("saved");
-        }}
-        onDownload={handleDownload}
-        isDownloading={isDownloading}
-      />
-    </div>
+            {t("backToProjects")}
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-col gap-4">
+            <SolarProvider
+              value={{
+                weight: "Linear",
+                size: 20,
+              }}
+              svgProps={{
+                className: "solar-icons",
+                strokeWidth: 2,
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <MenuOpenerButton size="md" />
+                <Link href="/m">
+                  <Button
+                    isIconOnly
+                    aria-label={t("backToProjects")}
+                    tooltip={t("backToProjects")}
+                  >
+                    <AltArrowLeft />
+                  </Button>
+                </Link>
+                <Input
+                  value={project.title}
+                  variant="flat"
+                  onChange={(e) => updateProject({ title: e.target.value })}
+                  placeholder={t("titlePlaceholder")}
+                  className="max-w-xs"
+                />
+                {saveStatus !== "idle" && (
+                  <Chip
+                    size="sm"
+                    color={saveStatus === "saving" ? "warning" : "success"}
+                    variant="flat"
+                  >
+                    {saveStatus === "saving" ? t("saving") : t("saved")}
+                  </Chip>
+                )}
+                <div className="flex-1"></div>
+                <Button
+                  isIconOnly
+                  variant="flat"
+                  aria-label={t("printSettings")}
+                  onPress={() => setShowPrintSettings(true)}
+                >
+                  <Settings />
+                </Button>
+              </div>
+            </SolarProvider>
+            <PrintSettingsModal
+              isOpen={showPrintSettings}
+              onClose={() => setShowPrintSettings(false)}
+            />
+            <MDXEditorComponent
+              key={projectId}
+              markdown={project.content}
+              onChange={(markdown) => {
+                setSaveStatus("saving");
+                setProjects((prev) =>
+                  prev.map((p) =>
+                    p.id === projectId
+                      ? { ...p, content: markdown, updatedAt: Date.now() }
+                      : p,
+                  ),
+                );
+                setSaveStatus("saved");
+              }}
+              onDownload={handleDownload}
+              isDownloading={isDownloading}
+              toolbarClassName="mb-4!"
+              contentEditableClassName="max-w-[21cm] mx-auto w-full p-[2cm]! border border-gray-200 rounded-none"
+            />
+          </div>
+        </>
+      )}
+    </>
   );
 }
