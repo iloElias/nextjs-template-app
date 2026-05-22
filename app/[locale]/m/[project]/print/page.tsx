@@ -13,8 +13,15 @@ export default function Page({
   const { project } = use(params);
 
   return (
-    <div className="print-container">
-      <MdxEditor projectId={project} readonly />
-    </div>
+    <>
+      <style>{`
+        body {
+          padding: 0 !important;
+        }
+      `}</style>
+      <div className="print-container overflow-hidden!">
+        <MdxEditor projectId={project} readonly />
+      </div>
+    </>
   );
 }

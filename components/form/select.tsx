@@ -1,6 +1,7 @@
+"use client";
+
 import {
   selectTheme,
-  textBgHighlightClasses,
 } from "@/lib/heroui";
 import {
   Select as HerouiSelect,
@@ -30,7 +31,7 @@ export const Select: React.FC<SelectProps> = ({
   children,
   ...props
 }) => {
-  const { initialData } = useForm();
+  const form = useForm();
 
   if (props.multiple === true) {
     return (
@@ -41,7 +42,7 @@ export const Select: React.FC<SelectProps> = ({
   return (
     <HerouiSelect
       {...(selectTheme as SelectProps)}
-      defaultSelectedKeys={initialData?.[props.name as string]}
+      defaultSelectedKeys={form?.initialData?.[props.name as string]}
       {...props}
     >
       {children

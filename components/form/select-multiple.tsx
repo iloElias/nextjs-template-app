@@ -1,3 +1,5 @@
+"use client";
+
 import { selectTheme } from "@/lib/heroui";
 import {
   Select as HerouiSelect,
@@ -17,12 +19,12 @@ export const SelectMultiple: React.FC<SelectMultipleProps> = ({
   children,
   ...props
 }) => {
-  const { initialData } = useForm();
+  const form = useForm();
 
   return (
     <HerouiSelect
       {...(selectTheme as SelectMultipleProps)}
-      defaultSelectedKeys={initialData?.[props.name as string]}
+      defaultSelectedKeys={form?.initialData?.[props.name as string]}
       {...props}
       selectionMode="multiple"
     >

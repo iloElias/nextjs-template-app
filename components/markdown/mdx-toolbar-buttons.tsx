@@ -4,7 +4,12 @@ import { useScopedI18n } from "@/locales/client";
 import { ButtonGroup, Select, SelectItem } from "@heroui/react";
 import { $isCodeNode } from "@lexical/code";
 import { $isListItemNode, $isListNode } from "@lexical/list";
-import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
+import {
+  $createHeadingNode,
+  $createQuoteNode,
+  $isHeadingNode,
+  $isQuoteNode,
+} from "@lexical/rich-text";
 import { $isTableCellNode, $isTableNode } from "@lexical/table";
 import {
   $createGenericHTMLNode,
@@ -39,6 +44,7 @@ import {
   Eye,
   FileText,
   Gallery,
+  HamburgerMenu,
   Link,
   List,
   ListArrowDownMinimalistic,
@@ -91,7 +97,40 @@ export const HeroBlockTypeSelect = () => {
   const tmdx = useScopedI18n("mdx-editor");
 
   const currentBlockType = useCellValue(currentBlockType$);
+  const activeEditor = useCellValue(activeEditor$);
   const convertSelectionToNode = usePublisher(convertSelectionToNode$);
+
+  // When the cursor is inside a <div align> wrapper (GenericHTMLNode),
+  // currentBlockType$ returns empty. We detect the real block type by
+  // inspecting the first child of the wrapper.
+  const [realBlockType, setRealBlockType] = useState<string>("");
+
+  useEffect(() => {
+    if (!activeEditor) return;
+    const readType = () => {
+      activeEditor.getEditorState().read(() => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection)) return;
+        const element = selection.anchor.getNode().getTopLevelElementOrThrow();
+        if ($isGenericHTMLNode(element)) {
+          const firstChild = element.getFirstChild();
+          if ($isHeadingNode(firstChild)) {
+            setRealBlockType(firstChild.getTag());
+          } else if ($isQuoteNode(firstChild)) {
+            setRealBlockType("quote");
+          } else {
+            setRealBlockType("paragraph");
+          }
+        } else {
+          setRealBlockType("");
+        }
+      });
+    };
+    readType();
+    return activeEditor.registerUpdateListener(readType);
+  }, [activeEditor]);
+
+  const effectiveBlockType = realBlockType || currentBlockType || "paragraph";
 
   const blockTypes = [
     { key: "paragraph", label: tmdx("toolbar.blockTypes.paragraph") },
@@ -112,7 +151,7 @@ export const HeroBlockTypeSelect = () => {
       className="max-w-33 min-w-33"
       placeholder={tmdx("toolbar.blockTypeSelect.placeholder")}
       disabledKeys={["list"]}
-      selectedKeys={new Set([currentBlockType || "paragraph"])}
+      selectedKeys={new Set([effectiveBlockType])}
       onSelectionChange={(keys) => {
         const selected = Array.from(keys)[0] as string;
 
@@ -1238,21 +1277,7 @@ export const HeroTextAlignButtons = () => {
         onPress={() => applyAlignment("justify")}
         role={tmdx("toolbar.alignJustify")}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        >
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <line x1="3" y1="10" x2="21" y2="10" />
-          <line x1="3" y1="14" x2="21" y2="14" />
-          <line x1="3" y1="18" x2="21" y2="18" />
-        </svg>
+        <HamburgerMenu />
       </MdxButton>
     </ButtonGroup>
   );

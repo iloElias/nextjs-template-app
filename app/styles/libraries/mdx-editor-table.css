@@ -3,6 +3,10 @@
    =================================== */
 
 /* Editor Content */
+.editor-content {
+  @apply text-inherit!;
+}
+
 .editor-content * table {
   @apply mx-2 my-2 max-w-[calc(100%-1rem)];
 }

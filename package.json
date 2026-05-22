@@ -21,6 +21,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.3",
+    "@thesvg/react": "^2.1.10",
     "@types/html2pdf.js": "^0.10.0",
     "axios": "^1.13.2",
     "emojibase-data": "^17.0.0",

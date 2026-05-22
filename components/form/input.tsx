@@ -1,3 +1,5 @@
+"use client";
+
 import { inputTheme } from "@/lib/heroui";
 import {
   Input as HerouiInput,
@@ -10,12 +12,12 @@ export interface InputProps extends HerouiInputProps {
 }
 
 export const Input: React.FC<InputProps> = ({ ...props }) => {
-  const { initialData } = useForm();
+  const form = useForm();
 
   return (
     <HerouiInput
       {...(inputTheme as InputProps)}
-      defaultValue={initialData?.[props.name as string]}
+      defaultValue={form?.initialData?.[props.name as string]}
       {...props}
     />
   );

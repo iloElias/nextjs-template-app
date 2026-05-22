@@ -3,10 +3,10 @@ import {
   AUTH_TOKEN_KEY,
   AUTHENTICATED_KEY,
 } from "@/proxy";
-import axios from "axios";
-import { getApiUrl } from "@/service/env";
 import { cookieOptions, cookies } from "@/service/cookie";
+import { getApiUrl } from "@/service/env";
 import { googleLogout } from "@react-oauth/google";
+import axios from "axios";
 
 export const apiBaseUrl = getApiUrl();
 
@@ -26,7 +26,7 @@ const interceptors: {
   RequestSuccess: async (config) => {
     const browserAgent = cookies.get(AUTH_BROWSER_AGENT_KEY);
     if (browserAgent) {
-      config.headers["Browser-Agent"] = browserAgent;
+      config.headers["Device-Agent"] = browserAgent;
     }
     const token = cookies.get(AUTH_TOKEN_KEY);
     if (token) {
@@ -46,8 +46,8 @@ const interceptors: {
       case 204:
         break;
       case 401:
-        if (["browser_agent", "invalid_token"].includes(data?.code)) {
-          if (data?.code === "browser_agent") {
+        if (["device_agent", "invalid_token"].includes(data?.code)) {
+          if (data?.code === "device_agent") {
             cookies.remove(AUTH_BROWSER_AGENT_KEY, cookieOptions);
           }
           cookies.remove(AUTHENTICATED_KEY, cookieOptions);

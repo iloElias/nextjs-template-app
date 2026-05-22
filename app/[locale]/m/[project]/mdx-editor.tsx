@@ -221,7 +221,7 @@ export default function MdxEditor({ projectId }: MdxEditorProps) {
               onDownload={handleDownload}
               isDownloading={isDownloading}
               toolbarClassName="mb-4!"
-              contentEditableClassName="max-w-[21cm] mx-auto w-full p-[2cm]! border border-gray-200 rounded-none"
+              contentEditableClassName="max-w-[21cm] mx-auto! min-h-[297mm] w-full p-[2cm]! border border-default-200"
             />
           </div>
         </>

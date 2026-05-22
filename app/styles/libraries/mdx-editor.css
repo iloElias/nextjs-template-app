@@ -2,6 +2,17 @@
    MDXEditor Library Styles
    =================================== */
 
+/*
+  The library defines --baseTextContrast on ._editorRoot_XXXX (CSS Modules hashed class)
+  with specificity (0,1,0). We use .mdxeditor [class*="_editorRoot_"] which has
+  specificity (0,2,0), beating the library without !important.
+  currentColor on _editorRoot_ resolves to the inherited color from .mdxeditor,
+  where the user's text-{color} className is applied.
+*/
+.mdxeditor [class*="_editorRoot_"] {
+  --baseTextContrast: currentColor;
+}
+
 /* Toolbar */
 .mdxeditor.disabled > .mdxeditor-toolbar {
   @apply hidden;
@@ -17,6 +28,10 @@
 
 .mdxeditor-popup-container {
   @apply border-none;
+}
+
+.mdxeditor * > [class*="placeholder"] {
+  @apply left-1/2 block! -translate-x-1/2! opacity-40;
 }
 
 /* Radix UI Popover positioning fixes for table editor */
@@ -43,11 +58,15 @@
 }
 
 .mdxeditor p:has(a > span > div > div > img) {
-  @apply leading-0 mb-0!;
+  @apply mb-0! leading-0;
 }
 
 .mdxeditor p > a > span > div > div > img {
   @apply mr-2 mb-2;
+}
+
+.mdxeditor, .mdxeditor * {
+  @apply outline-transparent!;
 }
 
 /* Source/Diff view container styling */

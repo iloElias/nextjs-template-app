@@ -3,6 +3,26 @@
    =================================== */
 
 /* Base Prose Styles */
+@layer base {
+  .prose {
+    @apply text-inherit;
+  }
+}
+
+/* Override prose color variables outside any @layer so they beat @layer components (typography plugin).
+   CSS unlayered rules always win over layered rules regardless of order. */
+.prose {
+  --tw-prose-body: currentColor;
+  --tw-prose-headings: currentColor;
+  --tw-prose-links: currentColor;
+  --tw-prose-bold: currentColor;
+  --tw-prose-bullets: currentColor;
+  --tw-prose-lead: currentColor;
+  --tw-prose-counters: currentColor;
+  --tw-prose-captions: currentColor;
+  --tw-prose-code: currentColor;
+}
+
 .prose * {
   @apply m-0;
 }

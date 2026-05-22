@@ -1,3 +1,5 @@
+"use client";
+
 import { inputTheme } from "@/lib/heroui";
 import {
   DatePicker as HerouiDatePicker,
@@ -22,7 +24,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   timeField = false,
   ...props
 }) => {
-  const { initialData } = useForm();
+  const form = useForm();
 
   const id = useId();
 
@@ -45,13 +47,13 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   );
 
   const defaultValue = useMemo(() => {
-    if (initialData?.[name]) {
-      const date = new Date(initialData[name]);
+    if (form?.initialData?.[name]) {
+      const date = new Date(form.initialData[name]);
       return makeDefaultValue(now(date.toISOString()));
     }
 
     return makeDefaultValue(now(getLocalTimeZone()));
-  }, [initialData, name, makeDefaultValue]);
+  }, [form, name, makeDefaultValue]);
 
   return (
     <HerouiDatePicker

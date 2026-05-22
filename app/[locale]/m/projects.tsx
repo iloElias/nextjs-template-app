@@ -223,7 +223,34 @@ export default function Projects() {
                     {project.title || t("untitled")}
                   </h2>
                 </CardHeader>
-                <CardBody className="py-2 pt-0">
+                <CardBody
+                  className="border-y p-0"
+                  style={{ borderColor: borderColor }}
+                >
+                  <div
+                    className="relative overflow-hidden"
+                    style={{ height: "160px" }}
+                  >
+                    <iframe
+                      src={`/${locale}/m/${project.id}/print`}
+                      scrolling="no"
+                      tabIndex={-1}
+                      style={{
+                        position: "absolute",
+                        width: "794px",
+                        height: "1123px",
+                        left: "50%",
+                        marginLeft: "-397px",
+                        transform: "scale(0.35)",
+                        transformOrigin: "top center",
+                        pointerEvents: "none",
+                        border: "none",
+                      }}
+                    />
+                    <div className="absolute inset-0" />
+                  </div>
+                </CardBody>
+                <CardBody className="py-2">
                   <p
                     className="text-sm"
                     style={{ color: textColor, opacity: 0.7 }}

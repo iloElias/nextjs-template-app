@@ -1,6 +1,7 @@
+"use client";
+
 import { inputTheme } from "@/lib/heroui";
 import {
-  cn,
   NumberInput as HerouiNumberInput,
   NumberInputProps as HerouiNumberInputProps,
 } from "@heroui/react";
@@ -15,12 +16,12 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   classNames,
   ...props
 }) => {
-  const { initialData } = useForm();
+  const form = useForm();
 
   return (
     <HerouiNumberInput
       {...(inputTheme as NumberInputProps)}
-      defaultValue={initialData?.[props.name as string]}
+      defaultValue={form?.initialData?.[props.name as string]}
       {...props}
       classNames={mergeClassNames({
         inputWrapper: "shadow-xs!",

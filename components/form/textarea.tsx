@@ -1,3 +1,5 @@
+"use client";
+
 import { inputTheme } from "@/lib/heroui";
 import {
   Textarea as HerouiTextarea,
@@ -10,12 +12,12 @@ export interface TextAreaProps extends HerouiTextAreaProps {
 }
 
 export const TextArea: React.FC<TextAreaProps> = ({ ...props }) => {
-  const { initialData } = useForm();
+  const form = useForm();
 
   return (
     <HerouiTextarea
       {...(inputTheme as TextAreaProps)}
-      defaultValue={initialData?.[props.name as string]}
+      defaultValue={form?.initialData?.[props.name as string]}
       {...props}
     />
   );

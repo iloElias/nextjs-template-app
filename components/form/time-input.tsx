@@ -1,3 +1,5 @@
+"use client";
+
 import { inputTheme } from "@/lib/heroui";
 import {
   TimeInput as HerouiTimeInput,
@@ -22,7 +24,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
   expandable = false,
   ...props
 }) => {
-  const { initialData } = useForm();
+  const form = useForm();
 
   const id = useId();
 
@@ -32,11 +34,11 @@ export const TimeInput: React.FC<TimeInputProps> = ({
   }, [props.name, id]);
 
   const defaultValue = useMemo(() => {
-    const date = initialData?.[name as string]
-      ? new Date(initialData[name as string])
+    const date = form?.initialData?.[name as string]
+      ? new Date(form.initialData[name as string])
       : new Date();
     return new Time(date.getHours(), date.getMinutes(), date.getSeconds());
-  }, [initialData, name]);
+  }, [form, name]);
 
   const [value, setValue] = useState<Time | undefined>(defaultValue);
 

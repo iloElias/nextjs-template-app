@@ -64,6 +64,6 @@ export const Form = <T = FormDataRecord,>({
   );
 };
 
-export const useForm = <T = FormDataRecord,>(): FormContextType<T> => {
-  return (React.useContext(FormContext) as FormContextType<T>) ?? {};
+export const useForm = <T = FormDataRecord,>(): FormContextType<T> | undefined => {
+  return (React.useContext(FormContext) as FormContextType<T>);
 };

@@ -18,7 +18,6 @@ import {
   thematicBreakPlugin,
   toolbarPlugin,
 } from "@mdxeditor/editor";
-import "@mdxeditor/editor/style.css";
 import { SolarProvider } from "@solar-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -215,9 +214,13 @@ export const MDXEditorComponent: React.FC<MDXEditorComponentProps> = ({
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               return tmdx(key as any) || defaultValue;
             }}
-            className={cn(readOnly && "disabled", className)}
+            className={cn(
+              readOnly && "disabled",
+              resolvedTheme === "dark" && "dark",
+              className,
+            )}
             contentEditableClassName={cn(
-              "dark:prose-invert p-0! pt-1! rounded-lg max-w-none min-h-125 text-black! prose prose-slate editor-content print-content",
+              "editor-content print-content p-0! pt-1! max-w-none min-h-125 prose text-inherit!",
               readOnly && "editor-readonly pt-0!",
               isPreviewMode && "pointer-events-none select-none",
               contentEditableClassName,

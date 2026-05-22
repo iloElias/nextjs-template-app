@@ -79,4 +79,9 @@
     background: white;
     padding: 2cm;
   }
+
+  .thumbnail-container {
+    max-height: calc(297mm - 4cm); /* A4 height minus padding */
+    overflow: hidden;
+  }
 }
