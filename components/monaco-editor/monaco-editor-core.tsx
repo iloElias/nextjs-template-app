@@ -185,7 +185,7 @@ export const MonacoEditorCore: React.FC<MonacoEditorCoreProps> = ({
             indentation: false,
           },
           hover: {
-            enabled: false,
+            enabled: "off",
           },
           links: false,
           colorDecorators: false,
